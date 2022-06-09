@@ -4,11 +4,13 @@ namespace App\Controllers;
 
 use App\Models\ProductModel;
 use App\Models\DesignModel;
+use App\Models\MaterialModel;
 
 class Home extends BaseController
 {
     protected $productModel = "";
     protected $designModel = "";
+    protected $materialModel = "";
 
     public function __construct() { 
         $userId = session()->get('user_id');
@@ -19,14 +21,19 @@ class Home extends BaseController
 
         $this->productModel = new ProductModel();
         $this->designModel = new DesignModel();
+        $this->materialModel = new MaterialModel();
     }
 
     public function index() {
-        $products = $this->productModel->getAllProduct();
+        $productsIn = $this->productModel->getAllProductIn();    
+        $productsOut = $this->productModel->getAllProductOut();
+        $materials = $this->materialModel->getAllMaterial();
         $models = $this->designModel->getAllModel();
         $data = array(
             'title' => 'Dashboard',
-            'products' => $products,
+            'productsIn' => $productsIn,
+            'productsOut' => $productsOut,
+            'materials' => $materials,
             'models' => $models
         );
         return view('admin/dashboard', $data);

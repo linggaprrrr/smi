@@ -51,18 +51,10 @@ class Auth extends BaseController
                     return redirect()->to(base_url('gudang/dashboard'))->with('message', 'Login Successful!');
                 }
             } else {
-                return redirect()->back()->with('error', 'Incorrect Password!');
+                return redirect()->to(base_url('/'))->with('error', 'Incorrect Password!');
             }
         } else {
-            return redirect()->back()->with('error', 'Username Not Found!');
+            return redirect()->to(base_url('/'))->with('error', 'Username Not Found!');
         }
-    }
-
-    public function logout() {
-        $data = array(
-            'user_id', 'name', 'role'
-        );
-        session()->remove($data);
-        return redirect()->to(base_url('/'));
     }
 }

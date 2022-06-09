@@ -22,7 +22,7 @@ class Products extends BaseController
     }
     
     public function index() {
-        $products = $this->productModel->getAllProduct();
+        $products = $this->productModel->getAllProductIn();
         $models = $this->designModel->getAllModel();
         $data = array(
             'title' => 'Produk & Model',

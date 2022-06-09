@@ -39,7 +39,7 @@ $routes->set404Override();
 // AUTH
 $routes->get('/', 'Auth::index');
 $routes->post('/login-proccess', 'Auth::loginProccess');
-$routes->get('/logout', 'Auth::logout');
+$routes->get('/logout', 'Users::logout');
 
 // ADMIN PAGE
 $routes->get('/admin/dashboard', 'Home::index');
@@ -56,6 +56,8 @@ $routes->post('/simpan-produk', 'Products::saveProduct');
 $routes->post('/update-produk', 'Products::updateProduct');
 $routes->post('/simpan-model', 'Products::saveModel');
 $routes->post('/update-model', 'Products::updateModel');
+$routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
+
 // ADMIN API
 $routes->get('/get-product', 'Products::getProduct');
 $routes->post('/delete-product', 'Products::deleteProduct');

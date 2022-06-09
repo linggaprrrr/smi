@@ -34,5 +34,14 @@ class Users extends BaseController
         );
         return view('admin/settings', $data);
     }
+    
+    public function logout() {
+        $data = array(
+            'user_id', 'name', 'role'
+        );
+        session()->remove($data);
+        
+        return redirect()->to(base_url('/'));
+    }
 
 }
