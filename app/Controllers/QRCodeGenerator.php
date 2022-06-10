@@ -10,6 +10,7 @@ use App\Models\ProductModel;
 class QRCodeGenerator extends BaseController
 {
     protected $materialModel = "";
+    protected $produkModel = "";
 
     public function __construct() { 
         $userId = session()->get('user_id');
@@ -18,16 +19,32 @@ class QRCodeGenerator extends BaseController
             exit(); 
         }
         $this->materialModel = new MaterialModel();
+        $this->produkModel = new ProductModel();
     }
     
-    public function QRGenerator() {
+    public function QRGeneratorMaterial() {
         $materials = $this->materialModel->getAllMaterial();
         $data = array(
-            'title' => 'QR Generator',
+            'title' => 'QR Generator - Kain',
             'materials' => $materials
             
         );
         return view('admin/qr_generator', $data);    
+    }
+
+    public function QRGeneratorProductIn() {
+        $products = $this->produkModel->select('products.*, models.model_name')
+            ->join('models', 'models.id = products.model_id')
+            ->orderBy('qrcode', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        $data = array(
+            'title' => 'QR Generator - Produk',
+            'products' => $products
+            
+        );
+        return view('admin/qr_generator_produk', $data);    
     }
 
     public function generateQR() {
@@ -51,8 +68,34 @@ class QRCodeGenerator extends BaseController
             }
             echo json_encode($json);         
         }   
+    }
+    
+    public function generateQRProduct() {
         
-        
+        $products = $this->request->getVar('print');                
+        if (!is_null($products)) {
+            $json = array();
+            $qrs = array(
+                'key' => '',
+                'qr' => ''
+            );
+            for ($i=0; $i < count($products); $i++) {
+                $getProduct = $this->produkModel->select('products.*, models.model_name')
+                    ->join('models', 'products.model_id = models.id')                
+                    ->where('products.id', $products[$i])                                        
+                    ->first();
+                $data = $getProduct['id'].'-'.substr($getProduct['product_name'], 0, 1).''.$getProduct['model_name'].'-'.$getProduct['color'];                
+                $qr = QrCode::create($data);
+                $writer = new PngWriter();
+                $result = $writer->write($qr);    
+                $this->produkModel->set('qrcode', $result->getDataUri())                    
+                    ->where('id', $products[$i])->update();            
+                $qrs['key'] = $data;
+                $qrs['qr'] = $result->getDataUri();
+                array_push($json, $qrs);
+            }
+            echo json_encode($json);         
+        }   
     }
 
     public function QRScanner() {
@@ -60,6 +103,18 @@ class QRCodeGenerator extends BaseController
             'title' => 'QR Scanner'
         );
         return view('admin/qr_scanner', $data);    
+    }
+
+    public function scanningProductIn() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $this->produkModel->save([
+            'id' => $qr[0],
+            'status' => 2,
+            'updated_at' => date("Y-m-d H:i:s")
+        ]);
+        
     }
 
     public function test() {

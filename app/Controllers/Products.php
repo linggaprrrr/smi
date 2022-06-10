@@ -22,11 +22,13 @@ class Products extends BaseController
     }
     
     public function index() {
-        $products = $this->productModel->getAllProductIn();
+        $productsIn = $this->productModel->getAllProductIn();
+        $productsOut = $this->productModel->getAllProductOut();
         $models = $this->designModel->getAllModel();
         $data = array(
             'title' => 'Produk & Model',
-            'products' => $products,
+            'productsIn' => $productsIn,
+            'productsOut' => $productsOut,
             'models' => $models
         );
         return view('admin/products', $data);    

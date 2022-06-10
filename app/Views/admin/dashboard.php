@@ -134,13 +134,23 @@
                             <?php $no = 1; ?>
                             <?php if ($productsOut->getNumRows() > 0) : ?>
                                 <?php foreach ($productsOut->getResultObject() as $product) : ?>
-                                    <tr>
-                                        <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $product->product_name ?></td>
-                                        <td><?= $product->model_name ?></td>
-                                        <td><?= $product->color ?></td>
-                                        <td class="text-center"><?= $product->stok ?></td>
-                                    </tr>
+                                    <?php if ($product->stok > 20) : ?>
+                                        <tr class="">
+                                            <td class="text-center"><?= $no++ ?></td>
+                                            <td><?= $product->product_name ?></td>
+                                            <td><?= $product->model_name ?></td>
+                                            <td><?= $product->color ?></td>
+                                            <td class="text-center"><?= $product->stok ?></td>
+                                        </tr>
+                                    <?php else : ?>
+                                        <tr class="table-warning">
+                                            <td class="text-center"><?= $no++ ?></td>
+                                            <td><?= $product->product_name ?></td>
+                                            <td><?= $product->model_name ?></td>
+                                            <td><?= $product->color ?></td>
+                                            <td class="text-center"><?= $product->stok ?></td>
+                                        </tr>
+                                    <?php endif ?>
                                 <?php endforeach ?>
                             <?php endif ?>
                         </tbody>

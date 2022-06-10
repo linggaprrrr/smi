@@ -45,7 +45,8 @@ $routes->get('/logout', 'Users::logout');
 $routes->get('/admin/dashboard', 'Home::index');
 $routes->get('/admin/produk', 'Products::index');
 $routes->get('/admin/material', 'Materials::index');
-$routes->get('/admin/qr-generator', 'QRCodeGenerator::QRGenerator');
+$routes->get('/admin/qr-generator-kain', 'QRCodeGenerator::QRGeneratorMaterial');
+$routes->get('/admin/qr-generator-produk-masuk', 'QRCodeGenerator::QRGeneratorProductIn');
 $routes->get('/admin/qr-scanner', 'QRCodeGenerator::QRScanner');
 $routes->get('/admin/laporan', 'Reports::index');
 $routes->get('/admin/user', 'Users::index');
@@ -57,12 +58,15 @@ $routes->post('/update-produk', 'Products::updateProduct');
 $routes->post('/simpan-model', 'Products::saveModel');
 $routes->post('/update-model', 'Products::updateModel');
 $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
+$routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
 
 // ADMIN API
 $routes->get('/get-product', 'Products::getProduct');
 $routes->post('/delete-product', 'Products::deleteProduct');
 $routes->get('/get-model', 'Products::getModel');
 $routes->post('/delete-model', 'Products::deleteModel');
+$routes->post('/product-in-scanning', 'QRCodeGenerator::scanningProductIn');
+
 
 // GUDANG
 $routes->get('/gudang/dashboard', 'Home::gudang');

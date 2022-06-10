@@ -25,8 +25,8 @@ class Home extends BaseController
     }
 
     public function index() {
-        $productsIn = $this->productModel->getAllProductIn();    
-        $productsOut = $this->productModel->getAllProductOut();
+        $productsIn = $this->productModel->getStokProductIn();    
+        $productsOut = $this->productModel->getStokProductOut();
         $materials = $this->materialModel->getAllMaterial();
         $models = $this->designModel->getAllModel();
         $data = array(
