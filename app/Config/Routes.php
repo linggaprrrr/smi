@@ -53,6 +53,8 @@ $routes->get('/admin/user', 'Users::index');
 $routes->get('/admin/settings', 'Users::settings');
 
 // ADMIN PROCESS
+$routes->post('/simpan-kain', 'Materials::saveMaterial');
+$routes->post('/update-kain', 'Materials::updateMaterial');
 $routes->post('/simpan-produk', 'Products::saveProduct');
 $routes->post('/update-produk', 'Products::updateProduct');
 $routes->post('/simpan-model', 'Products::saveModel');
@@ -61,6 +63,8 @@ $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
 $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
 
 // ADMIN API
+$routes->get('/get-kain', 'Materials::getMaterial');
+$routes->post('/delete-kain', 'Materials::deleteMaterial');
 $routes->get('/get-product', 'Products::getProduct');
 $routes->post('/delete-product', 'Products::deleteProduct');
 $routes->get('/get-model', 'Products::getModel');

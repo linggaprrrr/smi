@@ -25,4 +25,40 @@ class Materials extends BaseController
         );
         return view('admin/materials', $data);    
     }
+
+    public function saveMaterial() {
+        $post = $this->request->getVar();
+        $material = [
+            'type' => strtoupper($post['jenis']),
+            'color' => strtoupper($post['warna']),
+            'weight' => $post['berat'],
+        ];
+        $this->materialModel->save($material);
+        // return redirect()->back()->with('create', 'Kain berhasil ditambahkan');
+    }
+
+    public function getMaterial() {
+        $id = $this->request->getVar('material_id');
+        $material = $this->materialModel->find($id);
+        echo json_encode($material);
+    }
+
+    public function updateMaterial() {
+        $post = $this->request->getVar();
+        $material = [
+            'id' => $post['id'],
+            'type' => strtoupper($post['jenis']),
+            'color' => strtoupper($post['warna']),
+            'weight' => $post['berat'],
+        ];
+        $this->materialModel->save($material);
+        return redirect()->back()->with('create', 'Kain berhasil ditambahkan');
+    }
+
+    public function deleteMaterial() {
+        $id = $this->request->getVar('material_id');
+        $this->materialModel->where('id', $id)->delete();
+        return redirect()->back()->with('delete', 'Kain berhasil dihapus');
+    }
+ 
 }

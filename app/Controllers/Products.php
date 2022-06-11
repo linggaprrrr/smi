@@ -68,6 +68,7 @@ class Products extends BaseController
     public function deleteProduct() {
         $productId = $this->request->getVar('product_id');
         $this->productModel->where('id', $productId)->delete();
+        return redirect()->back()->with('delete', 'Produk berhasil dihapus');
     }
 
     public function getModel() {
@@ -104,5 +105,6 @@ class Products extends BaseController
     public function deleteModel() {
         $modelId = $this->request->getVar('model_id');
         $this->designModel->where('id', $modelId)->delete();
+        return redirect()->back()->with('delete', 'Model berhasil dihapus');
     }
 }
