@@ -25,14 +25,24 @@ class Home extends BaseController
     }
 
     public function index() {
+        $totalGesit = $this->productModel->selectSum('id')->where('status','1')->first();
+        $totalLovishIn = $this->productModel->selectSum('id')->where('status','2')->first();
+        $totalLovishOut = $this->productModel->selectSum('id')->where('status','3')->first();
+        $totalLovishAlmostOut = $this->productModel->getStokProductAlmostOut();
         $productsIn = $this->productModel->getStokProductIn();    
         $productsOut = $this->productModel->getStokProductOut();
+        $productsExp = $this->productModel->getStokProductExp();
         $materials = $this->materialModel->getAllMaterial();
         $models = $this->designModel->getAllModel();
         $data = array(
             'title' => 'Dashboard',
+            'totalGesit' => $totalGesit['id'],
+            'totalLovishIn' => $totalLovishIn['id'],
+            'totalLovishOut' => $totalLovishOut['id'],
+            'totalLovishAlmostOut' => $totalLovishAlmostOut->getNumRows(),
             'productsIn' => $productsIn,
             'productsOut' => $productsOut,
+            'productsExp' => $productsExp,
             'materials' => $materials,
             'models' => $models
         );

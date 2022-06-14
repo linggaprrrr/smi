@@ -60,5 +60,14 @@ class Materials extends BaseController
         $this->materialModel->where('id', $id)->delete();
         return redirect()->back()->with('delete', 'Kain berhasil dihapus');
     }
+
+    public function exportData() {
+        $materials = $this->materialModel->getAllMaterial();
+        $data = array(
+            'title' => 'Kain',
+            'materials' => $materials
+        );
+        return view('admin/export/kain', $data);   
+    }
  
 }

@@ -118,7 +118,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-danger"><i class="fa fa-print mr-2"></i>Print</button>
+                        <button type="button" class="btn btn-danger" id="print-qrcode-show"><i class="fa fa-print mr-2"></i>Print</button>
                     </div>
             </div>
         </div>
@@ -168,6 +168,14 @@
         document.body.innerHTML = originalContents;
         // $("#qr-generator").load(window.location.href + "#qr-generator" );  
     });
-
+    
+    $(document).on('click', '#print-qrcode-show', function() {
+        var printContents = document.getElementById('print-area-show').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        // $("#qr-generator").load(window.location.href + "#qr-generator" );  
+    });
 </script>
 <?= $this->endSection() ?>

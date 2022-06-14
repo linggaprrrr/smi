@@ -61,6 +61,9 @@ $routes->post('/simpan-model', 'Products::saveModel');
 $routes->post('/update-model', 'Products::updateModel');
 $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
 $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
+$routes->get('/export-data-kain', 'Materials::exportData');
+$routes->get('/export-produk-keluar-gesit', 'Products::exportDataProductOut');
+$routes->get('/export-produk-masuk-lovish', 'Products::exportDataProductIn');
 
 // ADMIN API
 $routes->get('/get-kain', 'Materials::getMaterial');
