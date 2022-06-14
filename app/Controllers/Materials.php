@@ -19,9 +19,11 @@ class Materials extends BaseController
 
     public function index() {
         $materials = $this->materialModel->getAllMaterial();
+        $materialsOut = $this->materialModel->getAllMaterialOut();
         $data = array(
             'title' => 'Kain',
-            'materials' => $materials
+            'materials' => $materials,
+            'materialsOut' => $materialsOut
         );
         return view('admin/materials', $data);    
     }
