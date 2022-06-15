@@ -71,5 +71,17 @@ class Materials extends BaseController
         );
         return view('admin/export/kain', $data);   
     }
+
+    // Gudang Gesit
+    public function gudangGesitKain() {
+        $materials = $this->materialModel->getAllMaterial();
+        $materialsOut = $this->materialModel->getAllMaterialOut();
+        $data = array(
+            'title' => 'Kain',
+            'materials' => $materials,
+            'materialsOut' => $materialsOut
+        );
+        return view('gudang_gesit/materials', $data);    
+    }
  
 }

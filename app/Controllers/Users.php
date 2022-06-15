@@ -44,4 +44,41 @@ class Users extends BaseController
         return redirect()->to(base_url('/'));
     }
 
+    public function saveUser() {
+        $post = $this->request->getVar();
+        $newUser = [
+            'name' => $post['nama'],
+            'username' => $post['username'],
+            'password' => password_hash($post['new_password'], PASSWORD_BCRYPT),
+            'role' => $post['role'],
+        ];
+        $this->userModel->save($newUser);
+        return redirect()->back()->with('create', 'User berhasil ditambahkan');
+    }
+
+    public function getUser() {
+        $userId = $this->request->getVar('user_id');
+        $user = $this->userModel->find($userId);
+        echo json_encode($user);
+    }
+
+    public function updateUser() {
+        $post = $this->request->getVar();
+        $newUser = [
+            'id' => $post['id'],
+            'name' => $post['nama'],
+            'password' => password_hash($post['new_password'], PASSWORD_BCRYPT),
+            'role' => $post['role'],
+        ];
+        $this->userModel->save($newUser);
+        return redirect()->back()->with('update', 'User berhasil diupdate');
+    }
+
+    public function deleteUser() {
+        $id = $this->request->getVar('user_id');
+        $this->userModel->where('id', $id)->delete();
+        return redirect()->back()->with('Delete', 'User berhasil dihapus');
+
+    }
+
 }

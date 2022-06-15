@@ -3,10 +3,10 @@
 
 <!-- Sidebar - Brand -->
 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-    <div class="sidebar-brand-icon rotate-n-15">
-        <i class="fas fa-laugh-wink"></i>
+    <div class="sidebar-brand-icon">
+        <i class="fas fa-store"></i>
     </div>
-    <div class="sidebar-brand-text mx-2">Administrator</div>
+    <div class="sidebar-brand-text mx-2">Gesit</div>
 </a>
 
 <!-- Divider -->
@@ -14,7 +14,7 @@
 
 <!-- Nav Item - Dashboard -->
 <li class="nav-item active">
-    <a class="nav-link" href="index.html">
+    <a class="nav-link" href="<?= base_url('/gudang-gesit/dashboard') ?>">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Dashboard</span></a>
 </li>
@@ -27,34 +27,34 @@
     Data
 </div>
 <li class="nav-item">
-    <a class="nav-link" href="charts.html">
+    <a class="nav-link" href="<?= base_url('/gudang-gesit/produk') ?>">
         <i class="fas fa-fw fa-tshirt"></i>
         <span>Produk</span></a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="charts.html">
-        <i class="fas fa-fw fa-qrcode"></i>
-        <span>QR Scanner</span></a>
+    <a class="nav-link" href="<?= base_url('/gudang-gesit/kain') ?>">
+        <i class="fas fa-fw fa-boxes"></i>
+        <span>Kain</span></a>
 </li>
-<!-- Nav Item - Utilities Collapse Menu -->
-<!-- <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
         aria-expanded="true" aria-controls="collapseUtilities">
-        <i class="fas fa-fw fa-wrench"></i>
-        <span>Utilities</span>
+        <i class="fas fa-fw fa-print"></i>
+        <span>QR Generator</span>
     </a>
     <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="utilities-color.html">Colors</a>
-            <a class="collapse-item" href="utilities-border.html">Borders</a>
-            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-            <a class="collapse-item" href="utilities-other.html">Other</a>
+            <a class="collapse-item" href="<?= base_url('/gudang-gesit/qr-generator-kain') ?>">Kain</a>
+            <a class="collapse-item" href="<?= base_url('/gudang-gesit/qr-generator-produk-masuk') ?>">Produk</a>
         </div>
     </div>
-</li> -->
-
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+        <i class="fas fa-fw fa-qrcode"></i>
+        <span>QR Scanner IN</span></a>
+</li>
 
 <!-- Sidebar Toggler (Sidebar) -->
 <div class="text-center d-none d-md-inline">

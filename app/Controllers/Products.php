@@ -127,4 +127,32 @@ class Products extends BaseController
         );
         return view('admin/export/produk_masuk_lovish', $data);  
     }
+
+    // Gesit
+    public function gudangGesitProduk() {
+        $productsIn = $this->productModel->getAllProductIn();
+        $models = $this->designModel->getAllModel();
+        $data = array(
+            'title' => 'Produk & Model',
+            'productsIn' => $productsIn,
+            'models' => $models
+        );
+        return view('gudang_gesit/products', $data);    
+    
+    }
+
+    // Lovish
+    public function gudangLovishProduk() {
+        $productsOut = $this->productModel->getAllProductOut();
+        $productsExp = $this->productModel->getAllProductExp();
+        $data = array(
+            'title' => 'Produk',
+            'productsOut' => $productsOut,
+            'productsExp' => $productsExp,
+        );
+        return view('gudang_lovish/products', $data);    
+    
+    }
+
+
 }

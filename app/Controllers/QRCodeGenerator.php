@@ -47,6 +47,31 @@ class QRCodeGenerator extends BaseController
         return view('admin/qr_generator_produk', $data);    
     }
 
+    public function QRGeneratorMaterialGesit() {
+        $materials = $this->materialModel->getAllMaterial();
+        $data = array(
+            'title' => 'QR Generator - Kain',
+            'materials' => $materials
+            
+        );
+        return view('gudang_gesit/qr_generator_material', $data);    
+    }
+
+    public function QRGeneratorProductInGesit() {
+        $products = $this->produkModel->select('products.*, models.model_name')
+            ->join('models', 'models.id = products.model_id')
+            ->orderBy('qrcode', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        $data = array(
+            'title' => 'QR Generator - Produk',
+            'products' => $products
+            
+        );
+        return view('gudang_gesit/qr_generator_produk', $data);    
+    }
+
     public function generateQR() {
         $materials = $this->request->getVar('print');        
         if (!is_null($materials)) {
@@ -105,6 +130,38 @@ class QRCodeGenerator extends BaseController
         return view('admin/qr_scanner', $data);    
     }
 
+    public function scannerMaterialIn() {
+        $data = array(
+            'title' => 'QR Scanner IN'
+        );
+        return view('gudang_gesit/qr_scanner_in', $data);    
+    }
+
+    public function scannerProductIn() {
+        $data = array(
+            'title' => 'QR Scanner IN'
+        );
+        return view('gudang_lovish/qr_scanner_in', $data);    
+    }
+
+    public function scannerProductOut() {
+        $data = array(
+            'title' => 'QR Scanner OUT'
+        );
+        return view('gudang_lovish/qr_scanner_out', $data);    
+    }
+
+    public function scanningMaterialIn() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $this->materialModel->save([
+            'id' => $qr[0],
+            'status' => 2,
+            'updated_at' => date("Y-m-d H:i:s")
+        ]);
+    }
+
     public function scanningProductIn() {
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
@@ -112,6 +169,17 @@ class QRCodeGenerator extends BaseController
         $this->produkModel->save([
             'id' => $qr[0],
             'status' => 2,
+            'updated_at' => date("Y-m-d H:i:s")
+        ]);
+    }
+
+    public function scanningProductOut() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $this->produkModel->save([
+            'id' => $qr[0],
+            'status' => 3,
             'updated_at' => date("Y-m-d H:i:s")
         ]);
         
