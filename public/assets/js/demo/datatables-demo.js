@@ -18,5 +18,10 @@ $(document).ready(function() {
   $('#dataTable3').DataTable({
     "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
     "iDisplayLength": 25
-});  
+    });  
+
+    $('#dataTable4').DataTable({
+        "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+        "iDisplayLength": 50
+    });  
 });

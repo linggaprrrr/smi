@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
 
-    <title>Dashboard - Digipreneur Labs</title>
+    <title><?= $title ?> - Digipreneur Labs</title>
 
     <!-- Custom fonts for this template-->
     <link href="/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -17,6 +18,8 @@
 
     <!-- Custom styles for this template-->
     <link href="/assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="/assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
 
 </head>
 
@@ -25,7 +28,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <?= $this->include('admin/layout/sidebar') ?>
+        <?= $this->include('gudang_lovish/layout/sidebar') ?>
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -35,7 +38,7 @@
             <div id="content">
 
                 <!-- Topbar -->
-                <?= $this->include('admin/layout/topbar') ?>
+                <?= $this->include('gudang_lovish/layout/topbar') ?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
@@ -43,7 +46,7 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>                        
+                        <h1 class="h3 mb-0 text-gray-800"><?= $title ?></h1>                        
                     </div>
                 
                     <!-- Content Row -->
@@ -55,7 +58,7 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <?= $this->include('/admin/layout/footer') ?>
+            <?= $this->include('/gudang_lovish/layout/footer') ?>
             <!-- End of Footer -->
 
         </div>
@@ -102,7 +105,10 @@
     <!-- Page level plugins -->
     <script src="/assets/vendor/chart.js/Chart.min.js"></script>
 
-
+    <!-- Datatables -->
+    <script src="/assets/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="/assets/js/demo/datatables-demo.js"></script>
 </body>
-
+<?= $this->renderSection('js') ?>
 </html>

@@ -16,7 +16,7 @@
         padding: 10px 10px 10px 10px;
     }
 </style>
-<?= $this->extend('admin/layout/content') ?>
+<?= $this->extend('gudang_gesit/layout/content') ?>
 <?= $this->section('content') ?>
 <form id="generate-qr">
 <div class="card shadow mb-4">

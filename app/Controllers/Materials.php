@@ -19,9 +19,11 @@ class Materials extends BaseController
 
     public function index() {
         $materials = $this->materialModel->getAllMaterial();
+        $materialsOut = $this->materialModel->getAllMaterialOut();
         $data = array(
             'title' => 'Kain',
-            'materials' => $materials
+            'materials' => $materials,
+            'materialsOut' => $materialsOut
         );
         return view('admin/materials', $data);    
     }
@@ -59,6 +61,27 @@ class Materials extends BaseController
         $id = $this->request->getVar('material_id');
         $this->materialModel->where('id', $id)->delete();
         return redirect()->back()->with('delete', 'Kain berhasil dihapus');
+    }
+
+    public function exportData() {
+        $materials = $this->materialModel->getAllMaterial();
+        $data = array(
+            'title' => 'Kain',
+            'materials' => $materials
+        );
+        return view('admin/export/kain', $data);   
+    }
+
+    // Gudang Gesit
+    public function gudangGesitKain() {
+        $materials = $this->materialModel->getAllMaterial();
+        $materialsOut = $this->materialModel->getAllMaterialOut();
+        $data = array(
+            'title' => 'Kain',
+            'materials' => $materials,
+            'materialsOut' => $materialsOut
+        );
+        return view('gudang_gesit/materials', $data);    
     }
  
 }

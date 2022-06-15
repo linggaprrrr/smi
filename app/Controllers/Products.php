@@ -24,11 +24,13 @@ class Products extends BaseController
     public function index() {
         $productsIn = $this->productModel->getAllProductIn();
         $productsOut = $this->productModel->getAllProductOut();
+        $productsExp = $this->productModel->getAllProductExp();
         $models = $this->designModel->getAllModel();
         $data = array(
             'title' => 'Produk & Model',
             'productsIn' => $productsIn,
             'productsOut' => $productsOut,
+            'productsExp' => $productsExp,
             'models' => $models
         );
         return view('admin/products', $data);    
@@ -107,4 +109,50 @@ class Products extends BaseController
         $this->designModel->where('id', $modelId)->delete();
         return redirect()->back()->with('delete', 'Model berhasil dihapus');
     }
+
+    public function exportDataProductIn() {
+        $productsIn = $this->productModel->getAllProductIn();
+        $data = array(
+            'title' => 'Produk & Model',
+            'productsIn' => $productsIn
+        );
+        return view('admin/export/produk_keluar_gesit', $data);  
+    }
+
+    public function exportDataProductOut() {
+        $productsOut = $this->productModel->getAllProductOut();
+        $data = array(
+            'title' => 'Produk & Model',
+            'productsOut' => $productsOut,
+        );
+        return view('admin/export/produk_masuk_lovish', $data);  
+    }
+
+    // Gesit
+    public function gudangGesitProduk() {
+        $productsIn = $this->productModel->getAllProductIn();
+        $models = $this->designModel->getAllModel();
+        $data = array(
+            'title' => 'Produk & Model',
+            'productsIn' => $productsIn,
+            'models' => $models
+        );
+        return view('gudang_gesit/products', $data);    
+    
+    }
+
+    // Lovish
+    public function gudangLovishProduk() {
+        $productsOut = $this->productModel->getAllProductOut();
+        $productsExp = $this->productModel->getAllProductExp();
+        $data = array(
+            'title' => 'Produk',
+            'productsOut' => $productsOut,
+            'productsExp' => $productsExp,
+        );
+        return view('gudang_lovish/products', $data);    
+    
+    }
+
+
 }

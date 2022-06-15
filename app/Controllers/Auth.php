@@ -15,8 +15,11 @@ class Auth extends BaseController
             if ($user == "administrator") {
                 header('Location: '.base_url('/admin/dashboard'));
                 exit;
+            } elseif ($user == 'gudang_1') {
+                header('Location: '.base_url('/gudang-gesit/dashboard'));
+                exit;
             } else {
-                header('Location: '.base_url('/gudang/dashboard'));
+                header('Location: '.base_url('/gudang-lovish/dashboard'));
                 exit;
             }
         }
@@ -47,8 +50,10 @@ class Auth extends BaseController
                     // } else {
                     //     return redirect()->to($currentPage)->with('message', 'Login Successful!');
                     // }
-                } elseif ($user->role == "gudang_1" || $user->role == "gudang_2") {
-                    return redirect()->to(base_url('gudang/dashboard'))->with('message', 'Login Successful!');
+                } elseif ($user->role == "gudang_1") {
+                    return redirect()->to(base_url('gudang-gesit/dashboard'))->with('message', 'Login Successful!');
+                } else {
+                    return redirect()->to(base_url('gudang-lovish/dashboard'))->with('message', 'Login Successful!');
                 }
             } else {
                 return redirect()->to(base_url('/'))->with('error', 'Incorrect Password!');

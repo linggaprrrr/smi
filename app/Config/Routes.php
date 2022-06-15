@@ -61,22 +61,44 @@ $routes->post('/simpan-model', 'Products::saveModel');
 $routes->post('/update-model', 'Products::updateModel');
 $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
 $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
+$routes->get('/export-data-kain', 'Materials::exportData');
+$routes->get('/export-produk-keluar-gesit', 'Products::exportDataProductOut');
+$routes->get('/export-produk-masuk-lovish', 'Products::exportDataProductIn');
+$routes->post('/simpan-user', 'Users::saveUser');
+$routes->post('/update-user', 'Users::updateUser');
 
 // ADMIN API
+$routes->get('/get-user', 'Users::getUser');
+$routes->post('/delete-user', 'Users::deleteUser');
 $routes->get('/get-kain', 'Materials::getMaterial');
 $routes->post('/delete-kain', 'Materials::deleteMaterial');
 $routes->get('/get-product', 'Products::getProduct');
 $routes->post('/delete-product', 'Products::deleteProduct');
 $routes->get('/get-model', 'Products::getModel');
 $routes->post('/delete-model', 'Products::deleteModel');
-$routes->post('/product-in-scanning', 'QRCodeGenerator::scanningProductIn');
 
 
-// GUDANG
-$routes->get('/gudang/dashboard', 'Home::gudang');
+
+// GUDANG Gesit
+$routes->get('/gudang-gesit/dashboard', 'Home::gudangGesit');
+$routes->get('/gudang-gesit/produk', 'Products::gudangGesitProduk');
+$routes->get('/gudang-gesit/kain', 'Materials::gudangGesitKain');
+$routes->get('/gudang-gesit/qr-generator-kain', 'QRCodeGenerator::QRGeneratorMaterialGesit');
+$routes->get('/gudang-gesit/qr-generator-produk-masuk', 'QRCodeGenerator::QRGeneratorProductInGesit');
+$routes->get('/gudang-gesit/qr-scanner-in', 'QRCodeGenerator::scannerMaterialIn');
+
+// GUDANG Lovish
+$routes->get('/gudang-lovish/dashboard', 'Home::gudangLovish');
+$routes->get('/gudang-lovish/produk', 'Products::gudangLovishProduk');
+$routes->get('/gudang-lovish/qr-scanner-in', 'QRCodeGenerator::scannerProductIn');
+$routes->get('/gudang-lovish/qr-scanner-out', 'QRCodeGenerator::scannerProductOut');
+
 
 
 // GLOBAL API
+$routes->post('/material-in-scanning', 'QRCodeGenerator::scanningMaterialIn');
+$routes->post('/product-in-scanning', 'QRCodeGenerator::scanningProductIn');
+$routes->post('/product-out-scanning', 'QRCodeGenerator::scanningProductOut');
 
 // test
 $routes->get('/test', 'QRCodeGenerator::test');

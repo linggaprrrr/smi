@@ -12,12 +12,11 @@
             top: 0;
         }
     }
-
     td {
         padding: 10px 10px 10px 10px;
     }
 </style>
-<?= $this->extend('admin/layout/content') ?>
+<?= $this->extend('gudang_gesit/layout/content') ?>
 <?= $this->section('content') ?>
 <div>
     <form id="generate-qr">
@@ -159,15 +158,6 @@
         $('#qrcode-img-show').attr('src', img);
         $('#desc-show').html(id);
         $('#qr-modal-show').modal('show');
-    });
-
-    $(document).on('click', '#print-qrcode-show', function() {
-        var printContents = document.getElementById('print-area-show').innerHTML;
-        var originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        // $("#qr-generator").load(window.location.href + "#qr-generator" );  
     });
 
     $(document).on('click', '#print-qrcode', function() {

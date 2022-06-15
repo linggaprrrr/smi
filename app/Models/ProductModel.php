@@ -29,6 +29,16 @@ class ProductModel extends Model
         return $query;
     }
 
+    public function getAllProductExp() {
+        $query = $this->db->table('products')
+            ->select('products.*, model_name')
+            ->join('models', 'models.id = products.model_id')
+            ->where('status', 3)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return $query;
+    }
+
     public function getStokProductIn() {
         $query =  $this->db->table('models')
             ->select('products.id, product_name, model_name, color, weight, status, qrcode, created_at')
@@ -47,6 +57,31 @@ class ProductModel extends Model
             ->selectCount('products.id', 'stok')
             ->join('products', 'products.model_id = models.id')
             ->where('status', '2')
+            ->groupBy('product_name')
+            ->orderBy('created_at', 'desc')
+            ->get();  
+        return $query;
+    }
+
+    public function getStokProductAlmostOut() {
+        $query =  $this->db->table('models')
+            ->select('products.id, product_name, model_name, color, weight, status, qrcode, created_at')
+            ->selectCount('products.id', 'stok')
+            ->join('products', 'products.model_id = models.id')
+            ->where('status', '2')
+            ->groupBy('product_name')
+            ->orderBy('created_at', 'desc')
+            ->having("count('products.id') <= ", '20')
+            ->get();  
+        return $query;
+    }
+
+    public function getStokProductExp() {
+        $query =  $this->db->table('models')
+            ->select('products.id, product_name, model_name, color, weight, status, qrcode, created_at')
+            ->selectCount('products.id', 'stok')
+            ->join('products', 'products.model_id = models.id')
+            ->where('status', '3')
             ->groupBy('product_name')
             ->orderBy('created_at', 'desc')
             ->get();  
