@@ -3,14 +3,17 @@
         body * {
             visibility: hidden;
         }
-        #section-to-print, #section-to-print * {
+        #print-area, #print-area * {
             visibility: visible;
         }
-        #section-to-print {
+        #print-area {
             position: absolute;
             left: 0;
             top: 0;
         }
+    }
+    td {
+        padding: 10px 10px 10px 10px;
     }
 </style>
 <?= $this->extend('gudang_gesit/layout/content') ?>
@@ -154,9 +157,26 @@
         $('#qr-modal-show').modal('show');
     });
 
-    $('#print-qrcode').click(function() {
-        window.print();
-        location.reload();
+    $(document).on('click', '#print-qrcode', function() {
+        var printContents = document.getElementById('print-area').innerHTML;
+        var winPrint = window.open('', '', 'left=0,top=0,width=800,height=600,toolbar=0,scrollbars=0,status=0');
+        winPrint.document.body.innerHTML = printContents;
+        winPrint.document.close();
+        winPrint.focus();
+        winPrint.print();
+        winPrint.close(); 
+        
+       
+    });
+    
+    $(document).on('click', '#print-qrcode-show', function() {
+        var printContents = document.getElementById('print-area-show').innerHTML;
+        var winPrint = window.open('', '', 'left=0,top=0,width=800,height=600,toolbar=0,scrollbars=0,status=0');
+        winPrint.document.body.innerHTML = printContents;
+        winPrint.document.close();
+        winPrint.focus();
+        winPrint.print();
+        winPrint.close(); 
     });
 </script>
 <?= $this->endSection() ?>

@@ -3,10 +3,10 @@
         body * {
             visibility: hidden;
         }
-        #section-to-print, #section-to-print * {
+        #print-area, #print-area * {
             visibility: visible;
         }
-        #section-to-print {
+        #print-area {
             position: absolute;
             left: 0;
             top: 0;
@@ -19,9 +19,9 @@
 </style>
 <?= $this->extend('admin/layout/content') ?>
 <?= $this->section('content') ?>
-<div id="qr-generator">
+<div>
     <form id="generate-qr">
-    <div class="card shadow mb-4">
+    <div class="card shadow mb-4" id="id="qr-generator"">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary float-left">Kain (Gudang Gesit)</h6>
             <button type="submit" id="print" class="btn btn-primary float-right"><i class="fa fa-qrcode mr-2"></i>Print</button>
@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
                         <button type="button" id="print-qrcode" class="btn btn-danger"><i class="fa fa-print mr-2"></i>Print</button>
                     </div>
             </div>
@@ -117,7 +117,7 @@
                         <h3 id="desc-show"></h3>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" id="close2" data-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-danger" id="print-qrcode-show"><i class="fa fa-print mr-2"></i>Print</button>
                     </div>
             </div>
@@ -133,6 +133,7 @@
             $.post('/generate-qr', $('form#generate-qr').serialize(), function(data) {
                 const qr = JSON.parse(data);
                 var id = 1;                
+                $('#qr-handler').html("");
                 for (var i = 0; i < qr.length; i+=3) {
                     $('#qr-handler').append('<tr>');
                     if (qr.length - i >= 3) {                        
@@ -162,20 +163,25 @@
 
     $(document).on('click', '#print-qrcode', function() {
         var printContents = document.getElementById('print-area').innerHTML;
-        var originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        // $("#qr-generator").load(window.location.href + "#qr-generator" );  
+        var winPrint = window.open('', '', 'left=0,top=0,width=800,height=600,toolbar=0,scrollbars=0,status=0');
+        winPrint.document.body.innerHTML = printContents;
+        winPrint.document.close();
+        winPrint.focus();
+        winPrint.print();
+        winPrint.close(); 
+        
+       
     });
     
     $(document).on('click', '#print-qrcode-show', function() {
         var printContents = document.getElementById('print-area-show').innerHTML;
-        var originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        // $("#qr-generator").load(window.location.href + "#qr-generator" );  
+        var winPrint = window.open('', '', 'left=0,top=0,width=800,height=600,toolbar=0,scrollbars=0,status=0');
+        winPrint.document.body.innerHTML = printContents;
+        winPrint.document.close();
+        winPrint.focus();
+        winPrint.print();
+        winPrint.close(); 
     });
+
 </script>
 <?= $this->endSection() ?>

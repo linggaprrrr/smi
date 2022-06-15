@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class MaterialModel extends Model
 {
     protected $table = 'materials';
-    protected $allowedFields = ['type', 'color', 'weight', 'qrcode', 'status'];
+    protected $allowedFields = ['type', 'color', 'weight', 'qrcode', 'status', 'updated_at'];
 
     public function getAllMaterial() {
         $query =  $this->db->table('materials')
