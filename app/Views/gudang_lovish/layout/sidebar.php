@@ -21,27 +21,69 @@
 
 <!-- Divider -->
 <hr class="sidebar-divider">
-
-<!-- Heading -->
-<div class="sidebar-heading">
-    Data
-</div>
-<li class="nav-item">
-    <a class="nav-link" href="<?= base_url('/gudang-lovish/produk') ?>">
-        <i class="fas fa-fw fa-tshirt"></i>
-        <span>Produk</span></a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-in') ?>">
-        <i class="fas fa-fw fa-qrcode"></i>
-        <span>QR Scanner IN</span></a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-out') ?>">
-        <i class="fas fa-fw fa-qrcode"></i>
-        <span>QR Scanner OUT</span></a>
-</li>
-
+<?php 
+    $access = json_decode(session()->get('accessibility'));
+    if (!is_null($access)) {
+        for ($i=0; $i < count($access); $i++) {
+            switch ($access[$i]) {
+                case "1": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/produk') ?>">
+                                <i class="fas fa-fw fa-tshirt"></i>
+                                <span>Produk</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "2": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-in') ?>">
+                                <i class="fas fa-fw fa-print"></i>
+                                <span>Cetak QR Pengiriman</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "3": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-out') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner OUT</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "4": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Pengiriman</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "5": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Retur (IN)</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "6": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                                <i class="fas fa-fw fa-chart-area"></i>
+                                <span>Laporan</span></a>
+                        </li>
+                        <?php
+                    break;
+            }
+        }
+    }
+?>
 
 <!-- Sidebar Toggler (Sidebar) -->
 <div class="text-center d-none d-md-inline">

@@ -4,11 +4,13 @@ namespace App\Controllers;
 
 use App\Models\ProductModel;
 use App\Models\DesignModel;
+use App\Models\LogModel;
 
 class Products extends BaseController
 {
     protected $productModel = "";
     protected $designModel = "";
+    protected $logModel = "";
 
     public function __construct() { 
         $userId = session()->get('user_id');
@@ -18,6 +20,7 @@ class Products extends BaseController
         }
         $this->productModel = new ProductModel();
         $this->designModel = new DesignModel();
+        $this->logModel = new LogModel();
 
     }
     
@@ -35,7 +38,7 @@ class Products extends BaseController
         );
         return view('admin/products', $data);    
     }
-
+    
     public function getProduct() {
         $productId = $this->request->getVar('product_id');
         $product = $this->productModel->find($productId);
@@ -51,6 +54,10 @@ class Products extends BaseController
             'model_id'  => $post['model'],
         ];
         $this->productModel->save($product);
+        $this->logModel->save([
+            'description' => 'Menambahkan produk baru ('.$post['nama_produk'].' '.$post['model'].' '.$post['warna'].')',
+            'user_id' =>  session()->get('user_id'),
+        ]);
         return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
     }
 
@@ -64,13 +71,22 @@ class Products extends BaseController
             'model_id'  => $post['model'],
         ];
         $this->productModel->save($product);
+        $this->logModel->save([
+            'description' => 'Mengubah produk ('.$post['nama_produk'].' '.$post['model'].' '.$post['warna'].')',
+            'user_id' =>  session()->get('user_id'),
+        ]);
         return redirect()->back()->with('update', 'Produk berhasil ditambahkan');
     }
 
     public function deleteProduct() {
         $productId = $this->request->getVar('product_id');
+        $getProduct = $this->productModel->join('models', 'models.id = products.model_id')->first();
+        $this->logModel->save([
+            'description' => 'Menghapus produk ('.$getProduct['product_name'].' '.$getProduct['model_name'].' '.$getProduct['color'].')',
+            'user_id' =>  session()->get('user_id'),
+        ]);
         $this->productModel->where('id', $productId)->delete();
-        return redirect()->back()->with('delete', 'Produk berhasil dihapus');
+        // return redirect()->back()->with('delete', 'Produk berhasil dihapus');
     }
 
     public function getModel() {

@@ -40,16 +40,12 @@ class Auth extends BaseController
                 $params = [
                     'user_id' => $user->id,
                     'name' => $user->name,
-                    'role' => $user->role
+                    'role' => $user->role,
+                    'accessibility' => $user->accessibility
                 ];
                 session()->set($params);
                 if ($user->role == "administrator") {
                     return redirect()->to(base_url('admin/dashboard'))->with('message', 'Login Successful!');
-                    // if ($currentPage == base_url()) {
-                    //     return redirect()->to(base_url('admin/dashboard'))->with('message', 'Login Successful!');
-                    // } else {
-                    //     return redirect()->to($currentPage)->with('message', 'Login Successful!');
-                    // }
                 } elseif ($user->role == "gudang_1") {
                     return redirect()->to(base_url('gudang-gesit/dashboard'))->with('message', 'Login Successful!');
                 } else {
