@@ -131,19 +131,21 @@
             e.preventDefault();
             $.post('/generate-qr', $('form#generate-qr').serialize(), function(data) {
                 const qr = JSON.parse(data);
-                var id = 1;                
+                var id = 1;     
+                console.log(qr);           
                 $('#qr-handler').html("");
                 for (var i = 0; i < qr.length; i+=3) {
+                    const desc = qr[i]['key'].split("-");
                     $('#qr-handler').append('<tr>');
                     if (qr.length - i >= 3) {                        
-                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.5cm" /></td>');
-                        $('#qr-handler').append('<td style="padding: 0px 100px 10px 100px"><img src="'+qr[i+1]['qr']+'" style="width: 1.5cm" /></td>');
-                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i+2]['qr']+'" style="width: 1.5cm" /></td>');                        
+                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 20px 10px 20px"><img src="'+qr[i+1]['qr']+'" style="width: 1.5cm; float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i+2]['qr']+'" style="width: 1.5cm; float:left"" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');                        
                     } else if (qr.length - i == 2) {
-                        $('#qr-handler').append('<td style="padding-left: 10px;padding-right: 10px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm" /></td>');
-                        $('#qr-handler').append('<td style="padding-left: 10px;padding-right: 10px;"><img src="'+qr[i+1]['qr']+'" style="width: 1.5cm" /></td>');                        
+                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding-left: 20px;padding-right: 20px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');                        
                     } else {
-                        $('#qr-handler').append('<td style="padding-left: 10px;padding-right: 10px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm" /></td>');
+                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
                     }
                     $('#qr-handler').append('</tr>');
                 }

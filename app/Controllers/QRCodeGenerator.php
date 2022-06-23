@@ -23,7 +23,7 @@ class QRCodeGenerator extends BaseController
     }
     
     public function QRGeneratorMaterial() {
-        $materials = $this->materialModel->getAllMaterial();
+        $materials = $this->materialModel->getAllMaterialQR();
         $data = array(
             'title' => 'QR Generator - Kain',
             'materials' => $materials
@@ -48,7 +48,7 @@ class QRCodeGenerator extends BaseController
     }
 
     public function QRGeneratorMaterialGesit() {
-        $materials = $this->materialModel->getAllMaterial();
+        $materials = $this->materialModel->getAllMaterialQR();
         $data = array(
             'title' => 'QR Generator - Kain',
             'materials' => $materials
@@ -58,8 +58,12 @@ class QRCodeGenerator extends BaseController
     }
 
     public function QRGeneratorProductInGesit() {
-        $products = $this->produkModel->select('products.*, models.model_name')
+        $products = $this->produkModel->select('products.*, model_name, product_name, color, name')
             ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('users', 'users.id = products.user_id')
+            ->where('status', 1)
             ->orderBy('qrcode', 'asc')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -81,8 +85,9 @@ class QRCodeGenerator extends BaseController
                 'qr' => ''
             );
             for ($i=0; $i < count($materials); $i++) {
-                $getMaterial = $this->materialModel->find($materials[$i]);                
-                $data = $getMaterial['id'].'-'.substr($getMaterial['type'], 0, 3).'-'.$getMaterial['color'];                
+                $getMaterial = $this->materialModel->getMaterialDetail($materials[$i]);
+                          
+                $data = $getMaterial[0]->id.'-'.substr($getMaterial[0]->type, 0, 3).'-'.$getMaterial[0]->color;                
                 $qr = QrCode::create($data);
                 $writer = new PngWriter();
                 $result = $writer->write($qr);    
@@ -105,7 +110,9 @@ class QRCodeGenerator extends BaseController
                 'qr' => ''
             );
             for ($i=0; $i < count($products); $i++) {
-                $getProduct = $this->produkModel->select('products.*, models.model_name')
+                $getProduct = $this->produkModel->select('products.id, model_name, product_name, color')
+                    ->join('product_types', 'product_types.id = product_id')
+                    ->join('colors', 'colors.id = products.color_id')
                     ->join('models', 'products.model_id = models.id')                
                     ->where('products.id', $products[$i])                                        
                     ->first();
@@ -134,14 +141,14 @@ class QRCodeGenerator extends BaseController
         $data = array(
             'title' => 'QR Scanner IN'
         );
-        return view('gudang_gesit/qr_scanner_in', $data);    
+        return view('gudang_gesit/qr_scanner_material_in', $data);    
     }
 
     public function scannerProductIn() {
         $data = array(
             'title' => 'QR Scanner IN'
         );
-        return view('gudang_lovish/qr_scanner_in', $data);    
+        return view('gudang_lovish/qr_scanner_product_in', $data);    
     }
 
     public function scannerProductOut() {
@@ -160,6 +167,12 @@ class QRCodeGenerator extends BaseController
             'status' => 2,
             'updated_at' => date("Y-m-d H:i:s")
         ]);
+        $getMaterial = $this->materialModel->find($qr[0]);
+        $status = '0';
+        if (!is_null($getMaterial)) {
+            $status = '1';
+        }
+        echo json_encode($status);
     }
 
     public function scanningProductIn() {
@@ -171,6 +184,8 @@ class QRCodeGenerator extends BaseController
             'status' => 2,
             'updated_at' => date("Y-m-d H:i:s")
         ]);
+        
+        
     }
 
     public function scanningProductOut() {
@@ -186,11 +201,12 @@ class QRCodeGenerator extends BaseController
     }
 
     public function test() {
-        $qr = QrCode::create("hayy guys");
-        $writer = new PngWriter();
-        $result = $writer->write($qr);        
-        header("Content-Type: " . $result->getMimeType()); 
-        echo "<img src='{$result->getDataUri()}'/>";
-    }
+        $getMaterial = $this->materialModel->find(1);
+        if (is_null($getMaterial)) {
+            echo "heyy";
+        } else {
+            echo "hoyy";
+        }
+    } 
 
 }

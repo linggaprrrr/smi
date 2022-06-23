@@ -51,6 +51,9 @@ $routes->get('/admin/qr-scanner', 'QRCodeGenerator::QRScanner');
 $routes->get('/admin/laporan', 'Reports::index');
 $routes->get('/admin/user', 'Users::index');
 $routes->get('/admin/settings', 'Users::settings');
+$routes->get('/admin/datamaster', 'Materials::datamaster');
+$routes->get('/admin/logs', 'Reports::log');
+$routes->get('/admin/pengiriman', 'Shippings::index');
 
 // ADMIN PROCESS
 $routes->post('/simpan-kain', 'Materials::saveMaterial');
@@ -59,6 +62,12 @@ $routes->post('/simpan-produk', 'Products::saveProduct');
 $routes->post('/update-produk', 'Products::updateProduct');
 $routes->post('/simpan-model', 'Products::saveModel');
 $routes->post('/update-model', 'Products::updateModel');
+$routes->post('/simpan-warna', 'Materials::saveWarna');
+$routes->post('/update-warna', 'Materials::updateWarna');
+$routes->post('/simpan-vendor-supplier', 'Materials::saveVendorSupplier');
+$routes->post('/update-vendor-supplier', 'Materials::updateVendorSupplier');
+$routes->post('/simpan-vendor-penjualan', 'Materials::saveVendorPenjualan');
+
 $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
 $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
 $routes->get('/export-data-kain', 'Materials::exportData');
@@ -67,15 +76,36 @@ $routes->get('/export-produk-masuk-lovish', 'Products::exportDataProductIn');
 $routes->post('/simpan-user', 'Users::saveUser');
 $routes->post('/update-user', 'Users::updateUser');
 
+$routes->post('/tambah-produk', 'Products::addProduct');
+$routes->post('/tambah-produk-lovish', 'Products::addProductLovish');
+$routes->get('/get-produk-detail', 'Products::getProductDetail');
+$routes->post('/update-produk-detail', 'Products::updateProductDetail');
+$routes->post('/tambah-kain', 'Materials::addMaterial');
+$routes->get('/get-kain-detail', 'Materials::getMaterialDetail');
+$routes->post('/update-kain-detail', 'Materials::updateMaterialDetail');
+
 // ADMIN API
 $routes->get('/get-user', 'Users::getUser');
 $routes->post('/delete-user', 'Users::deleteUser');
 $routes->get('/get-kain', 'Materials::getMaterial');
 $routes->post('/delete-kain', 'Materials::deleteMaterial');
-$routes->get('/get-product', 'Products::getProduct');
+$routes->post('/delete-kain-detail', 'Materials::deleteMaterialDetail');
+$routes->get('/get-produk', 'Products::getProduct');
+$routes->get('/get-produk-detail', 'Products::getProductDetail');
 $routes->post('/delete-product', 'Products::deleteProduct');
+$routes->post('/delete-product-detail', 'Products::deleteProductDetail');
 $routes->get('/get-model', 'Products::getModel');
 $routes->post('/delete-model', 'Products::deleteModel');
+$routes->post('/delete-model-detail', 'Products::deleteModelDetail');
+$routes->get('/get-warna', 'Materials::getColor');
+$routes->post('/delete-warna', 'Materials::deleteColor');
+$routes->get('/get-vendor-supplier', 'Materials::getVendorSupplier');
+$routes->post('/update-vendor-supplier', 'Materials::updateVendorSupplier');
+$routes->post('/delete-vendor-supplier', 'Materials::deleteVendorSupplier');
+$routes->get('/get-vendor-penjualan', 'Materials::getVendorSelling');
+$routes->post('/update-vendor-penjualan', 'Materials::updateVendorSelling');
+$routes->post('/delete-vendor-penjualan', 'Materials::deleteVendorSelling');
+$routes->get('/get-pengiriman-detail', 'Shippings::getShippingDetail');
 
 
 

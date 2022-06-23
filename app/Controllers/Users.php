@@ -80,7 +80,6 @@ class Users extends BaseController
         $newUser = [
             'id' => $post['id'],
             'name' => $post['nama'],
-            'password' => password_hash($post['new_password'], PASSWORD_BCRYPT),
             'role' => $post['role'],
             'accessibility' => $access
         ];

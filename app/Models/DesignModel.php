@@ -7,10 +7,14 @@ use CodeIgniter\Model;
 class DesignModel extends Model
 {
     protected $table = 'models';
-    protected $allowedFields = ['model_name', 'jahit_price', 'hpp_price', 'vendor'];
+    protected $allowedFields = ['model_name'];
 
     public function getAllModel() {
-        $query =  $this->db->table('models')->get();
+        $query =  $this->db->table('models')
+        ->orderBy('id', 'desc')
+        ->get();
         return $query;
     }
+
+   
 }

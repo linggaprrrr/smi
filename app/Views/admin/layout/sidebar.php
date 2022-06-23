@@ -37,6 +37,11 @@
         <span>Kain</span></a>
 </li>
 <li class="nav-item">
+    <a class="nav-link" href="<?= base_url('/admin/pengiriman') ?>">
+        <i class="fas fa-fw fa-shipping-fast"></i>
+        <span>Pengiriman</span></a>
+</li>
+<!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
         aria-expanded="true" aria-controls="collapseUtilities">
         <i class="fas fa-fw fa-print"></i>
@@ -49,21 +54,26 @@
             <a class="collapse-item" href="<?= base_url('/admin/qr-generator-produk-masuk') ?>">Produk</a>
         </div>
     </div>
-</li>
+</li> -->
 <!-- <li class="nav-item">
     <a class="nav-link" href="<?= base_url('/admin/qr-generator') ?>">
         <i class="fas fa-fw fa-print"></i>
         <span>QR Generator</span></a>
 </li> -->
-<li class="nav-item">
+<!-- <li class="nav-item">
     <a class="nav-link" href="<?= base_url('/admin/qr-scanner') ?>">
         <i class="fas fa-fw fa-qrcode"></i>
         <span>QR Scanner</span></a>
-</li>
+</li> -->
 <li class="nav-item">
     <a class="nav-link" href="<?= base_url('/admin/user') ?>">
         <i class="fas fa-fw fa-user-alt"></i>
         <span>User</span></a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="<?= base_url('/admin/datamaster') ?>">
+        <i class="fas fa-fw fa-database"></i>
+        <span>Data Master</span></a>
 </li>
 
 
@@ -80,6 +90,11 @@
     <a class="nav-link" href="<?= base_url('/admin/laporan') ?>">
         <i class="fas fa-fw fa-chart-area"></i>
         <span>Laporan</span></a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="<?= base_url('/admin/logs') ?>">
+        <i class="fas fa-fw fa-history"></i>
+        <span>Log</span></a>
 </li>
 
 <!-- Sidebar Toggler (Sidebar) -->

@@ -159,7 +159,15 @@
                                 <td class="text-center"><?= $no++ ?></td>
                                 <td class=""><?= $user->name ?></td>
                                 <td><?= $user->username ?></td>
-                                <td class="text-center"><b><?= $user->role ?></b></td>
+                                <td class="text-center">
+                                    <?php if ($user->role == 'administrator') : ?>
+                                        <b>Administrator</b>
+                                    <?php elseif ($user->role == 'gudang_1') : ?>
+                                        <b>Gesit</b>
+                                    <?php else : ?>
+                                        <b>Gudang Lovish</b>
+                                    <?php endif ?>
+                                </td>
                                 <td class="text-center">
                                     <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-user" data-id='<?= $user->id ?>'>
                                         <span class="icon text-white-25">
@@ -240,7 +248,7 @@
                                             </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="6" id="customSwitch18">
-                                                <label class="custom-control-label" for="customSwitch19" style="padding-top: 5px;">Laporan</label>
+                                                <label class="custom-control-label" for="customSwitch18" style="padding-top: 5px;">Laporan</label>
                                             </div>
                                         </div>
                                     </td>
@@ -253,15 +261,15 @@
                                         <div class="form-group">
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="1" id="customSwitch20">
-                                                <label class="custom-control-label" for="customSwitch7" style="padding-top: 5px;">Input Data Produk & Stok</label>
+                                                <label class="custom-control-label" for="customSwitch20" style="padding-top: 5px;">Input Data Produk & Stok</label>
                                             </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="2"  id="customSwitch21">
-                                                <label class="custom-control-label" for="customSwitch8" style="padding-top: 5px;">Cetak QR Pengiriman</label>
+                                                <label class="custom-control-label" for="customSwitch21" style="padding-top: 5px;">Cetak QR Pengiriman</label>
                                             </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="3"  id="customSwitch22">
-                                                <label class="custom-control-label" for="customSwitch9" style="padding-top: 5px;">QR Scanner Produk (OUT)</label>
+                                                <label class="custom-control-label" for="customSwitch22" style="padding-top: 5px;">QR Scanner Produk (OUT)</label>
                                             </div>
                                         </div>
                                     </td>
@@ -269,42 +277,22 @@
                                         <div class="form-group">
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="4"  id="customSwitch23">
-                                                <label class="custom-control-label" for="customSwitch10" style="padding-top: 5px;">QR Scanner Pengiriman (OUT)</label>
+                                                <label class="custom-control-label" for="customSwitch23" style="padding-top: 5px;">QR Scanner Pengiriman (OUT)</label>
                                             </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="5"  id="customSwitch24">
-                                                <label class="custom-control-label" for="customSwitch11" style="padding-top: 5px;">QR Scanner Retur Produk (IN)</label>
+                                                <label class="custom-control-label" for="customSwitch24" style="padding-top: 5px;">QR Scanner Retur Produk (IN)</label>
                                             </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="6"  id="customSwitch25">
-                                                <label class="custom-control-label" for="customSwitch12" style="padding-top: 5px;">Laporan</label>
+                                                <label class="custom-control-label" for="customSwitch25" style="padding-top: 5px;">Laporan</label>
                                             </div>
                                         </div>
                                     </td>
                                 </table>
                             </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    </span>
-                                    <input type="password" name="new_password" class="form-control" autocomplete="false" id="password" value="" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Confirm Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    </span>
-                                    <input type="password" name="confirm_password" class="form-control" autocomplete="false" id="confirm_password" value="">
-
-                                </div>
-                                <div class="message">
-                                    <span id='message'></span>
-                                </div>
-                            </div>
+   
+                            
                             
                         </div>
                             <div class="modal-footer">

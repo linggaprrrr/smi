@@ -4,12 +4,14 @@ namespace App\Controllers;
 
 use App\Models\MaterialModel;
 use App\Models\ProductModel;
+use App\Models\LogModel;
 
 class Reports extends BaseController
 {   
 
     protected $materialModel = "";
     protected $productModel = "";
+    protected $logModel = "";
     
     public function __construct() { 
         $userId = session()->get('user_id');
@@ -19,6 +21,7 @@ class Reports extends BaseController
         }
         $this->materialModel = new MaterialModel();
         $this->productModel = new ProductModel();
+        $this->logModel = new LogModel();
     }
 
     public function index() {
@@ -33,5 +36,16 @@ class Reports extends BaseController
 
         );
         return view('admin/reports', $data);    
+    }
+
+    public function log() {
+        $dailyLogs = $this->logModel->getDailyLogs();
+        $logs = $this->logModel->getAllLogs();
+        $data = array(
+            'title' => 'Logs',
+            'dailyLogs' => $dailyLogs,
+            'logs' => $logs
+        );
+        return view('admin/logs', $data);
     }
 }

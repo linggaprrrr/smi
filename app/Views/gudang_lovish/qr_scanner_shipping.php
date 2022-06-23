@@ -14,7 +14,7 @@
         overflow: hidden;
       }
 </style>
-<?= $this->extend('gudang_gesit/layout/content') ?>
+<?= $this->extend('gudang_lovish/layout/content') ?>
 
 <?= $this->section('content') ?>
 <div class="row">
@@ -196,7 +196,7 @@
             
             for (const barcode of codes)  {
                 console.log(barcode['rawValue'])
-                $.post('/material-in-scanning', {qr: barcode['rawValue']}, function(data) {
+                $.post('/product-out-scanning', {qr: barcode['rawValue']}, function(data) {
 
                 }); 
                 // Draw outline
