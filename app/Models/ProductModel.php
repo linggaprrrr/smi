@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class ProductModel extends Model
 {
     protected $table = 'products';
-    protected $allowedFields = ['product_id', 'color_id', 'weight', 'price', 'model_id', 'status', 'qrcode', 'user_id', 'updated_at'];
+    protected $allowedFields = ['product_id', 'color_id', 'weight', 'price', 'model_id', 'status', 'qrcode', 'user_id', 'updated_at', 'qty'];
 
 
     public function getAllProduct() {

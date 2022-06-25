@@ -6,11 +6,14 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use App\Models\MaterialModel;
 use App\Models\ProductModel;
+use App\Models\ShippingModel;
 
 class QRCodeGenerator extends BaseController
 {
     protected $materialModel = "";
     protected $produkModel = "";
+    protected $shippinglModel = "";
+    
 
     public function __construct() { 
         $userId = session()->get('user_id');
@@ -20,6 +23,7 @@ class QRCodeGenerator extends BaseController
         }
         $this->materialModel = new MaterialModel();
         $this->produkModel = new ProductModel();
+        $this->shippinglModel = new ShippingModel();
     }
     
     public function QRGeneratorMaterial() {
@@ -153,9 +157,30 @@ class QRCodeGenerator extends BaseController
 
     public function scannerProductOut() {
         $data = array(
-            'title' => 'QR Scanner OUT'
+            'title' => 'QR Scanner Product Out'
         );
         return view('gudang_lovish/qr_scanner_out', $data);    
+    }
+
+    public function scannerProductRetur() {
+        $data = array(
+            'title' => 'QR Scanner Retur'
+        );
+        return view('gudang_lovish/qr_scanner_retur_in', $data);    
+    }
+
+    public function scannerShipment() {
+        $shippings = $this->shippinglModel
+            ->join('shipping_details', 'shipping_details.shipping_id = shippings.id')
+            ->orderBy('qrcode', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->groupBy('shippings.id')
+            ->get();
+        $data = array(
+            'title' => 'QR Scanner Pengiriman',
+            'shippings' => $shippings
+        );
+        return view('gudang_lovish/qr_scanner_shipping', $data);    
     }
 
     public function scanningMaterialIn() {
@@ -184,8 +209,6 @@ class QRCodeGenerator extends BaseController
             'status' => 2,
             'updated_at' => date("Y-m-d H:i:s")
         ]);
-        
-        
     }
 
     public function scanningProductOut() {
@@ -199,6 +222,20 @@ class QRCodeGenerator extends BaseController
         ]);
         
     }
+
+    public function scanningShipment() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $this->produkModel->save([
+            'id' => $qr[0],
+            'status' => 2,
+            'updated_at' => date("Y-m-d H:i:s")
+        ]);
+        
+    }
+
+    
 
     public function test() {
         $getMaterial = $this->materialModel->find(1);

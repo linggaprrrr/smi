@@ -17,50 +17,158 @@
 <?= $this->extend('gudang_lovish/layout/content') ?>
 
 <?= $this->section('content') ?>
-<div class="row">
-    <div class="col-lg-6">
-        <div class="wrapper">
-            <div>
-                <div id="video-wrapper">
-                    <video id="video" width="360" autoplay></video>
-                    <canvas id="canvas" width="0" height="0"></canvas>
-                </div>
-                <div>
-                    <h6>Hasil</h6>
-                <div id="scanned"></div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary float-left">Data Pengiriman</h6>
+        <button type="button" id="print" class="btn btn-primary ml-2 float-right"><i class="fa fa-qrcode mr-2"></i>Scan</button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div class="modal fade bd-example-modal-lg-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Pengiriman: <span id="pengiriman"></span></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h6 class="modal-title ml-2" id="exampleModalLabel">Scanning...</h6>
+                                    <div class="wrapper">
+                                        <div>
+                                            <div id="video-wrapper">
+                                                <video id="video" width="360" autoplay></video>
+                                                <canvas id="canvas" width="0" height="0"></canvas>
+                                            </div>
+                                            <div>
+                                            <div id="scanned"></div>
+                                            </div>
+                                        </div>
+                                    </div>   
+                                    <template id="scaned-item">
+                                    <style>
+                                        .wrapper {
+                                        
+                                        border: none;
+                                        border-radius: 1rem;
+                                        padding: 1rem;
+                                        background: linear-gradient(var(--gradient-start), var(--gradient-end));
+                                        box-shadow: 0 3px -3px 10px #000;
+                                        }
+                                        .wrapper span {
+                                        font-family: Arial, Helvetica, sans-serif;
+                                        
+                                        display: block;
+                                        }
+                                    </style>
+                                    <div class="wrapper">
+                                        <span><slot name="raw" class="data"></slot></span>
+                                    </div>
+                                    </template>
+                                </div>
+                                <div class="col-lg-6">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>          
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
-        </div>   
-        <template id="scaned-item">
-        <style>
-            .wrapper {
-            
-            border: none;
-            border-radius: 1rem;
-            padding: 1rem;
-            background: linear-gradient(var(--gradient-start), var(--gradient-end));
-            box-shadow: 0 3px -3px 10px #000;
-            }
-            .wrapper span {
-            font-family: Arial, Helvetica, sans-serif;
-            
-            display: block;
-            }
-        </style>
-        <div class="wrapper">
-            <span><slot name="raw" class="data"></slot></span>
+            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 5%">No</th>
+                        <th class="text-center">Pengiriman</th>
+                        <th class="text-center">Tanggal Buat</th>
+                        <th class="text-center" style="width: 10%;"><i class="fas fa-box"></i></th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <?php $no = 1; ?>
+                    <?php if ($shippings->getNumRows() > 0) : ?>
+                        <?php foreach ($shippings->getResultObject() as $ship) : ?>
+                            <?php if (is_null($ship->product_id) || empty($ship->product_id)) : ?>
+                                <tr>
+                                    <td class="text-center align-middle"><?= $no++ ?></td>
+                                    <td class="align-middle"><?= $ship->box_name ?></td>                       
+                                    <td class="text-center align-middle"><?= $ship->created_at ?></td>
+                                    <td class="text-center align-middle">
+                                        <a href="#" class="btn btn-default btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
+                                            <span class="icon text-white-25">
+                                                <i class="fas fa-box"></i>
+                                            </span>
+                                        </a>
+                                    </td>
+                                
+                                    
+                                </tr>
+                            <?php else :?>
+                                <tr class="table-info">
+                                    <td class="text-center align-middle"><?= $no++ ?></td>
+                                    <td class="align-middle"><?= $ship->box_name ?></td>                       
+                                    <td class="text-center align-middle"><?= $ship->created_at ?></td>
+                                    <td class="text-center align-middle">
+                                        <a href="#" class="btn btn-info btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
+                                            <span class="icon text-white-25">
+                                                <i class="fas fa-box"></i>
+                                            </span>
+                                        </a>
+                                    </td>
+                                 
+                                    
+                                </tr>
+                            <?php endif ?>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </tbody>
+            </table>
         </div>
-        </template>
-    </div>
-    <div class="col-lg-6">
-        
+        <div class="modal fade bd-example-modal-lg-produk-detail" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Detail Pengiriman</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <th style="width: 5%">No</th>
+                                    <th>Produk</th>
+                                </thead>
+                                <tbody id="detail-in">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <!-- <script src="/assets/js/main.js" async></script> -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     $(document).ready(function() {
+        
         let codes = [];
         var audio = new Audio('/assets/sounds/beep.wav');
         
@@ -216,8 +324,32 @@
         })
         }
 
-        // Run detect code function every 100 milliseconds
         setInterval(detectCode, 1000);
+        // Run detect code function every 100 milliseconds
     })
+    $('#print').click(function(){
+        const id = $(this).data('id');
+        console.log("test");
+        $('.bd-example-modal-lg-produk').modal('show');
+        
+    });
+
+    $('.btn-detail-produk').click(function(){
+        const id = $(this).data('id');
+        var no = 1;
+
+        $('#detail-in').html("");
+        $.get('/get-pengiriman-detail', {ship_id: id})
+            .done(function(data) {
+                const product = JSON.parse(data);
+                for (var i = 0; i < product.length; i++) {
+                    $('#detail-in').append('<tr>');
+                    $('#detail-in').append('<td>'+ no++ +'</td>');
+                    $('#detail-in').append('<td>'+ product[i]['product_name'] +' '+ product[i]['model_name'] +' '+ product[i]['color'] +'</td>');
+                    $('#detail-in').append('</tr>');
+                }
+        });
+        $('.bd-example-modal-lg-produk-detail').modal('show');
+    });
 </script>
 <?= $this->endSection() ?>

@@ -212,6 +212,7 @@ class Products extends BaseController
             'color_id'  => $post['warna'],
             'weight'  => $post['berat'],
             'model_id'  => $post['model'],
+            'qty' => $post['qty'],
             'status' => '2',
             'user_id' => session()->get('user_id'),
         ];

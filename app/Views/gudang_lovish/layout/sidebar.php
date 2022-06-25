@@ -38,7 +38,7 @@
                 case "2": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-in') ?>">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/cetak-pengiriman') ?>">
                                 <i class="fas fa-fw fa-print"></i>
                                 <span>Cetak QR Pengiriman</span></a>
                         </li>
@@ -47,7 +47,7 @@
                 case "3": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-out') ?>">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-out') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner OUT</span></a>
                         </li>
@@ -56,7 +56,7 @@
                 case "4": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-shipment') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Pengiriman</span></a>
                         </li>
@@ -65,7 +65,7 @@
                 case "5": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-out') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Retur (IN)</span></a>
                         </li>
@@ -74,7 +74,7 @@
                 case "6": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/laporan') ?>">
                                 <i class="fas fa-fw fa-chart-area"></i>
                                 <span>Laporan</span></a>
                         </li>

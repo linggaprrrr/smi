@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Models\ShippinglModel;
 use App\Models\ProductModel;
 use App\Models\ShippingModel;
 
@@ -24,7 +23,6 @@ class Shippings extends BaseController
 
     public function index() {
         $shippings = $this->shippinglModel->getAllShipping();
-        // dd($shippings->getResultArray());
         $data = array(
             'title' => 'Pengiriman',
             'shippings' => $shippings
@@ -37,6 +35,46 @@ class Shippings extends BaseController
         $id = $this->request->getVar('ship_id');
         $details = $this->shippinglModel->getShippingDetail($id);
         echo json_encode($details->getResultArray());
+
+    }
+
+    public function shipmentLovish() {
+        $shippings = $this->shippinglModel
+            ->orderBy('qrcode', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $data = array(
+            'title' => 'Pengiriman',
+            'shippings' => $shippings
+        );
+        
+        return view('gudang_lovish/shippings', $data);  
+    }
+
+    public function getResi() {
+        $id = $this->request->getVar('ship_id');
+        $getShipment = $this->shippinglModel->find($id);
+        echo json_encode($getShipment);
+    }
+
+    public function updateResi() {
+        $post = $this->request->getVar();
+        $this->shippinglModel->save([
+            'id' => $post['id'],
+            'resi' => $post['resi']
+        ]);
+
+        return redirect()->back()->with('update', 'Resi berhasil diubah');
+    }
+
+    public function addShipping() {
+        $str = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        $numbers = rand(1000, 9999);
+        
+        $info = 'BOX-'.substr($str, 0, 3).''.$numbers;
+        
+        $this->shippinglModel->insertShippingDetail($info);
+        
 
     }
 }

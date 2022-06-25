@@ -26,7 +26,6 @@
                     <canvas id="canvas" width="0" height="0"></canvas>
                 </div>
                 <div>
-                    <h6>Hasil</h6>
                 <div id="scanned"></div>
                 </div>
             </div>

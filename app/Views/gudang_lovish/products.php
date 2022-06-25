@@ -54,6 +54,11 @@
                                 <input type="text" class="form-control" name="berat" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="Masukkan berat produk">
                                 <small id="modelName" class="form-text text-muted">Contoh 1,5 kg menjadi <b>1500</b> </small>
                             </div>
+                            <div class="form-group">
+                                <label for="">Qty</label>
+                                <input type="text" class="form-control" name="qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah produk">
+                                
+                            </div>
                             
                         </div>
                         <div class="modal-footer">
@@ -76,6 +81,7 @@
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (gr)</th>
                         <th class="text-center">Tanggal Masuk</th>
+                        <th class="text-center" style="width: 5%">Qty</th>
                         <th class="text-center">PIC</th>
                         <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
                     </tr>
@@ -92,6 +98,7 @@
                                 <td><?= $product->color ?></td>
                                 <td><?= $product->weight ?></td>
                                 <td class="text-center"><?= $product->created_at ?></td>
+                                <td class="text-center"><?= $product->qty ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
                                 <td class="text-center">
                                     <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-produk" data-id='<?= $product->id ?>'>

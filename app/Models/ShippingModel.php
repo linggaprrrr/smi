@@ -7,12 +7,12 @@ use CodeIgniter\Model;
 class ShippingModel extends Model
 {
     protected $table = 'shippings';
-    protected $allowedFields = ['shipping_det', 'box_name', 'created_at', 'resi', 'user_id'];
+    protected $allowedFields = ['box_name', 'created_at', 'resi', 'qrcode', 'status', 'user_id', 'updated_at'];
 
     public function getAllShipping() {
         $query = $this->db->table('shippings')
             ->select('shippings.*, product_name, model_name, color, name')
-            ->join('shipping_details', 'shipping_details.id = shippings.shipping_det')
+            ->join('shipping_details', 'shipping_details.shipping_id = shippings.id')
             ->join('products', 'products.id = shipping_details.product_id')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = products.product_id')
@@ -33,5 +33,16 @@ class ShippingModel extends Model
             ->where('shipping_id', $id)
             ->get();
         return $query;
+    }
+
+    public function insertShippingDetail($info) {
+        $data = [
+            'box_name' => $info,
+            'user_id'  => session()->get('user_id')
+        ];
+        $builder = $this->db->table('shippings');
+        $builder->insert($data);
+        $last = $this->db->insertID();
+        $this->db->query("INSERT INTO shipping_details(shipping_id) VALUES('$last') ");
     }
 }
