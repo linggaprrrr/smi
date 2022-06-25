@@ -26,11 +26,84 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Role*</label>
-                                <select class="form-control" name="role">
+                                <select class="form-control" name="role" id="roleAction">
                                     <option value="administrator">Administrator</option>
-                                    <option value="gudang_1"> Gudang 1 (Gesit) </option>
-                                    <option value="gudang_2"> Gudang 2 (Lovish) </option>
+                                    <option value="gudang_1"> Gesit </option>
+                                    <option value="gudang_2"> Gudang Lovish </option>
                                 </select>
+                            </div>
+                            <div id="gesit-access" style="display: none">
+                                <table style="width: 100%">
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="1" id="customSwitch1">
+                                                <label class="custom-control-label" for="customSwitch1" style="padding-top: 5px;">Input Data Kain & Produk</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="2"  id="customSwitch2">
+                                                <label class="custom-control-label" for="customSwitch2" style="padding-top: 5px;">Cetak QR Kain & Produk</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="3"  id="customSwitch3">
+                                                <label class="custom-control-label" for="customSwitch3" style="padding-top: 5px;">QR Scanner Kain (IN)</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="4" id="customSwitch4">
+                                                <label class="custom-control-label" for="customSwitch4" style="padding-top: 5px;">QR Scanner Pola (OUT)</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="5" id="customSwitch5">
+                                                <label class="custom-control-label" for="customSwitch5" style="padding-top: 5px;">QR Scanner Produk (IN)</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="6" id="customSwitch6">
+                                                <label class="custom-control-label" for="customSwitch6" style="padding-top: 5px;">Laporan</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </table>
+                            </div>
+                            
+                            <div id="lovish-access" style="display: none">
+                                <table style="width: 100%">
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="1" id="customSwitch7">
+                                                <label class="custom-control-label" for="customSwitch7" style="padding-top: 5px;">Input Data Produk & Stok</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="2" id="customSwitch8">
+                                                <label class="custom-control-label" for="customSwitch8" style="padding-top: 5px;">Cetak QR Pengiriman</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="3" id="customSwitch9">
+                                                <label class="custom-control-label" for="customSwitch9" style="padding-top: 5px;">QR Scanner Produk (OUT)</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="4" id="customSwitch10">
+                                                <label class="custom-control-label" for="customSwitch10" style="padding-top: 5px;">QR Scanner Pengiriman (OUT)</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="5" id="customSwitch11">
+                                                <label class="custom-control-label" for="customSwitch11" style="padding-top: 5px;">QR Scanner Retur Produk (IN)</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="6" id="customSwitch12">
+                                                <label class="custom-control-label" for="customSwitch12" style="padding-top: 5px;">Laporan</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </table>
                             </div>
                             <div class="form-group">
                                 <label>Password</label>
@@ -86,7 +159,15 @@
                                 <td class="text-center"><?= $no++ ?></td>
                                 <td class=""><?= $user->name ?></td>
                                 <td><?= $user->username ?></td>
-                                <td class="text-center"><b><?= $user->role ?></b></td>
+                                <td class="text-center">
+                                    <?php if ($user->role == 'administrator') : ?>
+                                        <b>Administrator</b>
+                                    <?php elseif ($user->role == 'gudang_1') : ?>
+                                        <b>Gesit</b>
+                                    <?php else : ?>
+                                        <b>Gudang Lovish</b>
+                                    <?php endif ?>
+                                </td>
                                 <td class="text-center">
                                     <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-user" data-id='<?= $user->id ?>'>
                                         <span class="icon text-white-25">
@@ -114,7 +195,7 @@
                         <form action="<?= base_url('/update-user') ?>" method="post">
                             <?= csrf_field() ?>
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Edit Produk</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                                 </button>
@@ -131,34 +212,87 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Role*</label>
-                                <select class="form-control" id="role" name="role">
+                                <select class="form-control" id="role" name="role"">
                                     <option value="administrator">Administrator</option>
-                                    <option value="gudang_1"> Gudang 1 (Gesit) </option>
-                                    <option value="gudang_2"> Gudang 2 (Lovish) </option>
+                                    <option value="gudang_1">Gesit </option>
+                                    <option value="gudang_2">Gudang Lovish </option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    </span>
-                                    <input type="password" name="new_password" class="form-control" autocomplete="false" id="password" value="" required>
-                                </div>
+                            <div id="gesit-access-edit" style="display: none">
+                                <table style="width: 100%">
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="1" id="customSwitch13">
+                                                <label class="custom-control-label" for="customSwitch13" style="padding-top: 5px;">Input Data Kain & Produk</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="2" id="customSwitch14">
+                                                <label class="custom-control-label" for="customSwitch14" style="padding-top: 5px;">Cetak QR Kain & Produk</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="3" id="customSwitch15">
+                                                <label class="custom-control-label" for="customSwitch15" style="padding-top: 5px;">QR Scanner Kain (IN)</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="4" id="customSwitch16">
+                                                <label class="custom-control-label" for="customSwitch16" style="padding-top: 5px;">QR Scanner Pola (OUT)</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="5" id="customSwitch17">
+                                                <label class="custom-control-label" for="customSwitch17" style="padding-top: 5px;">QR Scanner Produk (IN)</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="6" id="customSwitch18">
+                                                <label class="custom-control-label" for="customSwitch18" style="padding-top: 5px;">Laporan</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </table>
                             </div>
-                            <div class="form-group">
-                                <label>Confirm Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    </span>
-                                    <input type="password" name="confirm_password" class="form-control" autocomplete="false" id="confirm_password" value="">
-
-                                </div>
-                                <div class="message">
-                                    <span id='message'></span>
-                                </div>
+                            
+                            <div id="lovish-access-edit" style="display: none">
+                                <table style="width: 100%">
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="1" id="customSwitch20">
+                                                <label class="custom-control-label" for="customSwitch20" style="padding-top: 5px;">Input Data Produk & Stok</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="2"  id="customSwitch21">
+                                                <label class="custom-control-label" for="customSwitch21" style="padding-top: 5px;">Cetak QR Pengiriman</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="3"  id="customSwitch22">
+                                                <label class="custom-control-label" for="customSwitch22" style="padding-top: 5px;">QR Scanner Produk (OUT)</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="4"  id="customSwitch23">
+                                                <label class="custom-control-label" for="customSwitch23" style="padding-top: 5px;">QR Scanner Pengiriman (OUT)</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="5"  id="customSwitch24">
+                                                <label class="custom-control-label" for="customSwitch24" style="padding-top: 5px;">QR Scanner Retur Produk (IN)</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="6"  id="customSwitch25">
+                                                <label class="custom-control-label" for="customSwitch25" style="padding-top: 5px;">Laporan</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </table>
                             </div>
+   
+                            
                             
                         </div>
                             <div class="modal-footer">
@@ -191,10 +325,75 @@
             $.get('/get-user', {user_id: id})
                 .done(function(data) {
                     const user = JSON.parse(data);
+                    const access = JSON.parse(user['accessibility']);
                     $('#id-user').val(user['id']);
                     $('#nama').val(user['name']);
                     $('#username').val(user['username']);
                     $('#role').val(user['role']);
+                    
+                    $('.custom-control-input').prop('checked', false);
+                    if (user['role'] == 'gudang_1') {
+                        if (access !== null) {
+                            for (var i=0; i < access.length; i++) {
+                                switch(access[i]) {
+                                    case "1": 
+                                            $('#customSwitch13').prop('checked', true);
+                                        break;
+                                    case "2": 
+                                            $('#customSwitch14').prop('checked', true);
+                                        break;
+                                    case "3": 
+                                            $('#customSwitch15').prop('checked', true);
+                                        break;
+                                    case "4": 
+                                            $('#customSwitch16').prop('checked', true);
+                                        break;
+                                    case "5": 
+                                            $('#customSwitch17').prop('checked', true);
+                                        break;
+                                    case "6": 
+                                            $('#customSwitch18').prop('checked', true);
+                                        break;
+                                }
+                            }
+                        }
+                    } else if (user['role'] == 'gudang_2') {
+                        if (access !== null) {
+                            for (var i=0; i < access.length; i++) {
+                                switch(access[i]) {
+                                    case "1": 
+                                            $('#customSwitch20').prop('checked', true);
+                                        break;
+                                    case "2": 
+                                            $('#customSwitch21').prop('checked', true);
+                                        break;
+                                    case "3": 
+                                            $('#customSwitch22').prop('checked', true);
+                                        break;
+                                    case "4": 
+                                            $('#customSwitch23').prop('checked', true);
+                                        break;
+                                    case "5": 
+                                            $('#customSwitch24').prop('checked', true);
+                                        break;
+                                    case "6": 
+                                            $('#customSwitch25').prop('checked', true);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (user['role'] == 'gudang_1') {
+                        $("#gesit-access-edit").css("display", "block");
+                        $("#lovish-access-edit").css("display", "none");
+                    } else if(user['role'] == 'gudang_2') {
+                        $("#gesit-access-edit").css("display", "none");
+                        $("#lovish-access-edit").css("display", "block");
+                    } else {
+                        $("#gesit-access-edit").css("display", "none");
+                        $("#lovish-access-edit").css("display", "none");
+                    }
             });
         });
 
@@ -222,6 +421,34 @@
                 });
         });
 
+        $('#roleAction').on('change', function() {
+            const role = $(this).val();
+            if (role == 'gudang_1') {
+                $("#gesit-access").css("display", "block");
+                $("#lovish-access").css("display", "none");
+            } else if (role == 'gudang_2') {
+                $("#gesit-access").css("display", "none");
+                $("#lovish-access").css("display", "block");
+            } else {
+                $("#gesit-access").css("display", "none");
+                $("#lovish-access").css("display", "none");
+            }
+        });
+
+        $('#role').on('change', function() {
+            const role = $(this).val();
+            console.log(role);
+            if (role == 'gudang_1') {
+                $("#gesit-access-edit").css("display", "block");
+                $("#lovish-access-edit").css("display", "none");
+            } else if (role == 'gudang_2') {
+                $("#gesit-access-edit").css("display", "none");
+                $("#lovish-access-edit").css("display", "block");
+            } else {
+                $("#gesit-access-edit").css("display", "none");
+                $("#lovish-access-edit").css("display", "none");
+            }
+        });
     })
 </script>
 

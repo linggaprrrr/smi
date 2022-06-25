@@ -14,7 +14,7 @@
         overflow: hidden;
       }
 </style>
-<?= $this->extend('gudang_lovish/layout/content') ?>
+<?= $this->extend('gudang_gesit/layout/content') ?>
 
 <?= $this->section('content') ?>
 <div class="row">
@@ -55,10 +55,15 @@
     <div class="col-lg-6">
         
     </div>
+    <div class="alert alert-success" id="success-alert">
+        <button type="button" class="close" data-dismiss="alert">x</button>
+        <strong>Success! </strong> <span>Product have added to your wishlist.</span>
+    </div>
 </div>
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <!-- <script src="/assets/js/main.js" async></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function() {
         let codes = [];
@@ -196,8 +201,14 @@
             
             for (const barcode of codes)  {
                 console.log(barcode['rawValue'])
-                $.post('/product-in-scanning', {qr: barcode['rawValue']}, function(data) {
-
+                
+                $.post('/material-in-scanning', {qr: barcode['rawValue']}, function(data) {
+                    const stat = JSON.parse(data);
+                    if (stat == '1') {
+                        $.notify(barcode['rawValue'], "success");
+                    } else {
+                        $.notify("Warning: Data kain tidak ada!", "warn");
+                    }
                 }); 
                 // Draw outline
                 drawCodePath(barcode);

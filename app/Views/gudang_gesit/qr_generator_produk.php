@@ -55,7 +55,7 @@
                                         <?php if (is_null($product->qrcode)) :?>
                                             -
                                         <?php else: ?>
-                                            <button class="show-qr" type="button" data-id='<?= $product->id.'-'.substr($product->product_name, 0, 1).''.$product->model_name.'-'.substr($product->color, 0, 3) ?>' value="<?= $product->qrcode ?>"><i class="fa fa-qrcode"> </i></button>
+                                            <button class="show-qr" type="button" data-id='<?= $product->id.'-'.substr($product->product_name, 0, 1).''.$product->model_name.'-'.$product->color ?>' value="<?= $product->qrcode ?>"><i class="fa fa-qrcode"> </i></button>
                                         <?php endif ?>
                                     </td>
                                     <td class="text-center">
@@ -79,31 +79,24 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" id="print-area" style="align-self: center;">
-                    <table class="text-center"">  
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="section-to-print">
-                            <tr>
-                                <td style="padding-left: 10px;padding-right: 10px;"><img id="qr1" src="" width="56" height="56" /></td>
-                                <td style="padding-left: 10px;padding-right: 10px;"><img id="qr2" src="" width="56" height="56" /></td>
-                                <td style="padding-left: 10px;padding-right: 10px;"><img id="qr3" src="" width="56" height="56" /></td>
-                            </tr>
-                            <tr>
-                                <td><small id="title1" style="font-size: 6px;"></small></td>
-                                <td><small id="title2" style="font-size: 6px;"></small></td>
-                                <td><small id="title3" style="font-size: 6px;"></small></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="modal-body" id="print-area" style="align-self: center;">              
+                    <div style="align-self: center;">
+                        <table class="text-center"">  
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="qr-handler">
+                                
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
                     <button type="button" id="print-qrcode" class="btn btn-danger"><i class="fa fa-print mr-2"></i>Print</button>
                 </div>
         </div>
@@ -139,10 +132,21 @@
             $.post('/generate-qr-produk', $('form#generate-qr').serialize(), function(data) {
                 const qr = JSON.parse(data);
                 var id = 1;                
-                for (var i = 0; i < qr.length; i++) {
-                    $('#qr'+id).attr('src', qr[i]['qr']);
-                    $('#title'+id).html(qr[i]['key']);                    
-                    id++;
+                $('#qr-handler').html("");
+                for (var i = 0; i < qr.length; i+=3) {
+                    const desc = qr[i]['key'].split("-");
+                    $('#qr-handler').append('<tr>');
+                    if (qr.length - i >= 3) {                        
+                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 20px 10px 20px"><img src="'+qr[i+1]['qr']+'" style="width: 1.5cm; float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i+2]['qr']+'" style="width: 1.5cm; float:left"" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');                        
+                    } else if (qr.length - i == 2) {
+                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding-left: 20px;padding-right: 20px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');                        
+                    } else {
+                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                    }
+                    $('#qr-handler').append('</tr>');
                 }
                 $('#qr-modal').modal('show');
             });

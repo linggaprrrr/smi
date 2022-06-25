@@ -46,11 +46,18 @@ class Users extends BaseController
 
     public function saveUser() {
         $post = $this->request->getVar();
+        $access = NULL;
+        if ($post['role'] == 'gudang_1') {
+            $access = json_encode($post['gesit']);
+        } else if ($post['role'] == 'gudang_2') {
+            $access = json_encode($post['lovish']);
+        }
         $newUser = [
             'name' => $post['nama'],
             'username' => $post['username'],
             'password' => password_hash($post['new_password'], PASSWORD_BCRYPT),
             'role' => $post['role'],
+            'accessibility' => $access
         ];
         $this->userModel->save($newUser);
         return redirect()->back()->with('create', 'User berhasil ditambahkan');
@@ -64,11 +71,17 @@ class Users extends BaseController
 
     public function updateUser() {
         $post = $this->request->getVar();
+        $access = NULL;
+        if ($post['role'] == 'gudang_1') {
+            $access = json_encode($post['gesit']);
+        } else if ($post['role'] == 'gudang_2') {
+            $access = json_encode($post['lovish']);
+        }
         $newUser = [
             'id' => $post['id'],
             'name' => $post['nama'],
-            'password' => password_hash($post['new_password'], PASSWORD_BCRYPT),
             'role' => $post['role'],
+            'accessibility' => $access
         ];
         $this->userModel->save($newUser);
         return redirect()->back()->with('update', 'User berhasil diupdate');

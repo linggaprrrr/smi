@@ -23,38 +23,83 @@
 <hr class="sidebar-divider">
 
 <!-- Heading -->
-<div class="sidebar-heading">
-    Data
-</div>
-<li class="nav-item">
-    <a class="nav-link" href="<?= base_url('/gudang-gesit/produk') ?>">
-        <i class="fas fa-fw fa-tshirt"></i>
-        <span>Produk</span></a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="<?= base_url('/gudang-gesit/kain') ?>">
-        <i class="fas fa-fw fa-boxes"></i>
-        <span>Kain</span></a>
-</li>
-<li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-        aria-expanded="true" aria-controls="collapseUtilities">
-        <i class="fas fa-fw fa-print"></i>
-        <span>QR Generator</span>
-    </a>
-    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-        data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="<?= base_url('/gudang-gesit/qr-generator-kain') ?>">Kain</a>
-            <a class="collapse-item" href="<?= base_url('/gudang-gesit/qr-generator-produk-masuk') ?>">Produk</a>
-        </div>
-    </div>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
-        <i class="fas fa-fw fa-qrcode"></i>
-        <span>QR Scanner IN</span></a>
-</li>
+<?php 
+    $access = json_decode(session()->get('accessibility'));
+    if (!is_null($access)) {
+        for ($i=0; $i < count($access); $i++) {
+            switch ($access[$i]) {
+                case "1": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/kain') ?>">
+                                <i class="fas fa-fw fa-boxes"></i>
+                                <span>Kain</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://localhost:8080/gudang-gesit/produk">
+                                <i class="fas fa-fw fa-tshirt"></i>
+                                <span>Produk</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "2": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                                aria-expanded="true" aria-controls="collapseUtilities">
+                                <i class="fas fa-fw fa-print"></i>
+                                <span>Cetak QR Code</span>
+                            </a>
+                            <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                                data-parent="#accordionSidebar">
+                                <div class="bg-white py-2 collapse-inner rounded">
+                                    <a class="collapse-item" href="<?= base_url('/gudang-gesit/qr-generator-kain') ?>">Kain</a>
+                                    <a class="collapse-item" href="<?= base_url('/gudang-gesit/qr-generator-produk-masuk') ?>">Produk</a>
+                                </div>
+                            </div>
+                        </li>
+                        <?php
+                    break;
+                case "3": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Kain (IN)</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "4": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Pola (OUT)</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "5": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Produk (IN)</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "6": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                                <i class="fas fa-fw fa-chart-area"></i>
+                                <span>Laporan</span></a>
+                        </li>
+                        <?php
+                    break;
+            }
+        }
+    }
+?>
 
 <!-- Sidebar Toggler (Sidebar) -->
 <div class="text-center d-none d-md-inline">
