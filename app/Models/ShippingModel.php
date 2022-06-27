@@ -25,15 +25,17 @@ class ShippingModel extends Model
 
     public function getShippingDetail($id) {
         $query = $this->db->table('shipping_details')
-            ->select('shipping_details.*, product_name, model_name, color')
+            ->select('shipping_details.*, product_name, model_name, color, COUNT(shipping_details.product_id) as qty')
             ->join('products', 'products.id = shipping_details.product_id')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = products.product_id')
             ->join('colors', 'colors.id = products.color_id')
+            ->groupBy('shipping_details.product_id')
             ->where('shipping_id', $id)
             ->get();
         return $query;
     }
+
 
     public function insertShippingDetail($info) {
         $data = [
@@ -45,4 +47,9 @@ class ShippingModel extends Model
         $last = $this->db->insertID();
         $this->db->query("INSERT INTO shipping_details(shipping_id) VALUES('$last') ");
     }
+
+    public function insertProductShipment($product_id, $shipping_id) {
+        $this->db->query("UPDATE shipping_details SET product_id = '$product_id' WHERE shipping_id = '$shipping_id' ");
+    }
+
 }

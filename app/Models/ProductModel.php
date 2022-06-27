@@ -37,7 +37,8 @@ class ProductModel extends Model
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
-            ->join('users', 'users.id = products.user_id')
+            ->join('product_logs', 'product_logs.product_id = products.id')
+            ->join('users', 'users.id = product_logs.user_id_in')
             ->where('status', 2)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -46,12 +47,13 @@ class ProductModel extends Model
 
     public function getAllProductExp() {
         $query = $this->db->table('products')
-            ->select('products.*, model_name product_name, color, name')
+            ->select('products.*, model_name, product_name, color, name')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
-            ->join('users', 'users.id = products.user_id')
-            ->where('status', 3)
+            ->join('product_logs', 'product_logs.product_id = products.id')
+            ->join('users', 'users.id = product_logs.user_id_in')
+            ->where('status', 2)
             ->orderBy('created_at', 'desc')
             ->get();
         return $query;
@@ -142,6 +144,13 @@ class ProductModel extends Model
         $this->db->query("UPDATE product_types SET product_name='$product' WHERE id='$id' ");
     }
 
+    public function setProductIn($id, $user) {
+        $this->db->query("INSERT INTO product_logs(product_id, user_id_in) VALUES('$id', '$user') ");
 
+    }
+
+    public function setProductOut($id, $user) {
+        $this->db->query("UPDATE product_logs SET user_id_out='$user', updated_at = date('Y-m-d H:i:s') WHERE id='$id' ");
+    }
 
 }

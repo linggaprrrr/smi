@@ -26,6 +26,8 @@ class Reports extends BaseController
 
     public function index() {
         $materials = $this->materialModel->getAllMaterial();
+        $polaOut = $this->materialModel->getAllMaterialOut();
+        $polaIn = $this->materialModel->getAllPolaIn();
         $productsIn = $this->productModel->getAllProductIn();
         $productsOut = $this->productModel->getAllProductOut();
         $data = array(
@@ -33,6 +35,8 @@ class Reports extends BaseController
             'materials' => $materials,
             'productsIn' => $productsIn,
             'productsOut' => $productsOut,
+            'polaIn' => $polaIn,
+            'polaOut' => $polaOut,
 
         );
         return view('admin/reports', $data);    
@@ -47,5 +51,23 @@ class Reports extends BaseController
             'logs' => $logs
         );
         return view('admin/logs', $data);
+    }
+
+    public function reportGesit() {
+        $materials = $this->materialModel->getAllMaterial();
+        $polaOut = $this->materialModel->getAllMaterialOut();
+        $polaIn = $this->materialModel->getAllPolaIn();
+        $productsIn = $this->productModel->getAllProductIn();
+        $productsOut = $this->productModel->getAllProductOut();
+        $data = array(
+            'title' => 'Laporan',
+            'materials' => $materials,
+            'productsIn' => $productsIn,
+            'productsOut' => $productsOut,
+            'polaIn' => $polaIn,
+            'polaOut' => $polaOut,
+
+        );
+        return view('gudang_gesit/reports', $data);    
     }
 }

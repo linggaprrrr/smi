@@ -1,4 +1,4 @@
-<?= $this->extend('admin/layout/content') ?>
+<?= $this->extend('gudang_gesit/layout/content') ?>
 
 <?= $this->section('content') ?>
 <div class="card shadow mb-4">

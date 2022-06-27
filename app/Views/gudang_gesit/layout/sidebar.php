@@ -60,28 +60,37 @@
                         </li>
                         <?php
                     break;
-                case "3": 
-                        ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
-                                <i class="fas fa-fw fa-qrcode"></i>
-                                <span>QR Scanner Kain (IN)</span></a>
-                        </li>
-                        <?php
-                    break;
+                // case "3": 
+                //         ?>
+                //         <li class="nav-item">
+                //             <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                //                 <i class="fas fa-fw fa-qrcode"></i>
+                //                 <span>QR Scanner Kain (IN)</span></a>
+                //         </li>
+                //         <?php
+                //     break;
                 case "4": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-pola-out') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Pola (OUT)</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "7": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-pola-in') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Pola (IN)</span></a>
                         </li>
                         <?php
                     break;
                 case "5": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-produk-in') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Produk (IN)</span></a>
                         </li>
@@ -90,12 +99,13 @@
                 case "6": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/laporan') ?>">
                                 <i class="fas fa-fw fa-chart-area"></i>
                                 <span>Laporan</span></a>
                         </li>
                         <?php
                     break;
+                
             }
         }
     }

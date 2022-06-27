@@ -22,11 +22,11 @@
         <div class="wrapper">
             <div>
                 <div id="video-wrapper">
-                    <video id="video" width="360" autoplay></video>
+                    <video id="video" width="320" autoplay></video>
                     <canvas id="canvas" width="0" height="0"></canvas>
                 </div>
                 <div>
-                    
+                    <h6>Scanned: </h6>
                 <div id="scanned"></div>
                 </div>
             </div>
@@ -59,6 +59,7 @@
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <!-- <script src="/assets/js/main.js" async></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function() {
         let codes = [];
@@ -194,10 +195,15 @@
             // If no codes exit function and clear canvas
             if (codes.length === 0) return drawCodePath({});
             
-            for (const barcode of codes)  {
-                console.log(barcode['rawValue'])
+            for (const barcode of codes)  {               
+                const kode = barcode['rawValue'].split("-"); 
                 $.post('/product-out-scanning', {qr: barcode['rawValue']}, function(data) {
-
+                    const stat = JSON.parse(data);
+                    if (stat == '1') {
+                        $.notify(kode[1] +' '+ kode[2] +' '+ kode[2] +' berhasil di-scan!', "success");
+                    } else {
+                        $.notify("Warning: Data produk tidak ada!", "warn");
+                    }
                 }); 
                 // Draw outline
                 drawCodePath(barcode);
@@ -211,9 +217,9 @@
                 codesProxy.push(barcode);
 
             }
-        }).catch(err => {
-            console.error(err);
-        })
+            }).catch(err => {
+                console.error(err);
+            })
         }
 
         // Run detect code function every 100 milliseconds

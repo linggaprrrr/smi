@@ -6,6 +6,9 @@ use App\Models\MaterialModel;
 use App\Models\ProductModel;
 use App\Models\DesignModel;
 use App\Models\LogModel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class Materials extends BaseController
 {
@@ -29,8 +32,10 @@ class Materials extends BaseController
     public function index() {
         $materials = $this->materialModel->getAllMaterialType();
         $colors = $this->materialModel->getAllColors();
-        $materialsIn = $this->materialModel->getAllMaterial();
+        $materialVendors = $this->materialModel->getMaterialVendors();
+        $materialsIn = $this->materialModel->getAllMaterial();        
         $materialsOut = $this->materialModel->getAllMaterialOut();
+        $materialsPolaIn = $this->materialModel->getAllPolaIn();
         $gudangs = $this->materialModel->getAllGudang();
         $data = array(
             'title' => 'Kain',
@@ -38,7 +43,9 @@ class Materials extends BaseController
             'colors' => $colors,
             'materialsIn' => $materialsIn,
             'materialsOut' => $materialsOut,
-            'gudangs' => $gudangs
+            'materialsPolaIn' => $materialsPolaIn,
+            'gudangs' => $gudangs,
+            'materialVendors' => $materialVendors
         );
         return view('admin/materials', $data);    
     }
@@ -53,8 +60,10 @@ class Materials extends BaseController
         $post = $this->request->getVar();
         $material = [
             'material_id' => $post['jenis'],
+            'vendor_id' => $post['vendor'],
             'color_id'  => $post['warna'],
             'weight'  => $post['berat'],
+            'price' => $post['harga'],
             'user_id' => session()->get('user_id'),
             'gudang_id' => $post['gudang']
         ];
@@ -93,6 +102,8 @@ class Materials extends BaseController
             'material_id' => $post['jenis'],
             'color_id'  => $post['warna'],
             'weight'  => $post['berat'],
+            'vendor_id' => $post['vendor'],
+            'price' => $post['harga'],
             'user_id' => session()->get('user_id'),
             'gudang_id' => $post['gudang']
         ];
@@ -133,19 +144,49 @@ class Materials extends BaseController
 
     public function exportData() {
         $materials = $this->materialModel->getAllMaterial();
-        $data = array(
-            'title' => 'Kain',
-            'materials' => $materials
-        );
-        return view('admin/export/kain', $data);   
+        $date = date("Y-m-d H:i:s");
+        $fileName = "Data Kain Masuk {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Jenis');
+		$sheet->setCellValue('C1', 'Warna');
+		$sheet->setCellValue('D1', 'Berat (Kg)');
+		$sheet->setCellValue('E1', 'Tanggal Masuk');
+        $i = 2;
+        $no = 1;
+        foreach($materials->getResultObject() as $row) {
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $row->type);
+            $sheet->setCellValue('C' . $i, $row->color);
+            $sheet->setCellValue('D' . $i, number_format($row->weight/1000, 2));
+            $sheet->setCellValue('E' . $i, $row->created_at);
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save($fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize($fileName));
+		flush();
+		readfile($fileName);
+		exit;
     }
 
     // Gudang Gesit
     public function gudangGesitKain() {
         $materials = $this->materialModel->getAllMaterialType();
         $colors = $this->materialModel->getAllColors();
-        $materialsIn = $this->materialModel->getAllMaterial();
+        $materialVendors = $this->materialModel->getMaterialVendors();
+        $materialsIn = $this->materialModel->getAllMaterial();        
         $materialsOut = $this->materialModel->getAllMaterialOut();
+        $materialsPolaIn = $this->materialModel->getAllPolaIn();
         $gudangs = $this->materialModel->getAllGudang();
         $data = array(
             'title' => 'Kain',
@@ -153,18 +194,100 @@ class Materials extends BaseController
             'colors' => $colors,
             'materialsIn' => $materialsIn,
             'materialsOut' => $materialsOut,
-            'gudangs' => $gudangs
+            'materialsPolaIn' => $materialsPolaIn,
+            'gudangs' => $gudangs,
+            'materialVendors' => $materialVendors
         );
         return view('gudang_gesit/materials', $data);    
     }
     
+    public function exportDataPolaIn() {
+        $materials = $this->materialModel->getAllPolaIn();
+        $date = date("Y-m-d H:i:s");
+        $fileName = "Data Pola In {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Jenis');
+		$sheet->setCellValue('C1', 'Warna');
+		$sheet->setCellValue('D1', 'Berat (Kg)');
+		$sheet->setCellValue('E1', 'Tanggal Masuk');
+        $i = 2;
+        $no = 1;
+        foreach($materials->getResultObject() as $row) {
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $row->type);
+            $sheet->setCellValue('C' . $i, $row->color);
+            $sheet->setCellValue('D' . $i, number_format($row->weight/1000, 2));
+            $sheet->setCellValue('E' . $i, $row->created_at);
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save($fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize($fileName));
+		flush();
+		readfile($fileName);
+		exit;
+    }
+
+    public function exportDataPolaOut() {
+        $materials = $this->materialModel->getAllMaterialOut();
+        $date = date("Y-m-d H:i:s");
+        $fileName = "Data Pola Out {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Jenis');
+		$sheet->setCellValue('C1', 'Warna');
+		$sheet->setCellValue('D1', 'Berat (Kg)');
+		$sheet->setCellValue('E1', 'Tanggal Masuk');
+        $i = 2;
+        $no = 1;
+        foreach($materials->getResultObject() as $row) {
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $row->type);
+            $sheet->setCellValue('C' . $i, $row->color);
+            $sheet->setCellValue('D' . $i, number_format($row->weight/1000, 2));
+            $sheet->setCellValue('E' . $i, $row->created_at);
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save($fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize($fileName));
+		flush();
+		readfile($fileName);
+		exit;
+    }
+
+    public function getVendor() {
+        $id = $this->request->getVar('id');
+        $vendor = $this->materialModel->getVendor($id);
+        echo json_encode($vendor->getResultArray());
+    }
+
     public function datamaster() {
         $materials = $this->materialModel->getAllMaterialType();
         $products = $this->productModel->getAllProduct();
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $vendorPenjualan = $this->productModel->getAllVendorPenjualan();
-        $vendorKain = $this->materialModel->getAllVendorKain();
+        $vendorKain = $this->materialModel->getAllVendorKain();        
         $data = array(
             'title' => 'Data Master',
             'materials' => $materials,
@@ -220,7 +343,7 @@ class Materials extends BaseController
 
     public function updateVendorSupplier() {
         $post = $this->request->getVar();
-        $this->materialModel->updateVendorSupplier($post['id'], $post['vendor']);
+        $this->materialModel->updateVendorSupplier($post['id'], $post['vendor'], $post['harga']);
         return redirect()->back()->with('update', 'Vendor berhasil diubah');
     }
 

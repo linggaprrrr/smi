@@ -58,6 +58,7 @@
                                 <thead>
                                     <th style="width: 5%">No</th>
                                     <th>Produk</th>
+                                    <th>Jumlah</th>
                                 </thead>
                                 <tbody id="detail-in">
 
@@ -96,6 +97,7 @@
                         $('#detail-in').append('<tr>');
                         $('#detail-in').append('<td>'+ no++ +'</td>');
                         $('#detail-in').append('<td>'+ product[i]['product_name'] +' '+ product[i]['model_name'] +' '+ product[i]['color'] +'</td>');
+                        $('#detail-in').append('<td class="text-center">'+ product[i]['qty'] +'</td>');
                         $('#detail-in').append('</tr>');
                     }
             });

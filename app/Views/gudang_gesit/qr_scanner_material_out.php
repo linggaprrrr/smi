@@ -197,7 +197,7 @@
             
             for (const barcode of codes)  {               
                 const kode = barcode['rawValue'].split("-"); 
-                $.post('/material-in-scanning', {qr: barcode['rawValue']}, function(data) {
+                $.post('/material-out-scanning', {qr: barcode['rawValue']}, function(data) {
                     const stat = JSON.parse(data);
                     if (stat == '1') {
                         $.notify(kode[1] +' '+ kode[2] +' berhasil di-scan!', "success");

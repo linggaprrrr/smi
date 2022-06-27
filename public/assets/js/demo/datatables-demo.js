@@ -62,4 +62,21 @@ $(document).ready(function() {
         "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
         "iDisplayLength": 10
     });
+
+    $('#dataTableKainPrint').DataTable({
+        "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+        "iDisplayLength": 50,
+        "columnDefs": [
+          { "orderable": false, "targets": 5 }
+        ]
+    });
+
+    $('#dataTableProdukPrint').DataTable({
+        "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+        "iDisplayLength": 50,
+        "columnDefs": [
+          { "orderable": false, "targets": 6 }
+        ]
+    });
+
 });

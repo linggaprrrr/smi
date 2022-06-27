@@ -26,7 +26,7 @@
     </div>
     <div class="card-body">        
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTableProdukPrint" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 5%">No</th>
@@ -35,8 +35,7 @@
                             <th class="text-center">Warna</th>
                             <th class="text-center">Berat (gr)</th>
                             <th class="text-center">Tanggal Masuk</th>
-                            <th class="text-center" style="width: 7%">QR Code</th>
-                            <th class="text-center" style="width: 7%;">Pilih <i class="fa fa-fas fa-angle-down"></i></th>
+                            <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all" /></th>
                         </tr>
                     </thead>
                     
@@ -44,24 +43,33 @@
                         <?php $no = 1; ?>
                         <?php if ($products->getNumRows() > 0) : ?>
                             <?php foreach ($products->getResultObject() as $product) : ?>
-                                <tr>
-                                    <td class="text-center"><?= $no++ ?></td>
-                                    <td class=""><?= $product->product_name ?></td>
-                                    <td class=""><?= $product->model_name ?></td>
-                                    <td><?= $product->color ?></td>
-                                    <td><?= $product->weight ?></td>                                    
-                                    <td class="text-center"><?= $product->created_at ?></td>
-                                    <td class="text-center">
-                                        <?php if (is_null($product->qrcode)) :?>
-                                            -
-                                        <?php else: ?>
-                                            <button class="show-qr" type="button" data-id='<?= $product->id.'-'.substr($product->product_name, 0, 1).''.$product->model_name.'-'.$product->color ?>' value="<?= $product->qrcode ?>"><i class="fa fa-qrcode"> </i></button>
-                                        <?php endif ?>
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="checkbox" name="print[]" value="<?= $product->id ?>" />
-                                    </td>
-                                </tr>
+                                <?php if (is_null($product->qrcode) || empty($product->qrcode)) :?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td class=""><?= $product->product_name ?></td>
+                                        <td class=""><?= $product->model_name ?></td>
+                                        <td><?= $product->color ?></td>
+                                        <td><?= $product->weight ?></td>                                    
+                                        <td class="text-center"><?= $product->created_at ?></td>
+                                        <td class="text-center">
+                                            <input type="checkbox" class="unprinted" name="print[]" value="<?= $product->id ?>" />
+                                        </td>
+                                    </tr>
+                                <?php else: ?>
+                                    <tr class="table-info">
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td class=""><?= $product->product_name ?></td>
+                                        <td class=""><?= $product->model_name ?></td>
+                                        <td><?= $product->color ?></td>
+                                        <td><?= $product->weight ?></td>                                    
+                                        <td class="text-center"><?= $product->created_at ?></td>
+                                        <td class="text-center">
+                                            <input type="checkbox" class="printed" name="print[]" value="<?= $product->id ?>" />
+                                        </td>
+                                    </tr>
+                                <?php endif ?>
+                                    
+                                
                             <?php endforeach ?>
                         <?php endif ?>
                     </tbody>
@@ -75,9 +83,7 @@
         <div class="modal-content">            
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">QR Code</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                    
                 </div>
                 <div class="modal-body" id="print-area" style="align-self: center;">              
                     <div style="align-self: center;">
@@ -96,7 +102,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
+                    <button type="button" id="print-qrcode-close" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
                     <button type="button" id="print-qrcode" class="btn btn-danger"><i class="fa fa-print mr-2"></i>Print</button>
                 </div>
         </div>
@@ -148,9 +154,16 @@
                     }
                     $('#qr-handler').append('</tr>');
                 }
+
+                $('#qr-modal').modal({backdrop: 'static', keyboard: false});
                 $('#qr-modal').modal('show');
             });
         });
+
+        $('#select-all').click(function() {
+            $('.unprinted').prop('checked', this.checked);
+        });
+
     });
 
     $('.show-qr').click(function() {
@@ -161,6 +174,11 @@
         $('#qr-modal-show').modal('show');
     });
 
+
+    $(document).on('click', '#print-qrcode-close', function() {
+        setTimeout(location.reload.bind(location), 100);    
+    });
+    
     $(document).on('click', '#print-qrcode', function() {
         var printContents = document.getElementById('print-area').innerHTML;
         var winPrint = window.open('', '', 'left=0,top=0,width=800,height=600,toolbar=0,scrollbars=0,status=0');

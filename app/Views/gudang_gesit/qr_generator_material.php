@@ -20,14 +20,14 @@
 <?= $this->section('content') ?>
 <div>
     <form id="generate-qr">
-    <div class="card shadow mb-4" id="id="qr-generator"">
+    <div class="card shadow mb-4" id="qr-generator">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary float-left">Kain (Gudang Gesit)</h6>
             <button type="submit" id="print" class="btn btn-primary float-right"><i class="fa fa-qrcode mr-2"></i>Print</button>
         </div>
         <div class="card-body">        
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataTableKainPrint" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
@@ -35,8 +35,7 @@
                                 <th class="text-center">Warna</th>
                                 <th class="text-center">Berat (kg)</th>
                                 <th class="text-center">Tanggal Masuk</th>
-                                <th class="text-center" style="width: 7%">QR Code</th>
-                                <th class="text-center" style="width: 7%;">Pilih <i class="fa fa-fas fa-angle-down"></i></th>
+                                <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all" /></th>
                             </tr>
                         </thead>
                         
@@ -44,23 +43,32 @@
                             <?php $no = 1; ?>
                             <?php if ($materials->getNumRows() > 0) : ?>
                                 <?php foreach ($materials->getResultObject() as $kain) : ?>
-                                    <tr>
-                                        <td class="text-center"><?= $no++ ?></td>
-                                        <td class=""><?= $kain->type ?></td>
-                                        <td><?= $kain->color ?></td>
-                                        <td><?= number_format($kain->weight/1000, 2) ?></td>                                    
-                                        <td class="text-center"><?= $kain->created_at ?></td>
-                                        <td class="text-center">
-                                            <?php if (is_null($kain->qrcode)) :?>
-                                                -
-                                            <?php else: ?>
-                                                <button class="show-qr" type="button" data-id='<?= $kain->id.'-'.substr($kain->type, 0, 3).'-'.substr($kain->color, 0, 3) ?>' value="<?= $kain->qrcode ?>"><i class="fa fa-qrcode"> </i></button>
-                                            <?php endif ?>
-                                        </td>
-                                        <td class="text-center">
-                                            <input type="checkbox" name="print[]" value="<?= $kain->id ?>" />
-                                        </td>
-                                    </tr>
+                                    <?php if (is_null($kain->qrcode) || empty($kain->qrcode)) :?>
+                                        <tr>
+                                            <td class="text-center"><?= $no++ ?></td>
+                                            <td class=""><?= $kain->type ?></td>
+                                            <td><?= $kain->color ?></td>
+                                            <td><?= number_format($kain->weight/1000, 2) ?></td>                                    
+                                            <td class="text-center"><?= $kain->created_at ?></td>
+                                            
+                                            <td class="text-center">
+                                                <input type="checkbox" class="unprinted" name="print[]" value="<?= $kain->id ?>" />
+                                            </td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <tr class="table-info">
+                                            <td class="text-center"><?= $no++ ?></td>
+                                            <td class=""><?= $kain->type ?></td>
+                                            <td><?= $kain->color ?></td>
+                                            <td><?= number_format($kain->weight/1000, 2) ?></td>                                    
+                                            <td class="text-center"><?= $kain->created_at ?></td>
+                                            
+                                            <td class="text-center">
+                                                <input type="checkbox" class="printed" name="print[]" value="<?= $kain->id ?>" />
+                                            </td>
+                                        </tr>
+                                    <?php endif ?>
+                                    
                                 <?php endforeach ?>
                             <?php endif ?>
                         </tbody>
@@ -73,10 +81,8 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">            
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">QR Code</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
+                        <h5 class="modal-title" id="exampleModalLabel">QR Code</h5>                        
+                        
                     </div>
                     <div class="modal-body" id="print-area" style="align-self: center;">              
                         <div style="align-self: center;">
@@ -95,7 +101,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
+                        <button type="button" id="print-qrcode-close" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
                         <button type="button" id="print-qrcode" class="btn btn-danger"><i class="fa fa-print mr-2"></i>Print</button>
                     </div>
             </div>
@@ -131,8 +137,7 @@
             e.preventDefault();
             $.post('/generate-qr', $('form#generate-qr').serialize(), function(data) {
                 const qr = JSON.parse(data);
-                var id = 1;     
-                console.log(qr);           
+                var id = 1;           
                 $('#qr-handler').html("");
                 for (var i = 0; i < qr.length; i+=3) {
                     const desc = qr[i]['key'].split("-");
@@ -149,9 +154,16 @@
                     }
                     $('#qr-handler').append('</tr>');
                 }
-                $('#qr-modal').modal('show');
+
+                $('#qr-modal').modal({backdrop: 'static', keyboard: false});
+                $('#qr-modal').modal('show');  
             });
         });
+
+        $('#select-all').click(function() {
+            $('.unprinted').prop('checked', this.checked);
+        });
+
     });
 
     $('.show-qr').click(function() {
@@ -174,6 +186,10 @@
        
     });
     
+    $(document).on('click', '#print-qrcode-close', function() {
+        setTimeout(location.reload.bind(location), 100);    
+    });
+
     $(document).on('click', '#print-qrcode-show', function() {
         var printContents = document.getElementById('print-area-show').innerHTML;
         var winPrint = window.open('', '', 'left=0,top=0,width=800,height=600,toolbar=0,scrollbars=0,status=0');
@@ -183,6 +199,8 @@
         winPrint.print();
         winPrint.close(); 
     });
+
+    
 
 </script>
 <?= $this->endSection() ?>

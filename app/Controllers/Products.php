@@ -6,6 +6,8 @@ use App\Models\ProductModel;
 use App\Models\DesignModel;
 use App\Models\LogModel;
 use App\Models\MaterialModel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Products extends BaseController
 {
@@ -194,10 +196,13 @@ class Products extends BaseController
         ];
         $this->productModel->save($product);
         $getProduct = $this->productModel
+            ->select('products.id, product_name, model_name, color')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
+            ->orderBy('products.id', 'desc')
             ->first();
+        $this->productModel->setProductIn($getProduct['id'], session()->get('user_id'));
         $this->logModel->save([
             'description' => 'Menambahkan produk baru ('.$getProduct['product_name'].' '.$getProduct['model_name'].' '.$getProduct['color'].')',
             'user_id' =>  session()->get('user_id'),
@@ -217,11 +222,15 @@ class Products extends BaseController
             'user_id' => session()->get('user_id'),
         ];
         $this->productModel->save($product);
+        
         $getProduct = $this->productModel
+            ->select('products.id, product_name, model_name, color')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
+            ->orderBy('products.id', 'desc')
             ->first();
+        $this->productModel->setProductIn($getProduct['id'], session()->get('user_id'));
         $this->logModel->save([
             'description' => 'Menambahkan produk baru ('.$getProduct['product_name'].' '.$getProduct['model_name'].' '.$getProduct['color'].')',
             'user_id' =>  session()->get('user_id'),
@@ -251,6 +260,84 @@ class Products extends BaseController
             'user_id' =>  session()->get('user_id'),
         ]);
         return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
+    }
+
+    public function exportDataGesit() {
+        $products = $this->productModel->getAllProductIn();
+        $date = date("Y-m-d H:i:s");
+        $fileName = "Data Produk Gesit {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Nama Produk');
+		$sheet->setCellValue('C1', 'Model');
+		$sheet->setCellValue('D1', 'Warna');
+		$sheet->setCellValue('E1', 'Berat (gr)');
+		$sheet->setCellValue('F1', 'Tanggal Masuk');
+        $i = 2;
+        $no = 1;
+        foreach($products->getResultObject() as $row) {
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $row->product_name);
+            $sheet->setCellValue('C' . $i, $row->model_name);
+            $sheet->setCellValue('D' . $i, $row->color);
+            $sheet->setCellValue('E' . $i, number_format($row->weight, 2));
+            $sheet->setCellValue('F' . $i, $row->created_at);
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save($fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize($fileName));
+		flush();
+		readfile($fileName);
+		exit;
+    }
+
+    public function exportDataLovishIn() {
+        $products = $this->productModel->getAllProductOut();
+        $date = date("Y-m-d H:i:s");
+        $fileName = "Data Produk Masuk Lovish {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Nama Produk');
+		$sheet->setCellValue('C1', 'Model');
+		$sheet->setCellValue('D1', 'Warna');
+		$sheet->setCellValue('E1', 'Berat (gr)');
+		$sheet->setCellValue('F1', 'Tanggal Masuk');
+        $i = 2;
+        $no = 1;
+        foreach($products->getResultObject() as $row) {
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $row->product_name);
+            $sheet->setCellValue('C' . $i, $row->model_name);
+            $sheet->setCellValue('D' . $i, $row->color);
+            $sheet->setCellValue('E' . $i, number_format($row->weight, 2));
+            $sheet->setCellValue('F' . $i, $row->created_at);
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save($fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize($fileName));
+		flush();
+		readfile($fileName);
+		exit;
     }
 
 }

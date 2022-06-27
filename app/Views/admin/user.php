@@ -48,6 +48,10 @@
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="3"  id="customSwitch3">
                                                 <label class="custom-control-label" for="customSwitch3" style="padding-top: 5px;">QR Scanner Kain (IN)</label>
                                             </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="7" id="customSwitch30">
+                                                <label class="custom-control-label" for="customSwitch30" style="padding-top: 5px;">QR Scanner Pola (IN)</label>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>
@@ -96,10 +100,6 @@
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="5" id="customSwitch11">
                                                 <label class="custom-control-label" for="customSwitch11" style="padding-top: 5px;">QR Scanner Retur Produk (IN)</label>
-                                            </div>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="6" id="customSwitch12">
-                                                <label class="custom-control-label" for="customSwitch12" style="padding-top: 5px;">Laporan</label>
                                             </div>
                                         </div>
                                     </td>
@@ -230,9 +230,13 @@
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="2" id="customSwitch14">
                                                 <label class="custom-control-label" for="customSwitch14" style="padding-top: 5px;">Cetak QR Kain & Produk</label>
                                             </div>
-                                            <div class="custom-control custom-switch">
+                                            <!-- <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="3" id="customSwitch15">
                                                 <label class="custom-control-label" for="customSwitch15" style="padding-top: 5px;">QR Scanner Kain (IN)</label>
+                                            </div> -->
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="7" id="customSwitch31">
+                                                <label class="custom-control-label" for="customSwitch31" style="padding-top: 5px;">QR Scanner Pola (IN)</label>
                                             </div>
                                         </div>
                                     </td>
@@ -282,10 +286,6 @@
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="5"  id="customSwitch24">
                                                 <label class="custom-control-label" for="customSwitch24" style="padding-top: 5px;">QR Scanner Retur Produk (IN)</label>
-                                            </div>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="6"  id="customSwitch25">
-                                                <label class="custom-control-label" for="customSwitch25" style="padding-top: 5px;">Laporan</label>
                                             </div>
                                         </div>
                                     </td>
@@ -353,6 +353,9 @@
                                         break;
                                     case "6": 
                                             $('#customSwitch18').prop('checked', true);
+                                        break;
+                                    case "7": 
+                                            $('#customSwitch31').prop('checked', true);
                                         break;
                                 }
                             }

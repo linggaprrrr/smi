@@ -44,6 +44,22 @@
                                 <small id="modelName" class="form-text text-muted">Contoh 1,5 kg menjadi <b>1500</b> </small>
                             </div>
                             <div class="form-group">
+                                <label for="">Vendor Kain*</label>
+                                <select class="form-control vendor-kain" name="vendor" required>
+                                    <option>-</option>
+                                <?php if ($materialVendors->getNumRows() > 0) : ?>
+                                    <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
+                                        <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
+                                    <?php endforeach ?>
+                                <?php endif ?>
+                                </select>    
+            
+                            </div>
+                            <div class="form-group">
+                                <label for="">Harga Kain</label>
+                                <input type="text" class="form-control harga-kain" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." required>                                
+                            </div>
+                            <div class="form-group">
                                 <label for="">Gudang*</label>
                                 <select class="form-control" name="gudang">
                                 <?php if ($gudangs->getNumRows() > 0) : ?>
@@ -51,8 +67,11 @@
                                         <option value="<?= $gudang->id ?>"><?= $gudang->gudang ?></option>
                                     <?php endforeach ?>
                                 <?php endif ?>
-                                </select>    
-            
+                                </select>                
+                            </div>
+                            <div class="form-group">
+                                <label for="">Roll</label>
+                                <input type="text" class="form-control" name="roll" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah roll" disabled>                                
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -74,6 +93,9 @@
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (kg)</th>
                         <th class="text-center">Tanggal Masuk</th>
+                        <th class="text-center">Roll</th>
+                        <th class="text-center">Vendor</th>
+                        <th class="text-center">Harga</th>
                         <th class="text-center">Posisi Gd.</th>
                         <th class="text-center">PIC</th>
                         <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
@@ -90,6 +112,9 @@
                                 <td><?= $kain->color ?></td>
                                 <td><?= number_format($kain->weight/1000, 2) ?></td>
                                 <td class="text-center"><?= $kain->created_at ?></td>
+                                <td class="text-center"><?= $kain->roll ?></td>
+                                <td class="text-center"><?= $kain->vendor ?></td>
+                                <td class="text-center"><?= $kain->price ?></td>
                                 <td class="text-center"><?= $kain->gudang ?></td>
                                 <td class="text-center"><?= $kain->name ?></td>
                                 <td class="text-center">
@@ -144,7 +169,7 @@
                                     <?php endforeach ?>
                                 <?php endif ?>
                                 </select>  
-                                
+            
                             </div>
                             <div class="form-group">
                                 <label for="">Berat (gr)</label>
@@ -160,7 +185,22 @@
                                     <?php endforeach ?>
                                 <?php endif ?>
                                 </select>  
+                            </div>
+                            <div class="form-group">
+                                <label for="">Vendor Kain*</label>
+                                <select class="form-control vendor-kain-edit" name="vendor" required>
+                                    <option>-</option>
+                                <?php if ($materialVendors->getNumRows() > 0) : ?>
+                                    <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
+                                        <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
+                                    <?php endforeach ?>
+                                <?php endif ?>
+                                </select>    
             
+                            </div>
+                            <div class="form-group">
+                                <label for="">Harga Kain</label>
+                                <input type="text" class="form-control harga-kain-edit" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." required>                                
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -175,7 +215,7 @@
 </div>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Kain Keluar</h6>
+        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Kain Keluar (Pola)</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive" id="tabel-kain">
@@ -183,11 +223,12 @@
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">No</th>
+                        <th class="text-center">Tanggal Masuk</th>
                         <th class="text-center">Jenis</th>
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (kg)</th>
+                        <th class="text-center">Roll</th>
                         <th class="text-center">Tanggal Keluar</th>
-                        <th class="text-center">Posisi Gd.</th>
                         <th class="text-center">PIC</th>
                     </tr>
                 </thead>
@@ -198,13 +239,54 @@
                         <?php foreach ($materialsOut->getResultObject() as $kain) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
+                                <td class="text-center"><?= $kain->created_at ?></td>
                                 <td class=""><?= $kain->type ?></td>
                                 <td><?= $kain->color ?></td>
                                 <td><?= number_format($kain->weight/1000, 2) ?></td>
-                                <td class="text-center"><?= $kain->created_at ?></td>
-                                <td class="text-center"><?= $kain->gudang ?></td>
+                                <td class="text-center"><?= $kain->roll ?></td>
+                                <td class="text-center"><?= $kain->created_at_pola ?></td>
                                 <td class="text-center"><?= $kain->name ?></td>
-                                
+                            </tr>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Kain Masuk (Pola)</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive" id="tabel-kain">
+            <table class="table table-bordered" id="dataTable4" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 5%">No</th>
+                        <th class="text-center">Tanggal Masuk</th>
+                        <th class="text-center">Jenis</th>
+                        <th class="text-center">Warna</th>
+                        <th class="text-center">Berat (kg)</th>
+                        <th class="text-center">Roll</th>
+                        <th class="text-center">PIC</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <?php $no = 1; ?>
+                    <?php if ($materialsPolaIn->getNumRows() > 0) : ?>
+                        <?php foreach ($materialsPolaIn->getResultObject() as $kain) : ?>
+                            <tr>
+                                <td class="text-center"><?= $no++ ?></td>
+                                <td class="text-center"><?= $kain->updated_at ?></td>
+                                <td class=""><?= $kain->type ?></td>
+                                <td><?= $kain->color ?></td>
+                                <td><?= number_format($kain->weight/1000, 2) ?></td>
+                                <td class="text-center"><?= $kain->roll ?></td>
+                                <td class="text-center"><?= $kain->name ?></td>
                             </tr>
                         <?php endforeach ?>
                     <?php endif ?>
@@ -234,6 +316,8 @@
                 $('#jenis').val(kain['material_id']);
                 $('#warna').val(kain['color_id']);
                 $('#berat').val(kain['weight']);
+                $('.vendor-kain-edit').val(kain['vendor_id']);
+                $('.harga-kain-edit').val(kain['price']);
                 $('#gudang').val(kain['gudang_id']);
             });
         $('.bd-example-modal-lg-kain-edit').modal('show');
@@ -262,5 +346,22 @@
             }
         });
     });
+
+    $('.vendor-kain').change(function() {
+        const id = $(this).val();
+        $.get('/get-vendor-kain', {id: id}, function(data) {
+            const price = JSON.parse(data);            
+            $('.harga-kain').val(price[0]['harga']);
+        })
+    });
+
+    $('.vendor-kain-edit').change(function() {
+        const id = $(this).val();
+        $.get('/get-vendor-kain', {id: id}, function(data) {
+            const price = JSON.parse(data);            
+            $('.harga-kain-edit').val(price[0]['harga']);
+        })
+    });
+
 </script>
 <?= $this->endSection() ?>

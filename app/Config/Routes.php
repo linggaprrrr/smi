@@ -71,8 +71,6 @@ $routes->post('/simpan-vendor-penjualan', 'Materials::saveVendorPenjualan');
 $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
 $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
 $routes->get('/export-data-kain', 'Materials::exportData');
-$routes->get('/export-produk-keluar-gesit', 'Products::exportDataProductOut');
-$routes->get('/export-produk-masuk-lovish', 'Products::exportDataProductIn');
 $routes->post('/simpan-user', 'Users::saveUser');
 $routes->post('/update-user', 'Users::updateUser');
 
@@ -106,6 +104,7 @@ $routes->get('/get-vendor-penjualan', 'Materials::getVendorSelling');
 $routes->post('/update-vendor-penjualan', 'Materials::updateVendorSelling');
 $routes->post('/delete-vendor-penjualan', 'Materials::deleteVendorSelling');
 $routes->get('/get-pengiriman-detail', 'Shippings::getShippingDetail');
+$routes->get('/get-vendor-kain', 'Materials::getVendor');
 
 
 
@@ -116,6 +115,14 @@ $routes->get('/gudang-gesit/kain', 'Materials::gudangGesitKain');
 $routes->get('/gudang-gesit/qr-generator-kain', 'QRCodeGenerator::QRGeneratorMaterialGesit');
 $routes->get('/gudang-gesit/qr-generator-produk-masuk', 'QRCodeGenerator::QRGeneratorProductInGesit');
 $routes->get('/gudang-gesit/qr-scanner-in', 'QRCodeGenerator::scannerMaterialIn');
+$routes->get('/gudang-gesit/qr-scanner-pola-in', 'QRCodeGenerator::scannerPolaIn');
+$routes->get('/gudang-gesit/qr-scanner-pola-out', 'QRCodeGenerator::scannerPolaOut');
+$routes->get('/gudang-gesit/qr-scanner-produk-in', 'QRCodeGenerator::scannerProductIn');
+$routes->get('/gudang-gesit/laporan', 'Reports::reportGesit');
+$routes->get('export-data-pola-in', 'Materials::exportDataPolaIn');
+$routes->get('export-data-pola-out', 'Materials::exportDataPolaOut');
+$routes->get('export-produk-gesit', 'Products::exportDataGesit');
+$routes->get('export-produk-masuk-lovish', 'Products::exportDataLovishIn');
 
 // GUDANG Lovish
 $routes->get('/gudang-lovish/dashboard', 'Home::gudangLovish');
@@ -127,12 +134,16 @@ $routes->get('/gudang-lovish/cetak-pengiriman', 'Shippings::shipmentLovish');
 $routes->get('/get-pengiriman-resi', 'Shippings::getResi');
 $routes->post('/update-resi', 'Shippings::updateResi');
 $routes->post('/tambah-pengiriman', 'Shippings::addShipping');
+$routes->post('/generate-qr-shipment', 'QRCodeGenerator::generateQRShipment');
 
 
 // GLOBAL API
 $routes->post('/material-in-scanning', 'QRCodeGenerator::scanningMaterialIn');
+$routes->post('/material-out-scanning', 'QRCodeGenerator::scanningMaterialOut');
 $routes->post('/product-in-scanning', 'QRCodeGenerator::scanningProductIn');
 $routes->post('/product-out-scanning', 'QRCodeGenerator::scanningProductOut');
+$routes->post('/product-retur-scanning', 'QRCodeGenerator::scanningProductRetur');
+$routes->post('/box-check-scanning', 'QRCodeGenerator::scanningBox');
 
 // test
 $routes->get('/test', 'QRCodeGenerator::test');

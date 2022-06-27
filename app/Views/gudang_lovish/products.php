@@ -56,8 +56,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Qty</label>
-                                <input type="text" class="form-control" name="qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah produk">
-                                
+                                <input type="text" class="form-control" name="qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah produk">                                
                             </div>
                             
                         </div>
@@ -235,7 +234,42 @@
 <script>
     $(document).ready(function() {
         
-
+        $('.btn-edit-produk').click(function(){
+            const id = $(this).data('id');
+            $('.bd-example-modal-lg-produk-edit').modal('show');
+            $.get('/get-produk-detail', {product_id: id})
+                .done(function(data) {
+                    const product = JSON.parse(data);
+                    $('#id-produk').val(product['id']);
+                    $('#nama-produk').val(product['product_id']);
+                    $('#model-produk').val(product['model_id']);
+                    $('#warna').val(product['color_id']);
+                    $('#berat').val(product['weight']);
+            });
+        });
+        $('.btn-hapus-produk').click(function() {
+            const id = $(this).data('id');
+            swal({
+                    title: "Apakah anda yakin?",
+                    text: "Data yang anda hapus tidak akan kembali lagi",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        swal("Poof! Data berhasil dihapus!", {
+                        icon: "success",
+                        });
+                        $.post('/delete-product-detail', {product_id: id})
+                            .done(function(data) {
+                                setTimeout(location.reload.bind(location), 1000);
+                            });
+                    } else {
+                        swal("Data tidak jadi dihapus!");
+                    }
+                });
+        });   
     });
     
 </script>

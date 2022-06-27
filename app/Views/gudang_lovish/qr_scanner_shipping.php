@@ -35,8 +35,8 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <h6 class="modal-title ml-2" id="exampleModalLabel">Scanning...</h6>
+                                <div class="col-lg-12" style="text-align: center">
+                                    <h6 class="modal-title ml-2" id="exampleModalLabel">Scanning the box...</h6>
                                     <div class="wrapper">
                                         <div>
                                             <div id="video-wrapper">
@@ -45,6 +45,7 @@
                                             </div>
                                             <div>
                                             <div id="scanned"></div>
+                                                <input type="hidden" class="box">
                                             </div>
                                         </div>
                                     </div>   
@@ -69,9 +70,7 @@
                                     </div>
                                     </template>
                                 </div>
-                                <div class="col-lg-6">
-                                    
-                                </div>
+                                
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -145,6 +144,7 @@
                                 <thead>
                                     <th style="width: 5%">No</th>
                                     <th>Produk</th>
+                                    <th class="text-center">Jumlah</th>
                                 </thead>
                                 <tbody id="detail-in">
 
@@ -165,10 +165,17 @@
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <!-- <script src="/assets/js/main.js" async></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     $(document).ready(function() {
         
+        
+    })
+
+    $('#print').click(function(){
+        const id = $(this).data('id');
+        $('.bd-example-modal-lg-produk').modal('show');
         let codes = [];
         var audio = new Audio('/assets/sounds/beep.wav');
         
@@ -303,9 +310,21 @@
             if (codes.length === 0) return drawCodePath({});
             
             for (const barcode of codes)  {
-                console.log(barcode['rawValue'])
-                $.post('/product-out-scanning', {qr: barcode['rawValue']}, function(data) {
-
+                const kode = barcode['rawValue'];
+                $.post('/box-check-scanning', {qr: barcode['rawValue'], 'box_name': $('.box').val() }, function(data) {
+                    const stat = JSON.parse(data);
+                    if (stat == '1') {
+                        $.notify(kode +' berhasil di-scan!', "success");      
+                        $('.box').val(barcode['rawValue']);
+                        $('#exampleModalLabel').html("Scanning the products ...");                                      
+                    } else if (stat == '2') {
+                        $.notify(kode +' berhasil di-scan!', "success");  
+                        $('#exampleModalLabel').html("Scanning the products ...");    
+                    } else {
+                        $.notify("Warning: Data pengiriman tidak ada!", "warn");
+                        $('#exampleModalLabel').html("Scanning the box ...");
+                        // $('.bd-example-modal-lg-produk').modal('hide');
+                    }
                 }); 
                 // Draw outline
                 drawCodePath(barcode);
@@ -326,12 +345,6 @@
 
         setInterval(detectCode, 1000);
         // Run detect code function every 100 milliseconds
-    })
-    $('#print').click(function(){
-        const id = $(this).data('id');
-        console.log("test");
-        $('.bd-example-modal-lg-produk').modal('show');
-        
     });
 
     $('.btn-detail-produk').click(function(){
@@ -342,10 +355,12 @@
         $.get('/get-pengiriman-detail', {ship_id: id})
             .done(function(data) {
                 const product = JSON.parse(data);
+                console.log(product);
                 for (var i = 0; i < product.length; i++) {
                     $('#detail-in').append('<tr>');
                     $('#detail-in').append('<td>'+ no++ +'</td>');
                     $('#detail-in').append('<td>'+ product[i]['product_name'] +' '+ product[i]['model_name'] +' '+ product[i]['color'] +'</td>');
+                    $('#detail-in').append('<td class="text-center">'+ product[i]['qty'] +'</td>');
                     $('#detail-in').append('</tr>');
                 }
         });

@@ -1,8 +1,8 @@
 <?php 
     $date = date("Y-m-d H:i:s");
+    header("Content-Type: application/vnd.ms-excel");
     header("Content-Disposition: attachment; filename=Data Kain {$date}.xls");
-    header("Content-Type: application/vnd.ms-excel;");
-    header("Cache-Control: max-age=0");
+
     
 ?>
 

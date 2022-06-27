@@ -65,21 +65,13 @@
                 case "5": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-out') ?>">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-in') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Retur (IN)</span></a>
                         </li>
                         <?php
                     break;
-                case "6": 
-                        ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/laporan') ?>">
-                                <i class="fas fa-fw fa-chart-area"></i>
-                                <span>Laporan</span></a>
-                        </li>
-                        <?php
-                    break;
+               
             }
         }
     }

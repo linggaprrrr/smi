@@ -423,7 +423,10 @@
                                         <label for="">Vendor*</label>
                                         <input type="text" class="form-control" name="vendor" placeholder="Masukkan vendor" required>                                
                                     </div>
-                                    
+                                    <div class="form-group">
+                                        <label for="">Harga Kain</label>
+                                        <input type="text" class="form-control harga-kain-edit" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." required>                                
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -441,6 +444,8 @@
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
                                 <th class="text-center">Vendor</th>
+                                <th class="text-center">Harga</th>
+                                
                                 <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
                             </tr>
                         </thead>
@@ -452,6 +457,7 @@
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= $vendor->vendor ?></td>
+                                        <td><?= $vendor->harga ?></td>
                                         <td class="text-center">
                                             <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-vendorsupplier" data-id='<?= $vendor->id ?>'>
                                                 <span class="icon text-white-25">
@@ -487,7 +493,12 @@
                                         <input type="hidden" name="id" id="id-supplier">
                                         <input type="text" class="form-control" id="vendor-supplier" name="vendor" placeholder="Masukkan vendor" required>                                
                                     </div>
+                                    <div class="form-group">
+                                        <label for="">Harga Kain</label>
+                                        <input type="text" class="form-control harga-kain-edit" id="harga-supplier" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." required>                                
+                                    </div>
                                 </div>
+                                
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -682,8 +693,10 @@
         $.get('/get-vendor-supplier', {vendor_id: id})
             .done(function(data) {
                 const model = JSON.parse(data);
+                console.log(model);
                 $('#id-supplier').val(model['id']);
                 $('#vendor-supplier').val(model['vendor']);
+                $('#harga-supplier').val(model['harga']);
         });
     });
 

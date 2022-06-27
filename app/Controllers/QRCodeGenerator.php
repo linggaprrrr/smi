@@ -91,7 +91,7 @@ class QRCodeGenerator extends BaseController
             for ($i=0; $i < count($materials); $i++) {
                 $getMaterial = $this->materialModel->getMaterialDetail($materials[$i]);
                           
-                $data = $getMaterial[0]->id.'-'.substr($getMaterial[0]->type, 0, 3).'-'.$getMaterial[0]->color;                
+                $data = $getMaterial[0]->id.'-'.$getMaterial[0]->type.'-'.$getMaterial[0]->color;                
                 $qr = QrCode::create($data);
                 $writer = new PngWriter();
                 $result = $writer->write($qr);    
@@ -120,12 +120,35 @@ class QRCodeGenerator extends BaseController
                     ->join('models', 'products.model_id = models.id')                
                     ->where('products.id', $products[$i])                                        
                     ->first();
-                $data = $getProduct['id'].'-'.substr($getProduct['product_name'], 0, 1).''.$getProduct['model_name'].'-'.$getProduct['color'];                
+                $data = $getProduct['id'].'-'.$getProduct['product_name'].'-'.$getProduct['model_name'].'-'.$getProduct['color'];                
                 $qr = QrCode::create($data);
                 $writer = new PngWriter();
                 $result = $writer->write($qr);    
                 $this->produkModel->set('qrcode', $result->getDataUri())                    
                     ->where('id', $products[$i])->update();            
+                $qrs['key'] = $data;
+                $qrs['qr'] = $result->getDataUri();
+                array_push($json, $qrs);
+            }
+            echo json_encode($json);         
+        }   
+    }
+
+    public function generateQRShipment() {
+        $shipments = $this->request->getVar('print');        
+        if (!is_null($shipments)) {
+            $json = array();
+            $qrs = array(
+                'key' => '',
+                'qr' => ''
+            );
+            for ($i=0; $i < count($shipments); $i++) {
+                $getShipment = $this->shippinglModel->find($shipments[$i]);
+                $data = $getShipment['box_name'];            
+                $qr = QrCode::create($data);
+                $writer = new PngWriter();
+                $result = $writer->write($qr);    
+                $this->shippinglModel->set('qrcode', $result->getDataUri())->where('id', $shipments[$i])->update();            
                 $qrs['key'] = $data;
                 $qrs['qr'] = $result->getDataUri();
                 array_push($json, $qrs);
@@ -148,11 +171,25 @@ class QRCodeGenerator extends BaseController
         return view('gudang_gesit/qr_scanner_material_in', $data);    
     }
 
+    public function scannerPolaIn() {
+        $data = array(
+            'title' => 'QR Scanner Pola (IN)'
+        );
+        return view('gudang_gesit/qr_scanner_material_in', $data);    
+    }
+
+    public function scannerPolaOut() {
+        $data = array(
+            'title' => 'QR Scanner Pola (OUT)'
+        );
+        return view('gudang_gesit/qr_scanner_material_out', $data);    
+    }
+
     public function scannerProductIn() {
         $data = array(
-            'title' => 'QR Scanner IN'
+            'title' => 'QR Scanner Produk (IN)'
         );
-        return view('gudang_lovish/qr_scanner_product_in', $data);    
+        return view('gudang_gesit/qr_scanner_product_in', $data);    
     }
 
     public function scannerProductOut() {
@@ -171,6 +208,7 @@ class QRCodeGenerator extends BaseController
 
     public function scannerShipment() {
         $shippings = $this->shippinglModel
+            ->select('shippings.*, shipping_details.product_id')
             ->join('shipping_details', 'shipping_details.shipping_id = shippings.id')
             ->orderBy('qrcode', 'asc')
             ->orderBy('created_at', 'desc')
@@ -186,16 +224,38 @@ class QRCodeGenerator extends BaseController
     public function scanningMaterialIn() {
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
-        
-        $this->materialModel->save([
-            'id' => $qr[0],
-            'status' => 2,
-            'updated_at' => date("Y-m-d H:i:s")
-        ]);
+                
         $getMaterial = $this->materialModel->find($qr[0]);
         $status = '0';
-        if (!is_null($getMaterial)) {
+        if (!is_null($getMaterial) && $getMaterial['status'] == '2') {
             $status = '1';
+            $this->materialModel->save([
+                'id' => $qr[0],
+                'status' => 3,
+            ]);    
+            $this->materialModel->setPolaIn($qr[0], session()->get('user_id'));
+        }
+        echo json_encode($status);
+    }
+
+    public function scanningMaterialOut() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+                
+        $getMaterial = $this->materialModel->find($qr[0]);
+        $status = '0';
+        if (!is_null($getMaterial) && $getMaterial['status'] == '1') {
+            $status = '1';
+            $this->materialModel->save([
+                'id' => $qr[0],
+                'status' => 2,
+                'updated_at' => date("Y-m-d H:i:s")
+            ]);
+            $this->logModel->save([
+                'description' => 'melakukan scan untuk input pola ',
+                'user_id' =>  session()->get('user_id'),
+            ]);
+            $this->materialModel->setPolaOut($qr[0], session()->get('user_id'));
         }
         echo json_encode($status);
     }
@@ -204,23 +264,98 @@ class QRCodeGenerator extends BaseController
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
         
-        $this->produkModel->save([
-            'id' => $qr[0],
-            'status' => 2,
-            'updated_at' => date("Y-m-d H:i:s")
-        ]);
+        $getProduct = $this->produkModel->find($qr[0]);
+        $status = '0';
+        if (!is_null($getProduct) && $getProduct['status'] == '1') {
+            $status = '1'; 
+            $this->produkModel->save([
+                'id' => $qr[0],
+                'status' => 2,
+                'updated_at' => date("Y-m-d H:i:s")
+            ]);            
+            $this->logModel->save([
+                'description' => 'melakukan scan untuk produk masuk (lovish) ',
+                'user_id' =>  session()->get('user_id'),
+            ]);
+            $this->produkModel->setProductIn($qr[0], session()->get('user_id'));
+        }
+        echo json_encode($status);
+        
     }
 
     public function scanningProductOut() {
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
         
-        $this->produkModel->save([
-            'id' => $qr[0],
-            'status' => 3,
-            'updated_at' => date("Y-m-d H:i:s")
-        ]);
+        $getProduct = $this->produkModel->find($qr[0]);
+        $status = '0';
+        if (!is_null($getProduct) && $getProduct['status'] == '2') {
+            $status = '1'; 
+            $this->produkModel->save([
+                'id' => $qr[0],
+                'status' => 3,
+            ]);         
+            $this->logModel->save([
+                'description' => 'melakukan scan untuk produk ke ekspedisi ',
+                'user_id' =>  session()->get('user_id'),
+            ]);   
+            $this->produkModel->setProductOut($qr[0], session()->get('user_id'));
+        }
+        echo json_encode($status);
+    }
+
+    public function scanningProductRetur() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
         
+        $getProduct = $this->produkModel->find($qr[0]);
+        $status = '0';
+        if (!is_null($getProduct) && $getProduct['status'] == '3') {
+            $status = '1'; 
+            $this->produkModel->save([
+                'id' => $qr[0],
+                'status' => 2,
+            ]);            
+            $this->logModel->save([
+                'description' => 'melakukan scan untuk retur produk',
+                'user_id' =>  session()->get('user_id'),
+            ]);
+            $this->produkModel->setProductIn($qr[0], session()->get('user_id'));
+        }
+        echo json_encode($status);
+    }
+
+    public function scanningBox() {
+        $qr = $this->request->getVar('qr');    
+        if (str_contains($qr, 'BOX')) { 
+            $getShipment = $this->shippinglModel->where('box_name', $qr)->first();
+            $status = '0';
+            if (!is_null($getShipment) && $getShipment['status'] == '1') {
+                $status = '1'; 
+                        
+            }
+            echo json_encode($status);
+        } else {
+            $qr = explode("-",$qr);
+            $box = $this->request->getVar('box_name'); 
+            $getProduct = $this->produkModel->find($qr[0]);
+            $getShipment = $this->shippinglModel->where('box_name', $box)->first();
+            $status = '0';
+            if (!is_null($getProduct)) {
+                $status = '2'; 
+                $this->produkModel->save([
+                    'id' => $qr[0],
+                    'status' => 3,
+                ]);        
+                $this->logModel->save([
+                    'description' => 'melakukan scan untuk pengiriman ',
+                    'user_id' =>  session()->get('user_id'),
+                ]);
+                $this->shippinglModel->insertProductShipment($getProduct['id'], $getShipment['id']);   
+                $this->produkModel->setProductOut($qr[0], session()->get('user_id'));
+            }
+            echo json_encode($status);
+        }
     }
 
     public function scanningShipment() {
