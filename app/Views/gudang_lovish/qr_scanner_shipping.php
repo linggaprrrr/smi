@@ -36,7 +36,7 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-lg-12" style="text-align: center">
-                                    <h6 class="modal-title ml-2" id="exampleModalLabel">Scanning the box...</h6>
+                                    <h6 class="modal-title ml-2" id="exampleModalLabel">Scanning resi...</h6>
                                     <div class="wrapper">
                                         <div>
                                             <div id="video-wrapper">
@@ -74,7 +74,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>          
+                            <button type="button" class="btn btn-secondary" id="close">Close</button>          
                         </div>
                         
                     </div>
@@ -85,7 +85,8 @@
                     <tr>
                         <th class="text-center" style="width: 5%">No</th>
                         <th class="text-center">Pengiriman</th>
-                        <th class="text-center">Tanggal Buat</th>
+                        <th class="text-center">Resi</th>
+                        <th class="text-center" style="width: 15%;">Tanggal Buat</th>
                         <th class="text-center" style="width: 10%;"><i class="fas fa-box"></i></th>
                     </tr>
                 </thead>
@@ -98,6 +99,7 @@
                                 <tr>
                                     <td class="text-center align-middle"><?= $no++ ?></td>
                                     <td class="align-middle"><?= $ship->box_name ?></td>                       
+                                    <td class="text-center align-middle"><b><?= $ship->resi ?></b></td>                       
                                     <td class="text-center align-middle"><?= $ship->created_at ?></td>
                                     <td class="text-center align-middle">
                                         <a href="#" class="btn btn-default btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
@@ -113,6 +115,7 @@
                                 <tr class="table-info">
                                     <td class="text-center align-middle"><?= $no++ ?></td>
                                     <td class="align-middle"><?= $ship->box_name ?></td>                       
+                                    <td class="text-center align-middle"><b><?= $ship->resi ?></b></td>                       
                                     <td class="text-center align-middle"><?= $ship->created_at ?></td>
                                     <td class="text-center align-middle">
                                         <a href="#" class="btn btn-info btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
@@ -152,7 +155,7 @@
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary"  data-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>
@@ -316,7 +319,10 @@
                     if (stat == '1') {
                         $.notify(kode +' berhasil di-scan!', "success");      
                         $('.box').val(barcode['rawValue']);
-                        $('#exampleModalLabel').html("Scanning the products ...");                                      
+                        $('#exampleModalLabel').html("Scanning the products ...");      
+                        $.post('/tambah-pengiriman', function(data) {
+                            
+                        });                                
                     } else if (stat == '2') {
                         $.notify(kode +' berhasil di-scan!', "success");  
                         $('#exampleModalLabel').html("Scanning the products ...");    
@@ -366,5 +372,11 @@
         });
         $('.bd-example-modal-lg-produk-detail').modal('show');
     });
+
+    $('#close').click(function() {
+        console.log("kwkw");
+        $('.bd-example-modal-lg-produk').modal('hide');
+        setTimeout(location.reload.bind(location), 100);
+    })
 </script>
 <?= $this->endSection() ?>

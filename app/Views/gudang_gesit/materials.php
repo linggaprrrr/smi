@@ -1,5 +1,10 @@
 <?= $this->extend('gudang_gesit/layout/content') ?>
-
+<style>
+    div.dataTables_wrapper {
+        width: 800px;
+        margin: 0 auto;
+    }
+</style>
 <?= $this->section('content') ?>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -47,11 +52,11 @@
                                 <label for="">Vendor Kain*</label>
                                 <select class="form-control vendor-kain" name="vendor" required>
                                     <option>-</option>
-                                <?php if ($materialVendors->getNumRows() > 0) : ?>
-                                    <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
-                                        <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
+                                    <?php if ($materialVendors->getNumRows() > 0) : ?>
+                                        <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
+                                            <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
                                 </select>    
             
                             </div>
@@ -85,19 +90,21 @@
     </div>
     <div class="card-body">
         <div class="table-responsive" id="tabel-kain">
-            <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+            <table class="table table-bordered display nowrap" id="dataTable2" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">No</th>
                         <th class="text-center">Jenis</th>
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (kg)</th>
-                        <th class="text-center">Tanggal Masuk</th>
+                        <th class="text-center">Tgl Masuk</th>                        
                         <th class="text-center">Roll</th>
                         <th class="text-center">Vendor</th>
                         <th class="text-center">Harga</th>
+                        <th class="text-center">Tgl Cutting</th>
+                        <th class="text-center">Tim Gelar</th>
                         <th class="text-center">Posisi Gd.</th>
-                        <th class="text-center">PIC</th>
+                        <th class="text-center">PIC Cutting</th>
                         <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
                     </tr>
                 </thead>
@@ -107,23 +114,50 @@
                     <?php if ($materialsIn->getNumRows() > 0) : ?>
                         <?php foreach ($materialsIn->getResultObject() as $kain) : ?>
                             <tr>
-                                <td class="text-center"><?= $no++ ?></td>
-                                <td class=""><?= $kain->type ?></td>
-                                <td><?= $kain->color ?></td>
-                                <td><?= number_format($kain->weight/1000, 2) ?></td>
-                                <td class="text-center"><?= $kain->created_at ?></td>
+                                <td class="text-center"><?= $no++ ?></td>                                
+                                <td class="">
+                                    <select class="form-control jenis" data-id="<?= $kain->id ?>" name="jenis">                                        
+                                        <?php foreach ($materials->getResultObject() as $material) : ?>
+                                            <option value="<?= $material->id ?>" <?= $material->id == $kain->material_id ? 'selected="selected" ' : ''; ?> ><?= $material->type ?></option>
+                                        <?php endforeach ?>                                        
+                                    </select>    
+                                </td>
+                                <td>
+                                    <select class="form-control warna" name="warna" data-id='<?= $kain->id ?>'>
+                                        <?php foreach ($colors->getResultObject() as $color) : ?>
+                                            <option value="<?= $color->id ?>" <?= $color->id == $kain->color_id ? 'selected="selected"' : ''; ?> ><?= $color->color ?></option>
+                                        <?php endforeach ?>
+                                    </select>   
+                                </td>                                
+                                <td>
+                                    <input type="text" class="form-control berat" name="weight" data-id='<?= $kain->id ?>' value="<?= number_format($kain->weight/1000, 2) ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                                </td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($kain->created_at)) ?></td>
                                 <td class="text-center"><?= $kain->roll ?></td>
-                                <td class="text-center"><?= $kain->vendor ?></td>
-                                <td class="text-center"><?= $kain->price ?></td>
-                                <td class="text-center"><?= $kain->gudang ?></td>
+                                <td class="text-center">
+                                    <select class="form-control vendor-kain" name="vendor" data-id='<?= $kain->id ?>'>                                        
+                                        <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
+                                            <option value="<?= $vendor->id ?>" <?= $vendor->id == $kain->vendor_id ? 'selected="selected"' : '' ?> ><?= $vendor->vendor ?></option>
+                                        <?php endforeach ?>
+                                    </select>    
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control harga" name="price" data-id='<?= $kain->id ?>' value="<?= $kain->price ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                                </td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($kain->tgl_cutting)) ?></td>
+                                <td class="text-center"><?= $kain->tim_gelar ?></td>
+                                <td class="text-center">
+                                    <select class="form-control gudang" data-id="<?= $kain->id ?>" name="gudang">
+                                        <?php foreach ($gudangs->getResultObject() as $gudang) : ?>
+                                            <option value="<?= $gudang->id ?>" <?= $gudang->id == $kain->gudang_id ? 'selected="selected"' : ''; ?> ><?= $gudang->gudang ?></option>
+                                        <?php endforeach ?>
+                                    </select> 
+                                    
+                                </td>                                
                                 <td class="text-center"><?= $kain->name ?></td>
                                 <td class="text-center">
                                     <div class="action">
-                                        <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit" data-id='<?= $kain->id ?>'>
-                                            <span class="icon text-white-25">
-                                                <i class="fas fa-pen"></i>
-                                            </span>
-                                        </a>
+                                       
                                         <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus" data-id='<?= $kain->id ?>'>
                                             <span class="icon text-white-25">
                                                 <i class="fas fas fa-trash"></i>
@@ -190,11 +224,11 @@
                                 <label for="">Vendor Kain*</label>
                                 <select class="form-control vendor-kain-edit" name="vendor" required>
                                     <option>-</option>
-                                <?php if ($materialVendors->getNumRows() > 0) : ?>
-                                    <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
-                                        <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
+                                    <?php if ($materialVendors->getNumRows() > 0) : ?>
+                                        <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
+                                            <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
                                 </select>    
             
                             </div>
@@ -299,6 +333,7 @@
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function() {    
     
@@ -361,6 +396,60 @@
             const price = JSON.parse(data);            
             $('.harga-kain-edit').val(price[0]['harga']);
         })
+    });
+
+    $('.jenis').on('change', function() {
+        const id = $(this).data('id');
+        const type = $(this).val();
+        $.post('/on-change-material-type', {id: id, type: type})
+            .done(function(data) {
+                $.notify('Jenis kain berhasil diubah', "success");
+            });
+    });   
+    
+    $('.warna').on('change', function() {
+        const id = $(this).data('id');
+        const warna = $(this).val();
+        $.post('/on-change-material-color', {id: id, color: warna})
+            .done(function(data) {
+                $.notify('Warna kain berhasil diubah', "success");
+            });   
+    }); 
+    
+    $('.berat').on('change', function() {
+        const id = $(this).data('id');
+        const berat = $(this).val();
+        $.post('/on-change-material-weight', {id: id, weight: berat})
+            .done(function(data) {
+                $.notify('Berat kain berhasil diubah', "success");
+            });   
+    });
+
+    $('.harga').on('change', function() {
+        const id = $(this).data('id');
+        const harga = $(this).val();
+        $.post('/on-change-material-price', {id: id, harga: harga})
+            .done(function(data) {
+                $.notify('Harga kain berhasil diubah', "success");
+            });   
+    });
+
+    $('.vendor-kain').on('change', function() {
+        const id = $(this).data('id');
+        const vendor = $(this).val();
+        $.post('/on-change-material-vendor', {id: id, vendor: vendor})
+            .done(function(data) {
+                $.notify('Vendor kain berhasil diubah', "success");
+            });   
+    });
+
+    $('.gudang').on('change', function() {
+        const id = $(this).data('id');
+        const gudang = $(this).val();
+        $.post('/on-change-material-gudang', {id: id, gudang: gudang})
+            .done(function(data) {
+                $.notify('Gudang kain berhasil diubah', "success");
+            });   
     });
 
 </script>

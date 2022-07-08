@@ -73,7 +73,6 @@ class Shippings extends BaseController
         
         $info = 'BOX-'.substr($str, 0, 3).''.$numbers;
         
-        $this->shippinglModel->insertShippingDetail($info);
         
 
     }

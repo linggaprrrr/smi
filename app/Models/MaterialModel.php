@@ -190,4 +190,9 @@ class MaterialModel extends Model
         $query = $this->db->table('gudang')->get();
         return $query;
     }
+
+    public function updateMaterialStokRetur($id) {
+        $this->db->query("UPDATE materials SET qty = qty - 1, status = 0 WHERE id = $id ");
+    }
+
 }

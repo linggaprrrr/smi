@@ -34,6 +34,7 @@
                             <th class="text-center">Model</th>
                             <th class="text-center">Warna</th>
                             <th class="text-center">Berat (gr)</th>
+                            <th class="text-center">Qty</th>
                             <th class="text-center">Tanggal Masuk</th>
                             <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all" /></th>
                         </tr>
@@ -50,6 +51,7 @@
                                         <td class=""><?= $product->model_name ?></td>
                                         <td><?= $product->color ?></td>
                                         <td><?= $product->weight ?></td>                                    
+                                        <td class="text-center"><?= $product->qty ?></td>
                                         <td class="text-center"><?= $product->created_at ?></td>
                                         <td class="text-center">
                                             <input type="checkbox" class="unprinted" name="print[]" value="<?= $product->id ?>" />
@@ -61,7 +63,8 @@
                                         <td class=""><?= $product->product_name ?></td>
                                         <td class=""><?= $product->model_name ?></td>
                                         <td><?= $product->color ?></td>
-                                        <td><?= $product->weight ?></td>                                    
+                                        <td><?= $product->weight ?></td>    
+                                        <td class="text-center"><?= $product->qty ?></td>                                
                                         <td class="text-center"><?= $product->created_at ?></td>
                                         <td class="text-center">
                                             <input type="checkbox" class="printed" name="print[]" value="<?= $product->id ?>" />
@@ -85,8 +88,8 @@
                     <h5 class="modal-title" id="exampleModalLabel">QR Code</h5>
                     
                 </div>
-                <div class="modal-body" id="print-area" style="align-self: center;">              
-                    <div style="align-self: center;">
+                <div class="modal-body" id="print-area" style="align-self: center; margin-top: -5px">
+                    <div style="align-self: center; margin-top: -5px">
                         <table class="text-center"">  
                             <thead>
                                 <tr>
@@ -137,22 +140,25 @@
             e.preventDefault();
             $.post('/generate-qr-produk', $('form#generate-qr').serialize(), function(data) {
                 const qr = JSON.parse(data);
-                var id = 1;                
+                var id = 1;                                                
                 $('#qr-handler').html("");
-                for (var i = 0; i < qr.length; i+=3) {
+                for (var i = 0; i < qr.length; i++) {
+                    const qrCount = parseInt(qr[i]['qty']);
                     const desc = qr[i]['key'].split("-");
-                    $('#qr-handler').append('<tr>');
-                    if (qr.length - i >= 3) {                        
-                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
-                        $('#qr-handler').append('<td style="padding: 0px 20px 10px 20px"><img src="'+qr[i+1]['qr']+'" style="width: 1.5cm; float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
-                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i+2]['qr']+'" style="width: 1.5cm; float:left"" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');                        
-                    } else if (qr.length - i == 2) {
-                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
-                        $('#qr-handler').append('<td style="padding-left: 20px;padding-right: 20px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');                        
-                    } else {
-                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                    for (var j = 0; j < qrCount; j+=3) {                                            
+                        $('#qr-handler').append('<tr>');
+                        if (qrCount - j >= 3) {         
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
+                        } else if (qrCount - j == 2) {                            
+                            $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding-left: 20px;padding-right: 20px;"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
+                        } else {
+                            $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
+                        }
+                        $('#qr-handler').append('</tr>');
                     }
-                    $('#qr-handler').append('</tr>');
                 }
 
                 $('#qr-modal').modal({backdrop: 'static', keyboard: false});
@@ -161,7 +167,7 @@
         });
 
         $('#select-all').click(function() {
-            $('.unprinted').prop('checked', this.checked);
+            $('.printed').prop('checked', this.checked);
         });
 
     });

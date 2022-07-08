@@ -201,6 +201,67 @@ class Materials extends BaseController
         return view('gudang_gesit/materials', $data);    
     }
     
+    public function onChangeMaterialType() {
+        $id = $this->request->getVar('id');
+        $type = $this->request->getVar('type');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'material_id' => $type
+        ]);
+    }
+
+    public function onChangeMaterialColor() {
+        $id = $this->request->getVar('id');
+        $color = $this->request->getVar('color');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'color_id' => $color
+        ]);
+    }
+
+    public function onChangeMaterialWeight() {
+        $id = $this->request->getVar('id');
+        $weight = $this->request->getVar('weight');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'weight' => $weight * 1000
+        ]);
+    }
+
+    public function onChangeMaterialVendor() {
+        $id = $this->request->getVar('id');
+        $vendor = $this->request->getVar('vendor');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'vendor_id' => $vendor
+        ]);
+    }
+
+    public function onChangeMaterialPrice() {
+        $id = $this->request->getVar('id');
+        $harga = $this->request->getVar('harga');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'price' => $harga
+        ]);
+    }
+
+
+    public function onChangeMaterialGudang() {
+        $id = $this->request->getVar('id');
+        $gudang = $this->request->getVar('gudang');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'gudang_id' => $gudang
+        ]);
+    }
+    
     public function exportDataPolaIn() {
         $materials = $this->materialModel->getAllPolaIn();
         $date = date("Y-m-d H:i:s");

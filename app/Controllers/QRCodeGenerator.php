@@ -114,7 +114,7 @@ class QRCodeGenerator extends BaseController
                 'qr' => ''
             );
             for ($i=0; $i < count($products); $i++) {
-                $getProduct = $this->produkModel->select('products.id, model_name, product_name, color')
+                $getProduct = $this->produkModel->select('products.id, model_name, product_name, color, qty')
                     ->join('product_types', 'product_types.id = product_id')
                     ->join('colors', 'colors.id = products.color_id')
                     ->join('models', 'products.model_id = models.id')                
@@ -128,6 +128,7 @@ class QRCodeGenerator extends BaseController
                     ->where('id', $products[$i])->update();            
                 $qrs['key'] = $data;
                 $qrs['qr'] = $result->getDataUri();
+                $qrs['qty'] = $getProduct['qty'];
                 array_push($json, $qrs);
             }
             echo json_encode($json);         
@@ -325,37 +326,50 @@ class QRCodeGenerator extends BaseController
         echo json_encode($status);
     }
 
+    public function scanningMaterialRetur() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $getProduct = $this->materialModel->find($qr[0]);
+        $status = '0';
+        if (!is_null($getProduct) && $getProduct['status'] == '3') {
+            $status = '1'; 
+            $this->materialModel->updateMaterialStokRetur($qr[0]);
+            
+        }
+        echo json_encode($status);
+    }
+
     public function scanningBox() {
         $qr = $this->request->getVar('qr');    
-        if (str_contains($qr, 'BOX')) { 
-            $getShipment = $this->shippinglModel->where('box_name', $qr)->first();
-            $status = '0';
-            if (!is_null($getShipment) && $getShipment['status'] == '1') {
-                $status = '1'; 
-                        
-            }
-            echo json_encode($status);
-        } else {
+        $status = '0';
+        $getProduct = $this->produkModel->find($qr);
+        if (!is_null($getProduct) || !empty($getProduct)) {
             $qr = explode("-",$qr);
-            $box = $this->request->getVar('box_name'); 
-            $getProduct = $this->produkModel->find($qr[0]);
-            $getShipment = $this->shippinglModel->where('box_name', $box)->first();
-            $status = '0';
-            if (!is_null($getProduct)) {
+            $resi = $this->request->getVar('box_name'); 
+            $getShipment = $this->shippinglModel->where('resi', $resi)->first();            
+            if (!is_null($getShipment) || !empty($getShipment)) {
                 $status = '2'; 
-                $this->produkModel->save([
-                    'id' => $qr[0],
-                    'status' => 3,
-                ]);        
-                $this->logModel->save([
-                    'description' => 'melakukan scan untuk pengiriman ',
-                    'user_id' =>  session()->get('user_id'),
-                ]);
+                $this->produkModel->updateStokOut($qr[0]);
+                // $this->produkModel->updateStokOut([
+                //     'id' => $qr[0],
+                //     'status' => 3,
+                // ]);        
+                
                 $this->shippinglModel->insertProductShipment($getProduct['id'], $getShipment['id']);   
                 $this->produkModel->setProductOut($qr[0], session()->get('user_id'));
+            }            
+        } else {            
+            $getShipment = $this->shippinglModel->where('resi', $qr)->first();
+            if (is_null($getShipment) || empty($getShipment)) {
+                $str = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                $numbers = rand(1000, 9999);
+                $info = 'BOX-'.substr($str, 0, 3).''.$numbers;
+                $this->shippinglModel->insertShippingDetail($info, $qr);
+                $status = 1;
             }
-            echo json_encode($status);
         }
+        echo json_encode($status);
     }
 
     public function scanningShipment() {

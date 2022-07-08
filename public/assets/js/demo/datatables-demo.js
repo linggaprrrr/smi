@@ -10,9 +10,10 @@ $(document).ready(function() {
       "iDisplayLength": 25
   });  
 
-  $('#dataTable2').DataTable({
+  $('#dataTable2').DataTable({      
       "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
-      "iDisplayLength": 25
+      "iDisplayLength": 25,
+      scrollX: true,
   });
     
   $('#dataTable3').DataTable({

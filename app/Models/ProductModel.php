@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class ProductModel extends Model
 {
     protected $table = 'products';
-    protected $allowedFields = ['product_id', 'color_id', 'weight', 'price', 'model_id', 'status', 'qrcode', 'user_id', 'updated_at', 'qty'];
+    protected $allowedFields = ['product_id', 'color_id', 'weight', 'price', 'model_id', 'status', 'qrcode', 'user_id', 'updated_at', 'qty', 'vendor_id'];
 
 
     public function getAllProduct() {
@@ -153,4 +153,8 @@ class ProductModel extends Model
         $this->db->query("UPDATE product_logs SET user_id_out='$user', updated_at = date('Y-m-d H:i:s') WHERE id='$id' ");
     }
 
-}
+    public function updateStokOut($id) {
+        $this->db->query("UPDATE products SET qty = qty - 1 WHERE id='$id' ");
+    }
+
+}   

@@ -1,5 +1,9 @@
 <?= $this->extend('gudang_gesit/layout/content') ?>
-
+<style>
+    option {
+    background:transparent; 
+}
+</style>
 <?= $this->section('content') ?>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -46,15 +50,27 @@
                                             <option value="<?= $color->id ?>"><?= $color->color ?></option>
                                         <?php endforeach ?>
                                     <?php endif ?>
-                                </select>
-                                
+                                </select>                                
                             </div>
                             <div class="form-group">
                                 <label for="">Berat (gr)</label>
                                 <input type="text" class="form-control" name="berat" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="Masukkan berat produk">
                                 <small id="modelName" class="form-text text-muted">Contoh 1,5 kg menjadi <b>1500</b> </small>
                             </div>
-                            
+                            <div class="form-group">
+                                <label for="">Qty</label>
+                                <input type="text" class="form-control" name="qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." value="1">                                
+                            </div>
+                            <div class="form-group">
+                                <label for="">Vendor</label>
+                                <select class="form-control" name="vendor">
+                                    <?php if ($vendors->getNumRows() > 0) : ?>
+                                        <?php foreach ($vendors->getResultObject() as $vendor) : ?>
+                                            <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
+                                </select>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -75,6 +91,7 @@
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (gr)</th>
+                        <th class="text-center">Qty</th>
                         <th class="text-center">Tanggal Masuk</th>
                         <th class="text-center">PIC</th>
                         <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
@@ -87,18 +104,32 @@
                         <?php foreach ($productsIn->getResultObject() as $product) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td><?= $product->product_name ?></td>
-                                <td class="text-center"><?= $product->model_name ?></td>
-                                <td><?= $product->color ?></td>
-                                <td><?= $product->weight ?></td>
-                                <td class="text-center"><?= $product->created_at ?></td>
-                                <td class="text-center"><?= $product->name ?></td>
+                                <td>
+                                <select class="form-control jenis-produk" name="nama_produk" data-id='<?= $product->id ?>'>
+                                    <?php foreach ($products->getResultObject() as $pr) : ?>
+                                        <option value="<?= $pr->id ?>" <?= $pr->id == $product->product_id ? 'selected="selected"' : ''; ?> ><?= $pr->product_name ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                                </td>
                                 <td class="text-center">
-                                    <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-produk" data-id='<?= $product->id ?>'>
-                                        <span class="icon text-white-25">
-                                            <i class="fas fa-pen"></i>
-                                        </span>
-                                    </a>
+                                    <select class="form-control model" name="model" data-id='<?= $product->id ?>'>
+                                        <?php foreach ($models->getResultObject() as $model) : ?>
+                                                <option value="<?= $model->id ?>" <?= $model->id == $product->model_id ? 'selected="selected"' : ''; ?> ><?= $model->model_name ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control warna" name="warna" data-id='<?= $product->id ?>'>
+                                        <?php foreach ($colors->getResultObject() as $color) : ?>
+                                            <option value="<?= $color->id ?>" <?= $color->id == $product->color_id ? 'selected="selected"' : ''; ?> ><?= $color->color ?></option>
+                                        <?php endforeach ?>
+                                    </select>      
+                                </td>
+                                <td><input type="text" class="form-control berat" name="weight" data-id='<?= $product->id ?>' value="<?= $product->weight ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
+                                <td class="text-center align-middle"><?= $product->created_at ?></td>
+                                <td class="text-center align-middle"><?= $product->name ?></td>
+                                <td class="text-center">                                    
                                     <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-produk" data-id='<?= $product->id ?>'>
                                         <span class="icon text-white-25">
                                             <i class="fas fas fa-trash"></i>
@@ -154,15 +185,27 @@
                                             <option value="<?= $color->id ?>"><?= $color->color ?></option>
                                         <?php endforeach ?>
                                     <?php endif ?>
-                                </select>
-                                
+                                </select>                                
                             </div>
                             <div class="form-group">
                                 <label for="">Berat (gr)</label>
                                 <input type="text" class="form-control" name="berat" id="berat" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="Masukkan berat produk">
                                 <small id="modelName" class="form-text text-muted">Contoh 1,5 kg menjadi <b>1500</b> </small>
                             </div>
-                            
+                            <div class="form-group">
+                                <label for="">Qty</label>
+                                <input type="text" class="form-control" name="qty" id="qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." value="1">                                
+                            </div>
+                            <div class="form-group">
+                                <label for="">Vendor</label>
+                                <select class="form-control" name="model" id="vendor">
+                                    <?php if ($vendors->getNumRows() > 0) : ?>
+                                        <?php foreach ($vendors->getResultObject() as $vendor) : ?>
+                                            <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
+                                </select>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -201,7 +244,7 @@
                         <?php foreach ($productsOut->getResultObject() as $product) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td><?= $product->product_name ?></td>
+                                <td><div contenteditable><?= $product->product_name ?></div></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
                                 <td><?= $product->weight ?></td>
@@ -224,6 +267,7 @@
 
 <?= $this->section('js') ?>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function() {
         $('.btn-edit-produk').click(function(){
@@ -232,11 +276,14 @@
             $.get('/get-produk-detail', {product_id: id})
                 .done(function(data) {
                     const product = JSON.parse(data);
+                    console.log(product);
                     $('#id-produk').val(product['id']);
                     $('#nama-produk').val(product['product_id']);
                     $('#model-produk').val(product['model_id']);
                     $('#warna').val(product['color_id']);
                     $('#berat').val(product['weight']);
+                    $('#qty').val(product['qty']);
+                    $('#vendor').val(product['vendor_id']);
             });
         });
         $('.btn-hapus-produk').click(function() {
@@ -263,42 +310,50 @@
                 });
         });   
 
-        $('.btn-edit-model').click(function(){
+        $('.jenis-produk').on('change', function() {
             const id = $(this).data('id');
-            $('.bd-example-modal-lg-model-edit').modal('show');
-            $.get('/get-model', {model_id: id})
+            const jenis = $(this).val();
+            $.post('/on-change-product-type', {product: id, type: jenis})
                 .done(function(data) {
-                    const model = JSON.parse(data);
-                    $('#id-model').val(model['id']);
-                    $('#nama-model').val(model['model_name']);
-                    $('#harga-jahit').val(model['jahit_price']);
-                    $('#hpp').val(model['hpp_price']);
-                    $('#vendor').val(model['vendor']);
-            });
-        });
-        $('.btn-hapus-model').click(function() {
-            const id = $(this).data('id');
-            swal({
-                    title: "Apakah anda yakin?",
-                    text: "Data yang anda hapus tidak akan kembali lagi",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        swal("Poof! Data berhasil dihapus!", {
-                        icon: "success",
-                        });
-                        $.post('/delete-model', {model_id: id})
-                            .done(function(data) {
-                                setTimeout(location.reload.bind(location), 1000);
-                            });
-                    } else {
-                        swal("Data tidak jadi dihapus!");
-                    }
+                    $.notify('Jenis produk berhasil diubah', "success");
                 });
+        });
+
+        $('.model').on('change', function() {
+            const id = $(this).data('id');
+            const model = $(this).val();
+            $.post('/on-change-model-name', {product: id, model: model})
+                .done(function(data) {
+                    $.notify('Model produk berhasil diubah', "success");
+                });   
+        });  
+        
+        $('.warna').on('change', function() {
+            const id = $(this).data('id');
+            const warna = $(this).val();
+            $.post('/on-change-product-color', {product: id, color: warna})
+                .done(function(data) {
+                    $.notify('Warna produk berhasil diubah', "success");
+                });   
         }); 
+        
+        $('.berat').on('change', function() {
+            const id = $(this).data('id');
+            const berat = $(this).val();
+            $.post('/on-change-product-weight', {product: id, weight: berat})
+                .done(function(data) {
+                    $.notify('Berat produk berhasil diubah', "success");
+                });   
+        });
+
+        $('.qty').on('change', function() {
+            const id = $(this).data('id');
+            const qty = $(this).val();
+            $.post('/on-change-product-qty', {product: id, qty: qty})
+                .done(function(data) {
+                    $.notify('Qty produk berhasil diubah', "success");
+                });   
+        });
     });
     
 </script>

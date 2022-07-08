@@ -84,8 +84,8 @@
                         <h5 class="modal-title" id="exampleModalLabel">QR Code</h5>                        
                         
                     </div>
-                    <div class="modal-body" id="print-area" style="align-self: center;">              
-                        <div style="align-self: center;">
+                    <div class="modal-body" id="print-area" style="align-self: center;">
+                        <div style="align-self: center; margin-top: -5px">
                             <table class="text-center"">  
                                 <thead>
                                     <tr>
@@ -143,14 +143,14 @@
                     const desc = qr[i]['key'].split("-");
                     $('#qr-handler').append('<tr>');
                     if (qr.length - i >= 3) {                        
-                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
-                        $('#qr-handler').append('<td style="padding: 0px 20px 10px 20px"><img src="'+qr[i+1]['qr']+'" style="width: 1.5cm; float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
-                        $('#qr-handler').append('<td style="padding: 0px 0px 10px 0px"><img src="'+qr[i+2]['qr']+'" style="width: 1.5cm; float:left"" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');                        
+                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 30px 5px 30px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i+2]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'</small></td>');
                     } else if (qr.length - i == 2) {
-                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
-                        $('#qr-handler').append('<td style="padding-left: 20px;padding-right: 20px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');                        
+                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding-left: 30px;padding-right: 30px;"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'</small></td>');
                     } else {
-                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.5cm;float:left" /><small style="float:right">'+desc[1]+'<br>'+desc[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'</small></td>');
                     }
                     $('#qr-handler').append('</tr>');
                 }
@@ -161,7 +161,7 @@
         });
 
         $('#select-all').click(function() {
-            $('.unprinted').prop('checked', this.checked);
+            $('.printed').prop('checked', this.checked);
         });
 
     });

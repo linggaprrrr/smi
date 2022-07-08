@@ -36,7 +36,7 @@
                                 <span>Kain</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="http://localhost:8080/gudang-gesit/produk">
+                            <a class="nav-link" href="<?= base_url('gudang-gesit/produk') ?>">
                                 <i class="fas fa-fw fa-tshirt"></i>
                                 <span>Produk</span></a>
                         </li>

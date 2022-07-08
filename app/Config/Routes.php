@@ -124,6 +124,22 @@ $routes->get('export-data-pola-out', 'Materials::exportDataPolaOut');
 $routes->get('export-produk-gesit', 'Products::exportDataGesit');
 $routes->get('export-produk-masuk-lovish', 'Products::exportDataLovishIn');
 
+// produk
+$routes->post('on-change-product-type', 'Products::onChangeProductType');
+$routes->post('on-change-model-name', 'Products::onChangeModelName');
+$routes->post('on-change-product-qty', 'Products::onChangeProductQty');
+$routes->post('on-change-product-weight', 'Products::onChangeProductWeight');
+$routes->post('on-change-product-color', 'Products::onChangeProductColor');
+
+// kain
+$routes->post('on-change-material-type', 'Materials::onChangeMaterialType');
+$routes->post('on-change-material-color', 'Materials::onChangeMaterialColor');
+$routes->post('on-change-material-weight', 'Materials::onChangeMaterialWeight');
+$routes->post('on-change-material-vendor', 'Materials::onChangeMaterialVendor');
+$routes->post('on-change-material-price', 'Materials::onChangeMaterialPrice');
+$routes->post('on-change-material-gudang', 'Materials::onChangeMaterialGudang');
+
+
 // GUDANG Lovish
 $routes->get('/gudang-lovish/dashboard', 'Home::gudangLovish');
 $routes->get('/gudang-lovish/produk', 'Products::gudangLovishProduk');

@@ -37,15 +37,18 @@ class ShippingModel extends Model
     }
 
 
-    public function insertShippingDetail($info) {
+    public function insertShippingDetail($info, $resi) {
         $data = [
             'box_name' => $info,
-            'user_id'  => session()->get('user_id')
+            'user_id'  => session()->get('user_id'),
+            'resi' => $resi
         ];
         $builder = $this->db->table('shippings');
-        $builder->insert($data);
+        $builder->ignore(true)->insert($data);
         $last = $this->db->insertID();
-        $this->db->query("INSERT INTO shipping_details(shipping_id) VALUES('$last') ");
+        if (!is_null($last) || !empty($last)) {
+            $this->db->query("INSERT INTO shipping_details(shipping_id) VALUES('$last') ");
+        }
     }
 
     public function insertProductShipment($product_id, $shipping_id) {

@@ -154,6 +154,7 @@ class Products extends BaseController
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $products = $this->productModel->getAllProduct();
+        $vendors = $this->productModel->getAllVendorPenjualan();
        
         $data = array(
             'title' => 'Produk',
@@ -163,8 +164,54 @@ class Products extends BaseController
             'models' => $models,
             'products' => $products,
             'colors' => $colors,
+            'vendors' => $vendors
         );
         return view('gudang_gesit/products', $data);    
+    }
+
+    public function onChangeProductType() {
+        $id = $this->request->getVar('product');
+        $type = $this->request->getVar('type');
+        $this->productModel->save([
+            'id' => $id,
+            'product_id' => $type
+        ]);
+    }
+
+    public function onChangeModelName() {
+        $id = $this->request->getVar('product');
+        $model = $this->request->getVar('model');
+        $this->productModel->save([
+            'id' => $id,
+            'model_id' => $model
+        ]);
+    }
+
+    public function onChangeProductQty() {
+        $id = $this->request->getVar('product');
+        $qty = $this->request->getVar('qty');
+        $this->productModel->save([
+            'id' => $id,
+            'qty' => $qty
+        ]);
+    }
+
+    public function onChangeProductWeight() {
+        $id = $this->request->getVar('product');
+        $weight = $this->request->getVar('weight');
+        $this->productModel->save([
+            'id' => $id,
+            'weight' => $weight
+        ]);
+    }
+
+    public function onChangeProductColor() {
+        $id = $this->request->getVar('product');
+        $color = $this->request->getVar('color');
+        $this->productModel->save([
+            'id' => $id,
+            'color_id' => $color
+        ]);
     }
 
     // Lovish
@@ -193,6 +240,8 @@ class Products extends BaseController
             'weight'  => $post['berat'],
             'model_id'  => $post['model'],
             'user_id' => session()->get('user_id'),
+            'qty' => $post['qty'],
+            'vendor_id' => $post['vendor']
         ];
         $this->productModel->save($product);
         $getProduct = $this->productModel
@@ -204,7 +253,7 @@ class Products extends BaseController
             ->first();
         $this->productModel->setProductIn($getProduct['id'], session()->get('user_id'));
         $this->logModel->save([
-            'description' => 'Menambahkan produk baru ('.$getProduct['product_name'].' '.$getProduct['model_name'].' '.$getProduct['color'].')',
+            'description' => 'Menambahkan produk baru ('.$getProduct['product_name'].' '.$getProduct['model_name'].' '.$getProduct['color'].') sebanyak '.$post['qty'].'. ',
             'user_id' =>  session()->get('user_id'),
         ]);
         return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
