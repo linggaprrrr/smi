@@ -19,7 +19,10 @@ class LogModel extends Model
         return $query;
     }
 
+    
+
     public function getDailyLogs() {
+        $i = 1;
         $query = $this->db->table('logs')
             ->select('users.name, logs.description, logs.created_at')
             ->join('users', 'users.id = logs.user_id')
