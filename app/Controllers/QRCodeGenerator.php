@@ -266,18 +266,15 @@ class QRCodeGenerator extends BaseController
         $qr = explode("-",$qr);
         
         $getProduct = $this->produkModel->find($qr[0]);
+        $productStatus = $this->produkModel->productStatus($qr[0]);
         $status = '0';
-        if (!is_null($getProduct) && $getProduct['status'] == '1') {
+        if (!is_null($getProduct) && $productStatus[0]->status == '1') {
             $status = '1'; 
             $this->produkModel->save([
                 'id' => $qr[0],
-                'status' => 2,
+                'qty' => $getProduct['qty'] - 1,
                 'updated_at' => date("Y-m-d H:i:s")
             ]);            
-            $this->logModel->save([
-                'description' => 'melakukan scan untuk produk masuk (lovish) ',
-                'user_id' =>  session()->get('user_id'),
-            ]);
             $this->produkModel->setProductIn($qr[0], session()->get('user_id'));
         }
         echo json_encode($status);
@@ -290,16 +287,8 @@ class QRCodeGenerator extends BaseController
         
         $getProduct = $this->produkModel->find($qr[0]);
         $status = '0';
-        if (!is_null($getProduct) && $getProduct['status'] == '2') {
+        if (!is_null($getProduct)) {
             $status = '1'; 
-            $this->produkModel->save([
-                'id' => $qr[0],
-                'status' => 3,
-            ]);         
-            $this->logModel->save([
-                'description' => 'melakukan scan untuk produk ke ekspedisi ',
-                'user_id' =>  session()->get('user_id'),
-            ]);   
             $this->produkModel->setProductOut($qr[0], session()->get('user_id'));
         }
         echo json_encode($status);
@@ -311,16 +300,8 @@ class QRCodeGenerator extends BaseController
         
         $getProduct = $this->produkModel->find($qr[0]);
         $status = '0';
-        if (!is_null($getProduct) && $getProduct['status'] == '3') {
-            $status = '1'; 
-            $this->produkModel->save([
-                'id' => $qr[0],
-                'status' => 2,
-            ]);            
-            $this->logModel->save([
-                'description' => 'melakukan scan untuk retur produk',
-                'user_id' =>  session()->get('user_id'),
-            ]);
+        if (!is_null($getProduct)) {
+            $status = '1';           
             $this->produkModel->setProductIn($qr[0], session()->get('user_id'));
         }
         echo json_encode($status);

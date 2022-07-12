@@ -35,6 +35,7 @@ class Materials extends BaseController
         $materialVendors = $this->materialModel->getMaterialVendors();
         $materialsIn = $this->materialModel->getAllMaterial();        
         $materialsOut = $this->materialModel->getAllMaterialOut();
+        $materialStock = $this->materialModel->getAllMaterialStock();    
         $materialsPolaIn = $this->materialModel->getAllPolaIn();
         $gudangs = $this->materialModel->getAllGudang();
         $data = array(
@@ -45,7 +46,8 @@ class Materials extends BaseController
             'materialsOut' => $materialsOut,
             'materialsPolaIn' => $materialsPolaIn,
             'gudangs' => $gudangs,
-            'materialVendors' => $materialVendors
+            'materialVendors' => $materialVendors,
+            'materialStock' => $materialStock
         );
         return view('admin/materials', $data);    
     }
@@ -65,7 +67,11 @@ class Materials extends BaseController
             'weight'  => $post['berat'],
             'price' => $post['harga'],
             'user_id' => session()->get('user_id'),
-            'gudang_id' => $post['gudang']
+            'gudang_id' => $post['gudang'],
+            'tgl_cutting' => date('Y-m-d', strtotime($post['tgl-cutting'])),
+            'gelar1' => $post['gelar1'],
+            'gelar2' => $post['gelar2'],
+            'pic_cutting' => $post['pic-cutting'],
         ];
 
         $this->materialModel->save($material);
@@ -144,7 +150,7 @@ class Materials extends BaseController
 
     public function exportData() {
         $materials = $this->materialModel->getAllMaterial();
-        $date = date("Y-m-d H:i:s");
+        $date = time();
         $fileName = "Data Kain Masuk {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -166,16 +172,16 @@ class Materials extends BaseController
         
         $writer = new Xlsx($spreadsheet);
 
-        $writer->save($fileName);
+        $writer->save("file/". $fileName);
         header("Content-Type: application/vnd.ms-excel");
 
 		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate');
 		header('Pragma: public');
-		header('Content-Length:' . filesize($fileName));
+		header('Content-Length:' . filesize("file/". $fileName));
 		flush();
-		readfile($fileName);
+		readfile("file/". $fileName);
 		exit;
     }
 
@@ -188,6 +194,9 @@ class Materials extends BaseController
         $materialsOut = $this->materialModel->getAllMaterialOut();
         $materialsPolaIn = $this->materialModel->getAllPolaIn();
         $gudangs = $this->materialModel->getAllGudang();
+        $picCutting = $this->materialModel->getAllPICCutting();
+        $getAllTimGelar = $this->materialModel->getAllTimGelar();
+        $vendorPola = $this->materialModel->getAllVendorPola();
         $data = array(
             'title' => 'Kain',
             'materials' => $materials,
@@ -196,8 +205,12 @@ class Materials extends BaseController
             'materialsOut' => $materialsOut,
             'materialsPolaIn' => $materialsPolaIn,
             'gudangs' => $gudangs,
-            'materialVendors' => $materialVendors
+            'materialVendors' => $materialVendors,
+            'picCutting' => $picCutting,
+            'timGelars' => $getAllTimGelar,
+            'vendorPola' => $vendorPola
         );
+
         return view('gudang_gesit/materials', $data);    
     }
     
@@ -211,6 +224,46 @@ class Materials extends BaseController
         ]);
     }
 
+    public function onChangeMaterialCutting() {
+        $id = $this->request->getVar('id');
+        $pic = $this->request->getVar('pic');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'pic_cutting' => $pic
+        ]);
+    }
+
+    public function onChangeMaterialGelar1() {
+        $id = $this->request->getVar('id');
+        $gelar = $this->request->getVar('gelar');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'gelar1' => $gelar
+        ]);
+    }
+
+    public function onChangeMaterialGelar2() {
+        $id = $this->request->getVar('id');
+        $gelar = $this->request->getVar('gelar');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'gelar2' => $gelar
+        ]);
+    }
+
+    public function onChangeMaterialVendorPola() {
+        $id = $this->request->getVar('id');
+        $ven = $this->request->getVar('ven');
+
+        $this->materialModel->save([
+            'id' => $id,
+            'vendor_pola' => $ven
+        ]);
+    }
+
     public function onChangeMaterialColor() {
         $id = $this->request->getVar('id');
         $color = $this->request->getVar('color');
@@ -218,6 +271,18 @@ class Materials extends BaseController
         $this->materialModel->save([
             'id' => $id,
             'color_id' => $color
+        ]);
+    }
+
+    public function onChangeMaterialTglCutting() {
+        $id = $this->request->getVar('id');
+        $tgl = $this->request->getVar('tgl');
+        $tgl = date('Y-m-d', strtotime($tgl));
+      
+
+        $this->materialModel->save([
+            'id' => $id,
+            'tgl_cutting' => $tgl
         ]);
     }
 
@@ -264,7 +329,7 @@ class Materials extends BaseController
     
     public function exportDataPolaIn() {
         $materials = $this->materialModel->getAllPolaIn();
-        $date = date("Y-m-d H:i:s");
+        $date = time(); 
         $fileName = "Data Pola In {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -285,26 +350,28 @@ class Materials extends BaseController
         }
         
         $writer = new Xlsx($spreadsheet);
-
-        $writer->save($fileName);
+       
+        $writer->save('file/'. $fileName);
         header("Content-Type: application/vnd.ms-excel");
 
 		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate');
 		header('Pragma: public');
-		header('Content-Length:' . filesize($fileName));
+		header('Content-Length:' . filesize('file/'.$fileName));
 		flush();
-		readfile($fileName);
+		readfile('file/'.$fileName);
 		exit;
     }
 
     public function exportDataPolaOut() {
         $materials = $this->materialModel->getAllMaterialOut();
-        $date = date("Y-m-d H:i:s");
+        $date = time();
         $fileName = "Data Pola Out {$date}.xlsx";  
+        
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
+        
 		$sheet->setCellValue('A1', 'No');
 		$sheet->setCellValue('B1', 'Jenis');
 		$sheet->setCellValue('C1', 'Warna');
@@ -322,17 +389,18 @@ class Materials extends BaseController
         }
         
         $writer = new Xlsx($spreadsheet);
-
-        $writer->save($fileName);
+       
+        $writer->save("file/". $fileName);
+      
         header("Content-Type: application/vnd.ms-excel");
 
 		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate');
 		header('Pragma: public');
-		header('Content-Length:' . filesize($fileName));
+		header('Content-Length:' . filesize("file/". $fileName));
 		flush();
-		readfile($fileName);
+		readfile("file/". $fileName);
 		exit;
     }
 

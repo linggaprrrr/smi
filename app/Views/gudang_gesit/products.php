@@ -62,6 +62,11 @@
                                 <input type="text" class="form-control" name="qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." value="1">                                
                             </div>
                             <div class="form-group">
+                                <label for="">HPP</label>
+                                <input type="text" class="form-control" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
+                               
+                            </div>
+                            <div class="form-group">
                                 <label for="">Vendor</label>
                                 <select class="form-control" name="vendor">
                                     <?php if ($vendors->getNumRows() > 0) : ?>
@@ -92,6 +97,7 @@
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (gr)</th>
                         <th class="text-center">Qty</th>
+                        <th class="text-center">HPP</th>
                         <th class="text-center">Tanggal Masuk</th>
                         <th class="text-center">PIC</th>
                         <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
@@ -126,7 +132,8 @@
                                     </select>      
                                 </td>
                                 <td><input type="text" class="form-control berat" name="weight" data-id='<?= $product->id ?>' value="<?= $product->weight ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
-                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
+                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>        
+                                <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->price ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
                                 <td class="text-center align-middle"><?= $product->created_at ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>
                                 <td class="text-center">                                    
@@ -270,23 +277,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function() {
-        $('.btn-edit-produk').click(function(){
-            const id = $(this).data('id');
-            $('.bd-example-modal-lg-produk-edit').modal('show');
-            $.get('/get-produk-detail', {product_id: id})
-                .done(function(data) {
-                    const product = JSON.parse(data);
-                    console.log(product);
-                    $('#id-produk').val(product['id']);
-                    $('#nama-produk').val(product['product_id']);
-                    $('#model-produk').val(product['model_id']);
-                    $('#warna').val(product['color_id']);
-                    $('#berat').val(product['weight']);
-                    $('#qty').val(product['qty']);
-                    $('#vendor').val(product['vendor_id']);
-            });
-        });
-        $('.btn-hapus-produk').click(function() {
+
+        $(document).on('click', '.btn-hapus-produk', function() {
             const id = $(this).data('id');
             swal({
                     title: "Apakah anda yakin?",
@@ -295,20 +287,21 @@
                     buttons: true,
                     dangerMode: true,
                 })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        swal("Poof! Data berhasil dihapus!", {
-                        icon: "success",
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Data berhasil dihapus!", {
+                    icon: "success",
+                    });
+                    $.post('/delete-product-detail', {product_id: id})
+                        .done(function(data) {
+                            setTimeout(location.reload.bind(location), 1000);
                         });
-                        $.post('/delete-product-detail', {product_id: id})
-                            .done(function(data) {
-                                setTimeout(location.reload.bind(location), 1000);
-                            });
-                    } else {
-                        swal("Data tidak jadi dihapus!");
-                    }
-                });
-        });   
+                } else {
+                    swal("Data tidak jadi dihapus!");
+                }
+            });
+        })
+     
 
         $('.jenis-produk').on('change', function() {
             const id = $(this).data('id');
@@ -352,6 +345,16 @@
             $.post('/on-change-product-qty', {product: id, qty: qty})
                 .done(function(data) {
                     $.notify('Qty produk berhasil diubah', "success");
+                });   
+        });
+
+
+        $('.hpp').on('change', function() {
+            const id = $(this).data('id');
+            const hpp = $(this).val();
+            $.post('/on-change-product-hpp', {product: id, hpp: hpp})
+                .done(function(data) {
+                    $.notify('HPP produk berhasil diubah', "success");
                 });   
         });
     });

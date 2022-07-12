@@ -130,6 +130,7 @@ $routes->post('on-change-model-name', 'Products::onChangeModelName');
 $routes->post('on-change-product-qty', 'Products::onChangeProductQty');
 $routes->post('on-change-product-weight', 'Products::onChangeProductWeight');
 $routes->post('on-change-product-color', 'Products::onChangeProductColor');
+$routes->post('on-change-product-hpp', 'Products::onChangeProductHPP');
 
 // kain
 $routes->post('on-change-material-type', 'Materials::onChangeMaterialType');
@@ -138,6 +139,11 @@ $routes->post('on-change-material-weight', 'Materials::onChangeMaterialWeight');
 $routes->post('on-change-material-vendor', 'Materials::onChangeMaterialVendor');
 $routes->post('on-change-material-price', 'Materials::onChangeMaterialPrice');
 $routes->post('on-change-material-gudang', 'Materials::onChangeMaterialGudang');
+$routes->post('on-change-material-pic-cutting', 'Materials::onChangeMaterialCutting');
+$routes->post('on-change-material-pic-gelar1', 'Materials::onChangeMaterialGelar1');
+$routes->post('on-change-material-pic-gelar2', 'Materials::onChangeMaterialGelar2');
+$routes->post('on-change-material-tgl-cutting', 'Materials::onChangeMaterialTglCutting');
+$routes->post('on-change-material-vendor-pola', 'Materials::onChangeMaterialVendorPola');
 
 
 // GUDANG Lovish

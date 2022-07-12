@@ -31,8 +31,11 @@ class Home extends BaseController
         $totalLovishAlmostOut = $this->productModel->getStokProductAlmostOut();
         $productsIn = $this->productModel->getStokProductIn();    
         $productsOut = $this->productModel->getStokProductOut();
+        $shipmentToLovish = $this->productModel->getAllShipmentToLovish();
+    
         $productsExp = $this->productModel->getStokProductExp();
         $materials = $this->materialModel->getAllMaterial();
+        $materialStock = $this->materialModel->getAllMaterialStock();    
         $models = $this->designModel->getAllModel();
         $data = array(
             'title' => 'Dashboard',
@@ -44,7 +47,9 @@ class Home extends BaseController
             'productsOut' => $productsOut,
             'productsExp' => $productsExp,
             'materials' => $materials,
-            'models' => $models
+            'models' => $models,
+            'materialStock' => $materialStock,
+            'shipmentToLovish' => $shipmentToLovish
         );
         return view('admin/dashboard', $data);
     }

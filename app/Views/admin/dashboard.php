@@ -164,6 +164,49 @@
     <div class="col-lg-12">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left">Data Pengiriman ke Gudang Lovish</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Nama Produk</th>
+                                <th class="text-center">Model</th>
+                                <th class="text-center">Warna</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-center">Tanggal</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php if ($shipmentToLovish->getNumRows() > 0) : ?>
+                                <?php foreach ($shipmentToLovish->getResultObject() as $product) : ?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td><?= $product->product_name ?></td>
+                                        <td class="text-center"><?= $product->model_name ?></td>
+                                        <td><?= $product->color ?></td>
+                                        <td><?= $product->qty ?></td>
+                                        <td class="text-center"><?= $product->updated_at ?></td>
+                                        
+                                    </tr>
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Total Produk Keluar (Gudang Lovish)</h6>
             </div>
             <div class="card-body">
@@ -202,6 +245,45 @@
         </div>
     </div>
     
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left">Stok Kain</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Jenis</th>
+                                <th class="text-center">Warna</th>
+                                <th class="text-center">Jumlah Roll</th>
+                                <th class="text-center">Jumlah Berat (Kg)</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php if ($materialStock->getNumRows() > 0) : ?>
+                                <?php foreach ($materialStock->getResultObject() as $kain) : ?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td><?= $kain->type ?></td>
+                                        <td><?= $kain->color ?></td>
+                                        <td><?= $kain->roll ?></td>
+                                        <td><?= number_format($kain->berat/1000, 2) ?></td>
+                                    </tr>
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="row">
     <div class="col-lg-12">

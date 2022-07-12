@@ -7,16 +7,16 @@ use CodeIgniter\Model;
 class MaterialModel extends Model
 {
     protected $table = 'materials';
-    protected $allowedFields = ['material_id', 'vendor_id', 'color_id', 'weight', 'roll', 'qrcode', 'status', 'price', 'user_id', 'gudang_id', 'updated_at'];
+    protected $allowedFields = ['material_id', 'vendor_id', 'color_id', 'weight', 'roll', 'qrcode', 'status', 'price', 'user_id', 'gudang_id', 'updated_at', 'pic_cutting', 'gelar1', 'gelar2', 'tgl_cutting', 'vendor_pola'];
 
     public function getAllMaterial() {
         $query =  $this->db->table('materials')
-        ->select('materials.*, material_types.type, colors.color, users.name, gudang, roll, vendor')
+        ->select('materials.*, material_types.type, colors.color, gudang, roll, vendor, tim_cutting.name as pic')
         ->join('material_types', 'material_types.id = materials.material_id')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
+        ->join('tim_cutting', 'tim_cutting.id = materials.pic_cutting')
         ->join('material_vendors', 'material_vendors.id = materials.vendor_id')
-        ->join('users', 'users.id = materials.user_id')
         ->where('status', '1')
         ->orderBy('created_at', 'desc')->get();
         return $query;
@@ -39,12 +39,14 @@ class MaterialModel extends Model
 
     public function getAllMaterialOut() {
         $query =  $this->db->table('materials')
-        ->select('materials.created_at, materials.weight, material_types.type, colors.color, users.name, gudang, roll, material_patterns.created_at as created_at_pola')
+        ->select('materials.*, material_types.type, colors.color, gudang, roll, vendor, tim_cutting.name as pic, material_patterns.created_at as created_at_pola, users.name ')
         ->join('material_types', 'material_types.id = materials.material_id')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
+        ->join('tim_cutting', 'tim_cutting.id = materials.pic_cutting')
+        ->join('material_vendors', 'material_vendors.id = materials.vendor_id')
         ->join('material_patterns', 'material_patterns.material_id = materials.id')
-        ->join('users', 'users.id = material_patterns.user_id_out')
+        ->join('users', 'users.id = material_patterns.user_id_in')
         ->where('status', '2')
         ->orderBy('created_at', 'desc')->get();
         return $query;
@@ -65,14 +67,26 @@ class MaterialModel extends Model
 
     public function getAllPolaIn() {
         $query =  $this->db->table('materials')
-        ->select('material_patterns.*, weight, material_types.type, colors.color, users.name, gudang, roll')
+        ->select('material_patterns.*, weight, material_types.type, colors.color, users.name, gudang, roll, vendor_pola.name as vendor_pola')
         ->join('material_types', 'material_types.id = materials.material_id')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
+        ->join('vendor_pola', 'vendor_pola.id = materials.vendor_pola', 'left')
         ->join('material_patterns', 'material_patterns.material_id = materials.id')
         ->join('users', 'users.id = material_patterns.user_id_in')
         ->where('status', '3')
         ->orderBy('created_at', 'desc')->get();
+        return $query;
+    }
+
+    public function getAllMaterialStock() {
+        $query = $this->db->table('materials')
+            ->select('material_types.type, colors.color, SUM(roll) as roll, SUM(weight) as berat')
+            ->join('material_types', 'material_types.id = materials.material_id')
+            ->join('colors', 'colors.id = materials.color_id')
+            ->groupBy('material_types.type')
+            ->groupBy('colors.color')
+            ->get();
         return $query;
     }
 
@@ -191,8 +205,23 @@ class MaterialModel extends Model
         return $query;
     }
 
+    public function getAllPICCutting() {
+        $query = $this->db->table('tim_cutting')->get();
+        return $query;
+    }
+
+    public function getAllTimGelar() {
+        $query = $this->db->table('tim_gelar')->get();
+        return $query;
+    }
+
     public function updateMaterialStokRetur($id) {
         $this->db->query("UPDATE materials SET qty = qty - 1, status = 0 WHERE id = $id ");
+    }
+
+    public function getAllVendorPola() {
+        $query = $this->db->table('vendor_pola')->get();
+        return $query;
     }
 
 }

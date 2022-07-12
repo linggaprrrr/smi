@@ -20,7 +20,7 @@ class ProductModel extends Model
 
     public function getAllProductIn() {
         $query = $this->db->table('products')
-            ->select('products.*, model_name, product_name, color, name')
+            ->select('products.*, model_name, product_name, color, name, price')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
@@ -53,8 +53,24 @@ class ProductModel extends Model
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
             ->join('users', 'users.id = product_logs.user_id_in')
-            ->where('status', 2)
+            ->where('status', 3)
             ->orderBy('created_at', 'desc')
+            ->get();
+        return $query;
+    }
+
+    public function getAllShipmentToLovish() {
+        $query = $this->db->table('products')
+            ->select('model_name, product_name, color, SUM(qty) as qty, product_logs.updated_at')
+            ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('product_logs', 'product_logs.product_id = products.id')
+            ->join('users', 'users.id = product_logs.user_id_in')
+            ->where('status', 2)
+            ->groupBy('product_name')
+            ->groupBy('color')
+            ->orderBy('product_logs.updated_at', 'desc')
             ->get();
         return $query;
     }
@@ -150,11 +166,17 @@ class ProductModel extends Model
     }
 
     public function setProductOut($id, $user) {
-        $this->db->query("UPDATE product_logs SET user_id_out='$user', updated_at = date('Y-m-d H:i:s') WHERE id='$id' ");
+        $this->db->query("UPDATE product_logs SET user_id_out='$user', status='2', updated_at = date('Y-m-d H:i:s') WHERE id='$id' ");
     }
 
     public function updateStokOut($id) {
         $this->db->query("UPDATE products SET qty = qty - 1 WHERE id='$id' ");
     }
 
+    public function productStatus($id) {
+        $query = $this->db->table('product_logs')
+        ->where('product_id', $id)
+        ->get();
+        return $query->getResultObject();
+    }
 }   

@@ -214,6 +214,15 @@ class Products extends BaseController
         ]);
     }
 
+    public function onChangeProductHPP() {
+        $id = $this->request->getVar('product');
+        $hpp = $this->request->getVar('hpp');
+        $this->productModel->save([
+            'id' => $id,
+            'price' => $hpp
+        ]);
+    }
+
     // Lovish
     public function gudangLovishProduk() {
         $productsOut = $this->productModel->getAllProductOut();
@@ -241,7 +250,8 @@ class Products extends BaseController
             'model_id'  => $post['model'],
             'user_id' => session()->get('user_id'),
             'qty' => $post['qty'],
-            'vendor_id' => $post['vendor']
+            'vendor_id' => $post['vendor'],
+            'price' => $post['harga']
         ];
         $this->productModel->save($product);
         $getProduct = $this->productModel
@@ -313,7 +323,7 @@ class Products extends BaseController
 
     public function exportDataGesit() {
         $products = $this->productModel->getAllProductIn();
-        $date = date("Y-m-d H:i:s");
+        $date = time();
         $fileName = "Data Produk Gesit {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -352,7 +362,7 @@ class Products extends BaseController
 
     public function exportDataLovishIn() {
         $products = $this->productModel->getAllProductOut();
-        $date = date("Y-m-d H:i:s");
+        $date = time();
         $fileName = "Data Produk Masuk Lovish {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
