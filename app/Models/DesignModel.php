@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class DesignModel extends Model
 {
     protected $table = 'models';
-    protected $allowedFields = ['model_name'];
+    protected $allowedFields = ['model_name', 'hpp'];
 
     public function getAllModel() {
         $query =  $this->db->table('models')

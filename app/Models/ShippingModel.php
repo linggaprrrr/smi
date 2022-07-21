@@ -46,13 +46,11 @@ class ShippingModel extends Model
         $builder = $this->db->table('shippings');
         $builder->ignore(true)->insert($data);
         $last = $this->db->insertID();
-        if (!is_null($last) || !empty($last)) {
-            $this->db->query("INSERT INTO shipping_details(shipping_id) VALUES('$last') ");
-        }
+        
     }
 
     public function insertProductShipment($product_id, $shipping_id) {
-        $this->db->query("UPDATE shipping_details SET product_id = '$product_id' WHERE shipping_id = '$shipping_id' ");
+        $this->db->query("INSERT INTO shipping_details(product_id, shipping_id) VALUES('$product_id', '$shipping_id')") ;
     }
 
 }

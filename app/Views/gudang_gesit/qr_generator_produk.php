@@ -142,25 +142,27 @@
                 const qr = JSON.parse(data);
                 var id = 1;                                                
                 $('#qr-handler').html("");
-                for (var i = 0; i < qr.length; i++) {
-                    const qrCount = parseInt(qr[i]['qty']);
-                    const desc = qr[i]['key'].split("-");
-                    for (var j = 0; j < qrCount; j+=3) {                                            
-                        $('#qr-handler').append('<tr>');
-                        if (qrCount - j >= 3) {         
-                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
-                            $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
-                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
-                        } else if (qrCount - j == 2) {                            
-                            $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
-                            $('#qr-handler').append('<td style="padding-left: 20px;padding-right: 20px;"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
+                console.log(qr);
+                for (var i = 0; i < qr.length; i++) {                    
+                    $('#qr-handler').append('<tr>');
+                        if (qr.length - i >= 3) {    
+                            const desc1 = qr[i]['key'].split("-");
+                            const desc2 = qr[i+1]['key'].split("-");
+                            const desc3 = qr[i+2]['key'].split("-");     
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'<br>'+desc1[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'<br>'+desc2[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i+2]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc3[1]+'<br>'+desc3[2]+'<br>'+desc3[3]+'</small></td>');
+                        } else if (qr.length - i == 2) {
+                            const desc1 = qr[i]['key'].split("-");
+                            const desc2 = qr[i+1]['key'].split("-");                            
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'<br>'+desc1[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'<br>'+desc2[3]+'</small></td>');
                         } else {
-                            $('#qr-handler').append('<td style="padding-left: 0px;padding-right: 0px;"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc[1]+'<br>'+desc[2]+'<br>'+desc[3]+'</small></td>');
+                            const desc1 = qr[i]['key'].split("-");
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'<br>'+desc1[3]+'</small></td>');
                         }
                         $('#qr-handler').append('</tr>');
-                    }
                 }
-
                 $('#qr-modal').modal({backdrop: 'static', keyboard: false});
                 $('#qr-modal').modal('show');
             });

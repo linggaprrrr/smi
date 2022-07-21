@@ -36,14 +36,17 @@ class Products extends BaseController
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $products = $this->productModel->getAllProduct();
+        $vendors = $this->productModel->getAllVendorPenjualan();
+       
         $data = array(
-            'title' => 'Produk & Model',
+            'title' => 'Produk',
             'productsIn' => $productsIn,
             'productsOut' => $productsOut,
             'productsExp' => $productsExp,
             'models' => $models,
             'products' => $products,
-            'colors' => $colors
+            'colors' => $colors,
+            'vendors' => $vendors
         );
         return view('admin/products', $data);    
     }
@@ -101,6 +104,7 @@ class Products extends BaseController
         $post = $this->request->getVar();
         $model = [
             'model_name' => $post['nama_model'],
+            'hpp' => $post['hpp']
         ];
         $this->designModel->save($model);
         return redirect()->back()->with('create', 'Model berhasil ditambahkan');
@@ -225,18 +229,22 @@ class Products extends BaseController
 
     // Lovish
     public function gudangLovishProduk() {
+        $productsIn = $this->productModel->getAllProductInLovish();
         $productsOut = $this->productModel->getAllProductOut();
         $productsExp = $this->productModel->getAllProductExp();
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $products = $this->productModel->getAllProduct();
+        $vendors = $this->productModel->getAllVendorPenjualan();
         $data = array(
             'title' => 'Produk',
+            'productsIn' => $productsIn,
             'productsOut' => $productsOut,
             'productsExp' => $productsExp,
             'models' => $models,
             'products' => $products,
             'colors' => $colors,
+            'vendors' => $vendors
         );
         return view('gudang_lovish/products', $data);    
     }
@@ -254,6 +262,14 @@ class Products extends BaseController
             'price' => $post['harga']
         ];
         $this->productModel->save($product);
+        $productId = $this->productModel->insertID();
+        
+        for ($i=0; $i < $post['qty']; $i++) {
+            $this->productModel->createBarcode($productId);
+        }
+
+        $this->productModel->createLog($productId, $post['qty']);
+
         $getProduct = $this->productModel
             ->select('products.id, product_name, model_name, color')
             ->join('models', 'models.id = products.model_id')
@@ -261,7 +277,7 @@ class Products extends BaseController
             ->join('colors', 'colors.id = products.color_id')
             ->orderBy('products.id', 'desc')
             ->first();
-        $this->productModel->setProductIn($getProduct['id'], session()->get('user_id'));
+        
         $this->logModel->save([
             'description' => 'Menambahkan produk baru ('.$getProduct['product_name'].' '.$getProduct['model_name'].' '.$getProduct['color'].') sebanyak '.$post['qty'].'. ',
             'user_id' =>  session()->get('user_id'),
@@ -397,6 +413,12 @@ class Products extends BaseController
 		flush();
 		readfile($fileName);
 		exit;
+    }
+
+    public function getHPP() {
+        $id = $this->request->getVar('id');
+        $hpp = $this->designModel->find($id);
+        echo json_encode($hpp);
     }
 
 }

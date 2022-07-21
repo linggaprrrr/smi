@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\MaterialModel;
 use App\Models\ProductModel;
 use App\Models\LogModel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Reports extends BaseController
 {   
@@ -69,5 +71,122 @@ class Reports extends BaseController
 
         );
         return view('gudang_gesit/reports', $data);    
+    }
+
+    public function uploadMaterialType() {
+        $file = $this->request->getFile('file');
+    
+        $ext = $file->getClientExtension();
+        if ($ext == 'xls') {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+        } else {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        }
+        $spreadsheet = $render->load($file);
+        $data = $spreadsheet->getActiveSheet()->toArray();
+        foreach ($data as $idx => $row) {
+            if ($idx > 0) {                
+                $data = $row[1];
+                $this->materialModel->importMaterial($data);
+            }
+        } 
+        return redirect()->back()->with('create', 'Kain berhasil diimport');
+    }
+
+    public function uploadModelType() {
+        $file = $this->request->getFile('file');
+    
+        $ext = $file->getClientExtension();
+        if ($ext == 'xls') {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+        } else {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        }
+        $spreadsheet = $render->load($file);
+        $data = $spreadsheet->getActiveSheet()->toArray();
+        foreach ($data as $idx => $row) {
+            if ($idx > 0) {                
+                $data = $row[1];
+                $hpp = $row[2];
+                $this->materialModel->importModel($data, $hpp);
+            }
+        } 
+        return redirect()->back()->with('create', 'Model berhasil diimport');
+    }
+    public function uploadProductType() {
+        $file = $this->request->getFile('file');
+    
+        $ext = $file->getClientExtension();
+        if ($ext == 'xls') {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+        } else {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        }
+        $spreadsheet = $render->load($file);
+        $data = $spreadsheet->getActiveSheet()->toArray();
+        foreach ($data as $idx => $row) {
+            if ($idx > 0) {                
+                $data = $row[1];
+                $this->materialModel->importProduk($data);
+            }
+        } 
+        return redirect()->back()->with('create', 'Produk berhasil diimport');
+    }
+    public function uploadColor() {
+        $file = $this->request->getFile('file');
+    
+        $ext = $file->getClientExtension();
+        if ($ext == 'xls') {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+        } else {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        }
+        $spreadsheet = $render->load($file);
+        $data = $spreadsheet->getActiveSheet()->toArray();
+        foreach ($data as $idx => $row) {
+            if ($idx > 0) {                
+                $data = $row[1];
+                $this->materialModel->importColor($data);
+            }
+        } 
+        return redirect()->back()->with('create', 'Kain berhasil diimport');
+    }
+    public function uploadVendorSupplier() {
+        $file = $this->request->getFile('file');
+    
+        $ext = $file->getClientExtension();
+        if ($ext == 'xls') {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+        } else {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        }
+        $spreadsheet = $render->load($file);
+        $data = $spreadsheet->getActiveSheet()->toArray();
+        foreach ($data as $idx => $row) {
+            if ($idx > 0) {                
+                $data = $row[1];
+                $this->materialModel->importVendorSupp($data);
+            }
+        } 
+        return redirect()->back()->with('create', 'Vendor berhasil diimport');
+    }
+    public function uploadVendorSeller() {
+        $file = $this->request->getFile('file');
+    
+        $ext = $file->getClientExtension();
+        if ($ext == 'xls') {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+        } else {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        }
+        $spreadsheet = $render->load($file);
+        $data = $spreadsheet->getActiveSheet()->toArray();
+        foreach ($data as $idx => $row) {
+            if ($idx > 0) {                
+                $data = $row[1];
+                $this->materialModel->importVendorSell($data);
+            }
+        } 
+        return redirect()->back()->with('create', 'Vendor berhasil diimport');
     }
 }

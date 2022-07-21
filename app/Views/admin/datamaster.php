@@ -12,6 +12,41 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Kain</h6>
                 <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-kain"><i class="fa fa-plus mr-2"></i>Tambah Kain</button>
+                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importkain"><i class="fa fa-file-excel mr-2"></i>
+                    Import
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="importkain" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form action="<?= base_url('/upload-jenis-kain') ?>" method="post" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload Jenis Kain</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>File:</label>
+                                    <label class="custom-file">
+
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename">Choose file</span>
+                                    </label>
+                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
                 <div class="modal fade bd-example-modal-lg-kain" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">                    
@@ -111,7 +146,41 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Model</h6>
                 <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-model"><i class="fa fa-plus mr-2"></i>Tambah Model</button>
+                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importmodel"><i class="fa fa-file-excel mr-2"></i>
+                    Import
+                </button>
 
+                <!-- Modal -->
+                <div class="modal fade" id="importmodel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form action="<?= base_url('/upload-jenis-model') ?>" method="post" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload Jenis Model</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>File:</label>
+                                    <label class="custom-file">
+
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload2" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename2">Choose file</span>
+                                    </label>
+                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
                 <div class="modal fade bd-example-modal-lg-model" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -129,7 +198,11 @@
                                         <input type="text" class="form-control" name="nama_model" id="tambah-model" placeholder="Masukkan Nama Model" required>
                                         <small id="modelName" class="form-text text-muted">Pastikan nama model tidak ada dalam list.</small>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="">HPP</label>
+                                        <input type="text" class="form-control set-hpp" name="hpp" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
                                     
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -147,6 +220,7 @@
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
                                 <th class="text-center">Nama Model</th>
+                                <th class="text-center">HPP</th>
                                 <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
                             </tr>
                         </thead>
@@ -158,6 +232,7 @@
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td class=""><?= $model->model_name ?></td>
+                                        <td class=""><?= $model->hpp ?></td>
                                         <td class="text-center">
                                             <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-model" data-id="<?= $model->id ?>">
                                                 <span class="icon text-white-25">
@@ -212,7 +287,42 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Produk</h6>
                 <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-produk"><i class="fa fa-plus mr-2"></i>Tambah Produk</button>
-                <div class="modal fade bd-example-modal-lg-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importproduk"><i class="fa fa-file-excel mr-2"></i>
+                    Import
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="importproduk" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form action="<?= base_url('/upload-jenis-produk') ?>" method="post" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload Jenis Produk</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>File:</label>
+                                    <label class="custom-file">
+
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload3" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename3">Choose file</span>
+                                    </label>
+                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
+                <div class="modal fade bd-example-modal-lg-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">                
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <form id="form-produk">
@@ -309,6 +419,41 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Warna</h6>
                 <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-warna"><i class="fa fa-plus mr-2"></i>Tambah Warna</button>
+                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importwarna"><i class="fa fa-file-excel mr-2"></i>
+                    Import
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="importwarna" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form action="<?= base_url('/upload-warna') ?>" method="post" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload Warna</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>File:</label>
+                                    <label class="custom-file">
+
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload4" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename4">Choose file</span>
+                                    </label>
+                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
                 <div class="modal fade bd-example-modal-lg-warna" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -407,6 +552,41 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Vendor Supplier Kain</h6>
                 <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-vendorsupplier"><i class="fa fa-plus mr-2"></i>Tambah Vendor</button>
+                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importsupplier"><i class="fa fa-file-excel mr-2"></i>
+                    Import
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="importsupplier" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form action="<?= base_url('/upload-vendor-supplier') ?>" method="post" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload Vendor Supplier</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>File:</label>
+                                    <label class="custom-file">
+
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload5" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename5">Choose file</span>
+                                    </label>
+                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
                 <div class="modal fade bd-example-modal-lg-vendorsupplier" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -515,6 +695,41 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Vendor Penjualan</h6>
                 <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-vendorpenjualan"><i class="fa fa-plus mr-2"></i>Tambah Vendor</button>
+                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importvendorselling"><i class="fa fa-file-excel mr-2"></i>
+                    Import
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="importvendorselling" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form action="<?= base_url('/upload-vendor-penjualan') ?>" method="post" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload Vendor Penjualan</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>File:</label>
+                                    <label class="custom-file">
+
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload6" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename6">Choose file</span>
+                                    </label>
+                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
                 <div class="modal fade bd-example-modal-lg-vendorpenjualan" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -858,6 +1073,78 @@
                 }
             });
     }); 
+
+
+    var input = document.getElementById('file-upload');
+    var infoArea = document.getElementById('file-upload-filename');
+    var input2 = document.getElementById('file-upload2');
+    var infoArea2 = document.getElementById('file-upload-filename2');
+    var input3 = document.getElementById('file-upload3');
+    var infoArea3 = document.getElementById('file-upload-filename3');
+    var input4 = document.getElementById('file-upload4');
+    var infoArea4 = document.getElementById('file-upload-filename4');
+    var input5 = document.getElementById('file-upload5');
+    var infoArea5 = document.getElementById('file-upload-filename5');
+    var input6 = document.getElementById('file-upload6');
+    var infoArea7 = document.getElementById('file-upload-filename6');
+
+    input.addEventListener('change', showFileName);
+    input2.addEventListener('change', showFileName2);
+    input3.addEventListener('change', showFileName3);
+    input4.addEventListener('change', showFileName4);
+    input5.addEventListener('change', showFileName5);
+    input6.addEventListener('change', showFileName6);
+
+    function showFileName(event) {
+        // the change event gives us the input it occurred in 
+        var input = event.srcElement;
+        // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+        var fileName = input.files[0].name;
+        // use fileName however fits your app best, i.e. add it into a div
+        infoArea.textContent = '' + fileName;
+    }
+
+    function showFileName2(event) {
+        // the change event gives us the input it occurred in 
+        var input = event.srcElement;
+        // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+        var fileName = input2.files[0].name;
+        // use fileName however fits your app best, i.e. add it into a div
+        infoArea2.textContent = '' + fileName;
+    }
+
+    function showFileName3(event) {
+        // the change event gives us the input it occurred in 
+        var input = event.srcElement;
+        // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+        var fileName = input3.files[0].name;
+        // use fileName however fits your app best, i.e. add it into a div
+        infoArea3.textContent = '' + fileName;
+    }
+    function showFileName4(event) {
+        // the change event gives us the input it occurred in 
+        var input = event.srcElement;
+        // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+        var fileName = input4.files[0].name;
+        // use fileName however fits your app best, i.e. add it into a div
+        infoArea4.textContent = '' + fileName;
+    }
+    function showFileName5(event) {
+        // the change event gives us the input it occurred in 
+        var input = event.srcElement;
+        // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+        var fileName = input5.files[0].name;
+        // use fileName however fits your app best, i.e. add it into a div
+        infoArea5.textContent = '' + fileName;
+    }
+    function showFileName6(event) {
+        // the change event gives us the input it occurred in 
+        var input = event.srcElement;
+        // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+        var fileName = input6.files[0].name;
+        // use fileName however fits your app best, i.e. add it into a div
+        infoArea6.textContent = '' + fileName;
+    }
 
 </script>
 <?= $this->endSection() ?>

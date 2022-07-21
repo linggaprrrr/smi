@@ -500,14 +500,6 @@
             });   
     });
 
-    $('.tgl-cutting-edit').on('change', function() {
-        const id = $(this).data('id');
-        const tgl = $(this).val();
-        $.post('/on-change-material-tgl-cutting', {id: id, tgl: tgl})
-            .done(function(data) {
-                $.notify('Tgl Cutting kain berhasil diubah', "success");
-            });   
-    });
 
     $('.vendor-pola').on('change', function() {
         const id = $(this).data('id');

@@ -114,22 +114,24 @@ class QRCodeGenerator extends BaseController
                 'qr' => ''
             );
             for ($i=0; $i < count($products); $i++) {
-                $getProduct = $this->produkModel->select('products.id, model_name, product_name, color, qty')
+                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, product_name, color')
                     ->join('product_types', 'product_types.id = product_id')
                     ->join('colors', 'colors.id = products.color_id')
                     ->join('models', 'products.model_id = models.id')                
+                    ->join('product_barcodes', 'product_barcodes.product_id = products.id')
                     ->where('products.id', $products[$i])                                        
-                    ->first();
-                $data = $getProduct['id'].'-'.$getProduct['product_name'].'-'.$getProduct['model_name'].'-'.$getProduct['color'];                
-                $qr = QrCode::create($data);
-                $writer = new PngWriter();
-                $result = $writer->write($qr);    
-                $this->produkModel->set('qrcode', $result->getDataUri())                    
-                    ->where('id', $products[$i])->update();            
-                $qrs['key'] = $data;
-                $qrs['qr'] = $result->getDataUri();
-                $qrs['qty'] = $getProduct['qty'];
-                array_push($json, $qrs);
+                    ->get();
+                
+                foreach ($getProducts->getResultArray() as $row) {
+                    $data = $row['id'].'-'.$row['product_name'].'-'.$row['model_name'].'-'.$row['color'];                
+                    $qr = QrCode::create($data);
+                    $writer = new PngWriter();
+                    $result = $writer->write($qr);    
+                    $this->produkModel->setBarocde($row['id'], $result->getDataUri());
+                    $qrs['key'] = $data;
+                    $qrs['qr'] = $result->getDataUri();
+                    array_push($json, $qrs);
+                }                
             }
             echo json_encode($json);         
         }   

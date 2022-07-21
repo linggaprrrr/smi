@@ -82,6 +82,13 @@ $routes->post('/tambah-kain', 'Materials::addMaterial');
 $routes->get('/get-kain-detail', 'Materials::getMaterialDetail');
 $routes->post('/update-kain-detail', 'Materials::updateMaterialDetail');
 
+$routes->post('/upload-jenis-kain', 'Reports::uploadMaterialType');
+$routes->post('/upload-jenis-model', 'Reports::uploadModelType');
+$routes->post('/upload-jenis-produk', 'Reports::uploadProductType');
+$routes->post('/upload-warna', 'Reports::uploadColor');
+$routes->post('/upload-vendor-supplier', 'Reports::uploadVendorSupplier');
+$routes->post('/upload-vendor-penjualan', 'Reports::uploadVendorSeller');
+
 // ADMIN API
 $routes->get('/get-user', 'Users::getUser');
 $routes->post('/delete-user', 'Users::deleteUser');
@@ -131,6 +138,8 @@ $routes->post('on-change-product-qty', 'Products::onChangeProductQty');
 $routes->post('on-change-product-weight', 'Products::onChangeProductWeight');
 $routes->post('on-change-product-color', 'Products::onChangeProductColor');
 $routes->post('on-change-product-hpp', 'Products::onChangeProductHPP');
+$routes->get('get-hpp-product', 'Products::getHPP');
+
 
 // kain
 $routes->post('on-change-material-type', 'Materials::onChangeMaterialType');

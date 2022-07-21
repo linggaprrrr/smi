@@ -36,13 +36,7 @@
                         <?php
                     break;
                 case "2": 
-                        ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/cetak-pengiriman') ?>">
-                                <i class="fas fa-fw fa-print"></i>
-                                <span>Cetak QR Pengiriman</span></a>
-                        </li>
-                        <?php
+                       
                     break;
                 case "3": 
                         ?>
