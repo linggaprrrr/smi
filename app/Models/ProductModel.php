@@ -39,7 +39,7 @@ class ProductModel extends Model
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
             ->join('users', 'users.id = product_logs.user_id_in')
-            ->where('status', 2)
+            ->where('product_logs.status', 2)
             ->orderBy('created_at', 'desc')
             ->get();
         return $query;
@@ -53,7 +53,7 @@ class ProductModel extends Model
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
             ->join('users', 'users.id = product_logs.user_id_in')
-            ->where('status', 3)
+            ->where('product_logs.status', 3)
             ->orderBy('created_at', 'desc')
             ->get();
         return $query;
@@ -61,13 +61,13 @@ class ProductModel extends Model
 
     public function getAllShipmentToLovish() {
         $query = $this->db->table('products')
-            ->select('model_name, product_name, color, SUM(qty) as qty, product_logs.updated_at')
+            ->select('model_name, product_name, color, SUM(product_logs.qty) as qty, product_logs.updated_at')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
             ->join('users', 'users.id = product_logs.user_id_in')
-            ->where('status', 2)
+            ->where('product_logs.status', 2)
             ->groupBy('product_name')
             ->groupBy('color')
             ->orderBy('product_logs.updated_at', 'desc')
