@@ -20,26 +20,43 @@ class ProductModel extends Model
 
     public function getAllProductIn() {
         $query = $this->db->table('products')
-            ->select('products.*, model_name, product_name, color, name, price')
+            ->select('product_logs.qty as qtyy, products.*, model_name, product_name, color, name, price')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
-            ->where('status', 1)
+            ->join('product_logs', 'product_logs.product_id = products.id')
+            ->where('product_logs.status', 1)
             ->orderBy('created_at', 'desc')
+            ->get();
+        return $query;
+    }
+
+    public function getAllProductInLovish() {
+        $query = $this->db->table('products')
+            ->select('SUM(product_logs.qty) as qtyy, products.*, model_name, product_name, color, name, price')
+            ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = products.product_id')            
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('users', 'users.id = products.user_id')
+            ->join('product_logs', 'product_logs.product_id = products.id')
+            ->where('product_logs.status', 2)
+            ->groupBy('product_logs.product_id')
+            ->orderBy('product_logs.created_at', 'desc')
             ->get();
         return $query;
     }
 
     public function getAllProductOut() {
         $query = $this->db->table('products')
-            ->select('products.*, model_name, product_name, color, name')
+            ->select('product_logs.qty as qtyy, products.*, model_name, product_name, color, name, price')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
+            ->join('users', 'users.id = products.user_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
-            ->join('users', 'users.id = product_logs.user_id_in')
             ->where('product_logs.status', 2)
+            ->where('products.status', 1)
             ->orderBy('created_at', 'desc')
             ->get();
         return $query;
@@ -47,12 +64,12 @@ class ProductModel extends Model
 
     public function getAllProductExp() {
         $query = $this->db->table('products')
-            ->select('products.*, model_name, product_name, color, name')
+        ->select('product_logs.qty as qtyy, products.*, model_name, product_name, color, name, price')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
+            ->join('users', 'users.id = products.user_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
-            ->join('users', 'users.id = product_logs.user_id_in')
             ->where('product_logs.status', 3)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -67,7 +84,7 @@ class ProductModel extends Model
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
             ->join('users', 'users.id = product_logs.user_id_in')
-            ->where('product_logs.status', 2)
+            ->where('product_logs.status', 1)
             ->groupBy('product_name')
             ->groupBy('color')
             ->orderBy('product_logs.updated_at', 'desc')
@@ -77,28 +94,31 @@ class ProductModel extends Model
 
     public function getStokProductIn() {
         $query =  $this->db->table('models')
-            ->select('products.id, product_name, model_name, color, weight, status, qrcode, created_at')
-            ->selectCount('products.id', 'stok')
+            ->select('products.id, product_name, model_name, color, weight, status, qrcode, created_at, SUM(products.qty) as stok')            
             ->join('products', 'products.model_id = models.id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->where('status', '1')
             ->groupBy('product_name')
-            ->orderBy('created_at', 'desc')
+            ->groupBy('color')
+            ->groupBy('model_name')
+            ->orderBy('products.created_at', 'desc')
             ->get();  
         return $query;
     }
 
     public function getStokProductOut() {
         $query =  $this->db->table('models')
-            ->select('products.id, product_name, model_name, color, weight, status, qrcode, created_at')
-            ->selectCount('products.id', 'stok')
+            ->select('products.id, product_name, model_name, color, weight, qrcode, product_logs.created_at, SUM(product_logs.qty) as stok')            
             ->join('products', 'products.model_id = models.id')
-            ->join('product_types', 'product_types.id = product_id')
+            ->join('product_logs', 'product_logs.product_id = products.id')
+            ->join('product_types', 'product_types.id = products.product_id')
             ->join('colors', 'colors.id = products.color_id')
-            ->where('status', '2')
+            ->where('product_logs.status', '1')
             ->groupBy('product_name')
-            ->orderBy('created_at', 'desc')
+            ->groupBy('color')
+            ->groupBy('model_name')
+            ->orderBy('product_logs.created_at', 'desc')
             ->get();  
         return $query;
     }
@@ -161,7 +181,8 @@ class ProductModel extends Model
     }
 
     public function setProductIn($id, $user) {
-        $this->db->query("INSERT INTO product_logs(product_id, user_id_in) VALUES('$id', '$user') ");
+        $this->db->query("INSERT INTO product_logs(product_id, user_id) VALUES('$id', '$user') ");
+        $this->db->query("UPDATE product_logs SET qty = qty - 1 WHERE product_id='$id' AND status = 1 AND qty != 0 LIMIT 1");
 
     }
 
@@ -170,7 +191,25 @@ class ProductModel extends Model
     }
 
     public function updateStokOut($id) {
-        $this->db->query("UPDATE products SET qty = qty - 1 WHERE id='$id' ");
+
+        $this->db->query("UPDATE product_logs SET qty = qty - 1 WHERE product_id='$id' AND status = 2 AND qty != 0 LIMIT 1");
+    }
+
+    public function createBarcode($productId) {
+        $this->db->query("INSERT INTO product_barcodes(product_id) VALUES('$productId') ");
+    }
+
+    public function setBarocde($id, $qrcode) {
+        $this->db->query("UPDATE product_barcodes SET qrcode = '$qrcode' WHERE id='$id' ");
+    }
+
+    public function createLog($id, $qty, $status = null) {
+        $user = session()->get('user_id');
+        if (!is_null($status)) {
+            $this->db->query("INSERT product_logs(product_id, qty, status, user_id) VALUES('$id', '$qty', '$status', '$user')");
+        } else {
+            $this->db->query("INSERT product_logs(product_id, qty, user_id) VALUES('$id', '$qty', '$user')");
+        }
     }
 
     public function productStatus($id) {
@@ -178,5 +217,14 @@ class ProductModel extends Model
         ->where('product_id', $id)
         ->get();
         return $query->getResultObject();
+    }
+
+    public function findQR($id) {
+        $query = $this->db->query("SELECT * FROM product_barcodes WHERE id = '$id' WHERE status='1' LIMIT 1");
+        if (!empty($query->getResultArray())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }   

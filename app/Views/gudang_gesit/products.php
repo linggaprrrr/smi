@@ -34,7 +34,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Model*</label>
-                                <select class="form-control" name="model">
+                                <select class="form-control model-hpp" name="model">
+                                    <option value="-">-</option>
                                     <?php if ($models->getNumRows() > 0) : ?>
                                         <?php foreach ($models->getResultObject() as $model) : ?>
                                             <option value="<?= $model->id ?>"><?= $model->model_name ?></option>
@@ -63,7 +64,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">HPP</label>
-                                <input type="text" class="form-control" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
+                                <input type="text" class="form-control set-hpp" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
                                
                             </div>
                             <div class="form-group">
@@ -86,7 +87,7 @@
             </div>
         </div>
     </div>
-    <div class="card-body">
+        <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                 <thead>
@@ -132,7 +133,7 @@
                                     </select>      
                                 </td>
                                 <td><input type="text" class="form-control berat" name="weight" data-id='<?= $product->id ?>' value="<?= $product->weight ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
-                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>        
+                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qtyy ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>        
                                 <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->price ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
                                 <td class="text-center align-middle"><?= $product->created_at ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>
@@ -149,79 +150,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="modal fade bd-example-modal-lg-produk-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form action="<?= base_url('/update-produk-detail') ?>" method="post">
-                        <?= csrf_field() ?>
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Edit Produk</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="">Nama Produk*</label>
-                                <input type="hidden" name="id" id="id-produk">
-                                <select class="form-control" name="nama_produk" id="nama-produk">
-                                    <?php if ($products->getNumRows() > 0) : ?>
-                                        <?php foreach ($products->getResultObject() as $product) : ?>
-                                            <option value="<?= $product->id ?>"><?= $product->product_name ?></option>
-                                        <?php endforeach ?>
-                                    <?php endif ?>
-                                </select>
-                                                          
-                            </div>
-                            <div class="form-group">
-                                <label for="">Model*</label>
-                                <select class="form-control" id="model-produk" name="model">
-                                    <option value="">-</option>
-                                    <?php if ($models->getNumRows() > 0) : ?>
-                                        <?php foreach ($models->getResultObject() as $model) : ?>
-                                            <option value="<?= $model->id ?>"><?= $model->model_name ?></option>
-                                        <?php endforeach ?>
-                                    <?php endif ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="">Warna*</label>
-                                <select class="form-control" name="warna" id="warna" >
-                                    <?php if ($colors->getNumRows() > 0) : ?>
-                                        <?php foreach ($colors->getResultObject() as $color) : ?>
-                                            <option value="<?= $color->id ?>"><?= $color->color ?></option>
-                                        <?php endforeach ?>
-                                    <?php endif ?>
-                                </select>                                
-                            </div>
-                            <div class="form-group">
-                                <label for="">Berat (gr)</label>
-                                <input type="text" class="form-control" name="berat" id="berat" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="Masukkan berat produk">
-                                <small id="modelName" class="form-text text-muted">Contoh 1,5 kg menjadi <b>1500</b> </small>
-                            </div>
-                            <div class="form-group">
-                                <label for="">Qty</label>
-                                <input type="text" class="form-control" name="qty" id="qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." value="1">                                
-                            </div>
-                            <div class="form-group">
-                                <label for="">Vendor</label>
-                                <select class="form-control" name="model" id="vendor">
-                                    <?php if ($vendors->getNumRows() > 0) : ?>
-                                        <?php foreach ($vendors->getResultObject() as $vendor) : ?>
-                                            <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
-                                        <?php endforeach ?>
-                                    <?php endif ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        
     </div>
 </div>
 <div class="card shadow mb-4">
@@ -240,6 +169,7 @@
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (gr)</th>
+                        <th class="text-center">Qty</th>
                         <th class="text-center">Tanggal Masuk</th>
                         <th class="text-center">PIC</th>
                     </tr>
@@ -255,6 +185,7 @@
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
                                 <td><?= $product->weight ?></td>
+                                <td class="text-center">1</td>
                                 <td class="text-center"><?= $product->created_at ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
                             </tr>
@@ -356,6 +287,14 @@
                 .done(function(data) {
                     $.notify('HPP produk berhasil diubah', "success");
                 });   
+        });
+
+        $('.model-hpp').on('change', function() {
+            const id = $(this).val();
+            $.get('/get-hpp-product', {id: id}, function(data) {
+                const hpp = JSON.parse(data);            
+                $('.set-hpp').val(hpp['hpp']);
+            })
         });
     });
     

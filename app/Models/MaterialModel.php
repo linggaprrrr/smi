@@ -224,4 +224,23 @@ class MaterialModel extends Model
         return $query;
     }
 
+    public function importMaterial($type) {
+        $this->db->query("INSERT INTO material_types(type) VALUES('$type') ");
+    }
+    public function importModel($type, $hpp) {
+        $this->db->query("INSERT INTO models(model_name, hpp) VALUES('$type', '$hpp') ");
+    }
+    public function importProduk($type) {
+        $this->db->query("INSERT INTO product_types(product_name) VALUES('$type') ");
+    }
+    public function importColor($type) {
+        $this->db->query("INSERT INTO colors(color) VALUES('$type') ");
+    }
+    public function importVendorSupp($type) {
+        $this->db->query("INSERT INTO supplier_vendors(vendor) VALUES('$type') ");
+    }
+
+    public function importVendorSell($type) {
+        $this->db->query("INSERT INTO selling_vendors(vendor) VALUES('$type') ");
+    }
 }

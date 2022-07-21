@@ -35,9 +35,11 @@ class Materials extends BaseController
         $materialVendors = $this->materialModel->getMaterialVendors();
         $materialsIn = $this->materialModel->getAllMaterial();        
         $materialsOut = $this->materialModel->getAllMaterialOut();
-        $materialStock = $this->materialModel->getAllMaterialStock();    
         $materialsPolaIn = $this->materialModel->getAllPolaIn();
         $gudangs = $this->materialModel->getAllGudang();
+        $picCutting = $this->materialModel->getAllPICCutting();
+        $getAllTimGelar = $this->materialModel->getAllTimGelar();
+        $vendorPola = $this->materialModel->getAllVendorPola();
         $data = array(
             'title' => 'Kain',
             'materials' => $materials,
@@ -47,7 +49,9 @@ class Materials extends BaseController
             'materialsPolaIn' => $materialsPolaIn,
             'gudangs' => $gudangs,
             'materialVendors' => $materialVendors,
-            'materialStock' => $materialStock
+            'picCutting' => $picCutting,
+            'timGelars' => $getAllTimGelar,
+            'vendorPola' => $vendorPola
         );
         return view('admin/materials', $data);    
     }
