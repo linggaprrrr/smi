@@ -181,9 +181,13 @@ class ProductModel extends Model
     }
 
     public function setProductIn($id, $user) {
-        $this->db->query("INSERT INTO product_logs(product_id, user_id) VALUES('$id', '$user') ");
+        $this->db->query("INSERT INTO product_logs(product_id, user_id, status) VALUES('$id', '$user', 2) ");
         $this->db->query("UPDATE product_logs SET qty = qty - 1 WHERE product_id='$id' AND status = 1 AND qty != 0 LIMIT 1");
 
+    }
+
+    public function updateQRStatus($id) {
+        $this->db->query("UPDATE product_barcodes SET status = 2 WHERE id = '$id'");
     }
 
     public function setProductOut($id, $user) {

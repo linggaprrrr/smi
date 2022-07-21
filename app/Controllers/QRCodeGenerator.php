@@ -268,15 +268,18 @@ class QRCodeGenerator extends BaseController
         $qr = explode("-",$qr);
         
         $getProduct = $this->produkModel->findQR($qr[0]);
+        echo ($getProduct);
+        return;
         $productStatus = $this->produkModel->productStatus($qr[0]);
         $status = '0';
-        if (!is_null($getProduct) && $productStatus[0]->status == '1') {
+        if ($getProduct == true && $productStatus[0]->status == '1') {
             $status = '1'; 
             $this->produkModel->save([
                 'id' => $qr[0],
                 'qty' => $getProduct['qty'] - 1,
                 'updated_at' => date("Y-m-d H:i:s")
-            ]);            
+            ]);       
+            $this->produkModel->updateQRStatus($qr[0]);     
             $this->produkModel->setProductIn($qr[0], session()->get('user_id'));
         }
         echo json_encode($status);
