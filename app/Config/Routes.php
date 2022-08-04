@@ -157,7 +157,7 @@ $routes->post('on-change-material-vendor-pola', 'Materials::onChangeMaterialVend
 
 // GUDANG Lovish
 $routes->get('/gudang-lovish/dashboard', 'Home::gudangLovish');
-$routes->get('/gudang-lovish/produk', 'Products::gudangLovishProduk');
+$routes->get('/gudang-lovish/produk', 'LovishProducts::gudangLovishProduk');
 $routes->get('/gudang-lovish/qr-scanner-product-out', 'QRCodeGenerator::scannerProductOut');
 $routes->get('/gudang-lovish/qr-scanner-product-in', 'QRCodeGenerator::scannerProductRetur');
 $routes->get('/gudang-lovish/qr-scanner-shipment', 'QRCodeGenerator::scannerShipment');
