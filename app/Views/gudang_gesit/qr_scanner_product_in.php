@@ -202,7 +202,7 @@
                     if (stat == '1') {
                         $.notify(kode[1] +' '+ kode[2] +' '+ kode[2] +' berhasil di-scan!', "success");
                     } else {
-                        $.notify("Warning: Data produk tidak ada!", "warn");
+                        $.notify("Warning: Data produk tidak ada atau sudah di-scan!", "warn");
                     }
                 }); 
                 // Draw outline

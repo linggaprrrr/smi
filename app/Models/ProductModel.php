@@ -181,6 +181,12 @@ class ProductModel extends Model
     }
 
     public function setProductIn($id, $user) {
+        $getProduct = $this->db->query("SELECT product_barcode WHERE id = '$id' ");
+        $productId = "";
+        if ($getProduct->getNumRows() > 0) {
+            $productId = $getProduct->getResultArray();
+            
+        }
         $this->db->query("INSERT INTO product_logs(product_id, user_id, status) VALUES('$id', '$user', 2) ");
         $this->db->query("UPDATE product_logs SET qty = qty - 1 WHERE product_id='$id' AND status = 1 AND qty != 0 LIMIT 1");
 
@@ -217,16 +223,16 @@ class ProductModel extends Model
     }
 
     public function productStatus($id) {
-        $query = $this->db->table('product_logs')
-        ->where('product_id', $id)
+        $query = $this->db->table('product_barcodes')
+        ->where('product_barcodes.id', $id)
         ->get();
         return $query->getResultObject();
     }
 
     public function findQR($id) {
-        $query = $this->db->query("SELECT * FROM product_barcodes WHERE id = '$id' WHERE status='1' LIMIT 1");
+        $query = $this->db->query("SELECT * FROM product_barcodes WHERE id = '$id' AND status='1' LIMIT 1");
         if (!empty($query->getResultArray())) {
-            return true;
+            return $query;
         } else {
             return false;
         }
