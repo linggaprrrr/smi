@@ -161,7 +161,7 @@
         });
 
         $('#select-all').click(function() {
-            $('.printed').prop('checked', this.checked);
+            $('.unprinted').prop('checked', this.checked);
         });
 
     });

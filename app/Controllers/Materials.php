@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 class Materials extends BaseController
-{
+{   
     protected $materialModel = "";
     protected $productModel = "";
     protected $designModel = "";
@@ -266,6 +266,7 @@ class Materials extends BaseController
             'id' => $id,
             'vendor_pola' => $ven
         ]);
+        
     }
 
     public function onChangeMaterialColor() {
@@ -308,6 +309,8 @@ class Materials extends BaseController
             'id' => $id,
             'vendor_id' => $vendor
         ]);
+        $vendor = $this->materialModel->getVendor($vendor);
+        echo json_encode($vendor->getResultArray());        
     }
 
     public function onChangeMaterialPrice() {

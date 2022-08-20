@@ -20,7 +20,7 @@ class ProductModel extends Model
 
     public function getAllProductIn() {
         $query = $this->db->table('products')
-            ->select('product_logs.qty as qtyy, products.*, model_name, product_name, color, name, price')
+            ->select('products.*, model_name, product_name, color, name, price')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
@@ -34,14 +34,13 @@ class ProductModel extends Model
 
     public function getAllProductInLovish() {
         $query = $this->db->table('products')
-            ->select('SUM(product_logs.qty) as qtyy, products.*, model_name, product_name, color, name, price')
+            ->select('products.*, model_name, product_name, color, name, price')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = products.product_id')            
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
             ->where('product_logs.status', 2)
-            ->groupBy('product_logs.product_id')
             ->orderBy('product_logs.created_at', 'desc')
             ->get();
         return $query;
@@ -236,5 +235,9 @@ class ProductModel extends Model
         } else {
             return false;
         }
+    }
+
+    public function deleteProductBarcode($productId) {
+        $this->db->query("DELETE FROM product_barcodes WHERE product_id='$productId' ");
     }
 }   

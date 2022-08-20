@@ -87,6 +87,7 @@ class Products extends BaseController
             ->join('product_types', 'product_types.id = products.product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->first();
+        $this->productModel->deleteProductBarcode($productId);
         $this->logModel->save([
             'description' => 'Menghapus data produk ('.$getProduct['product_name'].' '.$getProduct['model_name'].' '.$getProduct['color'].')',
             'user_id' =>  session()->get('user_id'),
