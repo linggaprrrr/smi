@@ -135,7 +135,7 @@
                                         <td class="text-center"><?= $product->model_name ?></td>
                                         <td><?= $product->color ?></td>
                                         <td><?= $product->weight ?></td>
-                                        <td class="text-center"><?= $product->created_at ?></td>
+                                        <td class="text-center"><?= date('j F, Y', strtotime($product->created_at)) ?></td>
                                         
                                     </tr>
                                 <?php endforeach ?>

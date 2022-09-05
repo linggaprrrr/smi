@@ -12,7 +12,7 @@
         <div class="modal fade bd-example-modal-lg-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form action="<?= base_url('/tambah-produk-lovish') ?>" method="post">
+                    <form action="<?= base_url('/tambah-produk-lovish') ?>" method="post">                    
                     <?php csrf_field() ?>
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Tambah Produk Baru</h5>
@@ -98,6 +98,7 @@
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (gr)</th>
                         <th class="text-center">Qty</th>
+                        <th class="text-center">HPP</th>
                         <th class="text-center">Tanggal Masuk</th>
                         <th class="text-center">PIC</th>
                         <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
@@ -132,12 +133,9 @@
                                     </select>      
                                 </td>
                                 <td><input type="text" class="form-control berat" name="weight" data-id='<?= $product->id ?>' value="<?= $product->weight ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
-                                <?php if ($product->status == '2') : ?>
-                                    <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qtyy ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td> 
-                                <?php else : ?>
-                                    <td><input type="text" class="form-control qty" name="qty" disabled data-id='<?= $product->id ?>' value="<?= $product->qtyy ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td> 
-                                <?php endif ?>
-                                <td class="text-center align-middle"><?= $product->created_at ?></td>
+                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>        
+                                <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->price ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
+                                <td class="text-center align-middle"><?= date('j F, Y', strtotime($product->created_at)) ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>
                                 <td class="text-center">                                    
                                     <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-produk" data-id='<?= $product->id ?>'>
@@ -189,7 +187,7 @@
                                 <td><?= $product->color ?></td>
                                 <td><?= $product->weight ?></td>
                                 <td class="text-center">1</td>
-                                <td class="text-center"><?= $product->created_at ?></td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($product->created_at)) ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
                             </tr>
                         <?php endforeach ?>
@@ -225,7 +223,7 @@
                     swal("Poof! Data berhasil dihapus!", {
                     icon: "success",
                     });
-                    $.post('/delete-product-detail', {product_id: id})
+                    $.post('/delete-product-detail-lovish', {product_id: id})
                         .done(function(data) {
                             setTimeout(location.reload.bind(location), 1000);
                         });
@@ -239,7 +237,7 @@
         $('.jenis-produk').on('change', function() {
             const id = $(this).data('id');
             const jenis = $(this).val();
-            $.post('/on-change-product-type', {product: id, type: jenis})
+            $.post('/on-change-product-type-lovish', {product: id, type: jenis})
                 .done(function(data) {
                     $.notify('Jenis produk berhasil diubah', "success");
                 });
@@ -248,7 +246,7 @@
         $('.model').on('change', function() {
             const id = $(this).data('id');
             const model = $(this).val();
-            $.post('/on-change-model-name', {product: id, model: model})
+            $.post('/on-change-model-name-lovish', {product: id, model: model})
                 .done(function(data) {
                     $.notify('Model produk berhasil diubah', "success");
                 });   
@@ -257,7 +255,7 @@
         $('.warna').on('change', function() {
             const id = $(this).data('id');
             const warna = $(this).val();
-            $.post('/on-change-product-color', {product: id, color: warna})
+            $.post('/on-change-product-color-lovish', {product: id, color: warna})
                 .done(function(data) {
                     $.notify('Warna produk berhasil diubah', "success");
                 });   
@@ -266,7 +264,7 @@
         $('.berat').on('change', function() {
             const id = $(this).data('id');
             const berat = $(this).val();
-            $.post('/on-change-product-weight', {product: id, weight: berat})
+            $.post('/on-change-product-weight-lovish', {product: id, weight: berat})
                 .done(function(data) {
                     $.notify('Berat produk berhasil diubah', "success");
                 });   
@@ -275,7 +273,7 @@
         $('.qty').on('change', function() {
             const id = $(this).data('id');
             const qty = $(this).val();
-            $.post('/on-change-product-qty', {product: id, qty: qty})
+            $.post('/on-change-product-qty-lovish', {product: id, qty: qty})
                 .done(function(data) {
                     $.notify('Qty produk berhasil diubah', "success");
                 });   
@@ -285,7 +283,7 @@
         $('.hpp').on('change', function() {
             const id = $(this).data('id');
             const hpp = $(this).val();
-            $.post('/on-change-product-hpp', {product: id, hpp: hpp})
+            $.post('/on-change-product-hpp-lovish', {product: id, hpp: hpp})
                 .done(function(data) {
                     $.notify('HPP produk berhasil diubah', "success");
                 });   
@@ -293,7 +291,7 @@
 
         $('.model-hpp').on('change', function() {
             const id = $(this).val();
-            $.get('/get-hpp-product', {id: id}, function(data) {
+            $.get('/get-hpp-product-lovish', {id: id}, function(data) {
                 const hpp = JSON.parse(data);            
                 $('.set-hpp').val(hpp['hpp']);
             })

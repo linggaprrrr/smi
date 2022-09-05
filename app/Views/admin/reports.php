@@ -28,7 +28,7 @@
                                 <td class=""><?= $kain->type ?></td>
                                 <td><?= $kain->color ?></td>
                                 <td><?= number_format($kain->weight/1000, 2) ?></td>
-                                <td class="text-center"><?= $kain->created_at ?></td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($kain->created_at)) ?></td>
                             
                             </tr>
                         <?php endforeach ?>
@@ -66,7 +66,7 @@
                                 <td class=""><?= $kain->type ?></td>
                                 <td><?= $kain->color ?></td>
                                 <td><?= number_format($kain->weight/1000, 2) ?></td>
-                                <td class="text-center"><?= $kain->created_at ?></td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($kain->created_at)) ?></td>
                             
                             </tr>
                         <?php endforeach ?>
@@ -104,7 +104,7 @@
                                 <td class=""><?= $kain->type ?></td>
                                 <td><?= $kain->color ?></td>
                                 <td><?= number_format($kain->weight/1000, 2) ?></td>
-                                <td class="text-center"><?= $kain->created_at ?></td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($kain->created_at)) ?></td>
                             
                             </tr>
                         <?php endforeach ?>
@@ -145,7 +145,7 @@
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
                                 <td><?= $product->weight ?></td>
-                                <td class="text-center"><?= $product->created_at ?></td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($product->created_at)) ?></td>
                                 
                             </tr>
                         <?php endforeach ?>
@@ -185,7 +185,7 @@
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
                                 <td><?= $product->weight ?></td>
-                                <td class="text-center"><?= $product->created_at ?></td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($product->created_at)) ?></td>
                                 
                             </tr>
                         <?php endforeach ?>

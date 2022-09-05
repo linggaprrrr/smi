@@ -52,8 +52,6 @@ class LovishProducts extends BaseController
         return view('gudang_lovish/products', $data);    
     }
 
-    
-
     public function addProductLovish() {
         $post = $this->request->getVar();
         $product = [
@@ -67,19 +65,12 @@ class LovishProducts extends BaseController
             'price' => $post['harga'],
             'status' => '2'
         ];
-        $this->productModel->save($product);
-        $productId = $this->productModel->insertID();
-        
-       
-
-        $this->productModel->createLog($productId, $post['qty'], 2);
-
-        $getProduct = $this->productModel
-            ->select('products.id, product_name, model_name, color')
-            ->join('models', 'models.id = products.model_id')
+        $getProduct = $this->productLovishModel
+            ->select('lovish_products.id, product_name, model_name, color')
+            ->join('models', 'models.id = lovish_products.model_id')
             ->join('product_types', 'product_types.id = product_id')
-            ->join('colors', 'colors.id = products.color_id')
-            ->orderBy('products.id', 'desc')
+            ->join('colors', 'colors.id = lovish_products.color_id')
+            ->orderBy('lovish_products.id', 'desc')
             ->first();
         
         $this->logModel->save([
@@ -112,4 +103,79 @@ class LovishProducts extends BaseController
         ]);
         return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
     }
+
+    public function deleteProductDetail() {
+        $productId = $this->request->getVar('product_id');
+        $getProduct = $this->productLovishModel
+            ->join('models', 'models.id = lovish_products.model_id')
+            ->join('product_types', 'product_types.id = lovish_products.product_id')
+            ->join('colors', 'colors.id = lovish_products.color_id')
+            ->first();
+        $this->logModel->save([
+            'description' => 'Menghapus data produk ('.$getProduct['product_name'].' '.$getProduct['model_name'].' '.$getProduct['color'].')',
+            'user_id' =>  session()->get('user_id'),
+        ]);
+        $this->productLovishModel->where('id', $productId)->delete();
+    }
+
+    public function onChangeProductType() {
+        $id = $this->request->getVar('product');
+        $type = $this->request->getVar('type');
+        $this->productLovishModel->save([
+            'id' => $id,
+            'product_id' => $type
+        ]);
+    }
+
+    public function onChangeModelName() {
+        $id = $this->request->getVar('product');
+        $model = $this->request->getVar('model');
+        $this->productLovishModel->save([
+            'id' => $id,
+            'model_id' => $model
+        ]);
+    }
+
+    public function onChangeProductQty() {
+        $id = $this->request->getVar('product');
+        $qty = $this->request->getVar('qty');
+        $this->productLovishModel->save([
+            'id' => $id,
+            'qty' => $qty
+        ]);
+    }
+
+    public function onChangeProductWeight() {
+        $id = $this->request->getVar('product');
+        $weight = $this->request->getVar('weight');
+        $this->productLovishModel->save([
+            'id' => $id,
+            'weight' => $weight
+        ]);
+    }
+
+    public function onChangeProductColor() {
+        $id = $this->request->getVar('product');
+        $color = $this->request->getVar('color');
+        $this->productLovishModel->save([
+            'id' => $id,
+            'color_id' => $color
+        ]);
+    }
+
+    public function onChangeProductHPP() {
+        $id = $this->request->getVar('product');
+        $hpp = $this->request->getVar('hpp');
+        $this->productLovishModel->save([
+            'id' => $id,
+            'price' => $hpp
+        ]);
+    }
+
+    public function getHPP() {
+        $id = $this->request->getVar('id');
+        $hpp = $this->designModel->find($id);
+        echo json_encode($hpp);
+    }
+
 }

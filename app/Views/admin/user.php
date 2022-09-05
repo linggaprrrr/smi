@@ -266,11 +266,7 @@
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="1" id="customSwitch20">
                                                 <label class="custom-control-label" for="customSwitch20" style="padding-top: 5px;">Input Data Produk & Stok</label>
-                                            </div>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="2"  id="customSwitch21">
-                                                <label class="custom-control-label" for="customSwitch21" style="padding-top: 5px;">Cetak QR Pengiriman</label>
-                                            </div>
+                                            </div>                                            
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="3"  id="customSwitch22">
                                                 <label class="custom-control-label" for="customSwitch22" style="padding-top: 5px;">QR Scanner Produk (OUT)</label>

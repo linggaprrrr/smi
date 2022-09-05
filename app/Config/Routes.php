@@ -99,6 +99,7 @@ $routes->get('/get-produk', 'Products::getProduct');
 $routes->get('/get-produk-detail', 'Products::getProductDetail');
 $routes->post('/delete-product', 'Products::deleteProduct');
 $routes->post('/delete-product-detail', 'Products::deleteProductDetail');
+$routes->post('/delete-product-detail-lovish', 'LovishProducts::deleteProductDetail');
 $routes->get('/get-model', 'Products::getModel');
 $routes->post('/delete-model', 'Products::deleteModel');
 $routes->post('/delete-model-detail', 'Products::deleteModelDetail');
@@ -131,7 +132,7 @@ $routes->get('export-data-pola-out', 'Materials::exportDataPolaOut');
 $routes->get('export-produk-gesit', 'Products::exportDataGesit');
 $routes->get('export-produk-masuk-lovish', 'Products::exportDataLovishIn');
 
-// produk
+// produk gesit
 $routes->post('on-change-product-type', 'Products::onChangeProductType');
 $routes->post('on-change-model-name', 'Products::onChangeModelName');
 $routes->post('on-change-product-qty', 'Products::onChangeProductQty');
@@ -139,6 +140,14 @@ $routes->post('on-change-product-weight', 'Products::onChangeProductWeight');
 $routes->post('on-change-product-color', 'Products::onChangeProductColor');
 $routes->post('on-change-product-hpp', 'Products::onChangeProductHPP');
 $routes->get('get-hpp-product', 'Products::getHPP');
+// produk lovish
+$routes->post('on-change-product-type-lovish', 'LovishProducts::onChangeProductType');
+$routes->post('on-change-model-name-lovish', 'LovishProducts::onChangeModelName');
+$routes->post('on-change-product-qty-lovish', 'LovishProducts::onChangeProductQty');
+$routes->post('on-change-product-weight-lovish', 'LovishProducts::onChangeProductWeight');
+$routes->post('on-change-product-color-lovish', 'LovishProducts::onChangeProductColor');
+$routes->post('on-change-product-hpp-lovish', 'LovishProducts::onChangeProductHPP');
+$routes->get('get-hpp-product-lovish', 'LovishProducts::getHPP');
 
 
 // kain

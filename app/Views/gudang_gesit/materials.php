@@ -277,12 +277,12 @@
                         <?php foreach ($materialsOut->getResultObject() as $kain) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td class="text-center"><?= $kain->created_at ?></td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($kain->created_at)) ?></td>
                                 <td class=""><?= $kain->type ?></td>
                                 <td><?= $kain->color ?></td>
                                 <td><?= number_format($kain->weight/1000, 2) ?></td>
                                 <td class="text-center"><?= $kain->roll ?></td>
-                                <td class="text-center"><?= $kain->created_at_pola ?></td>
+                                <td class="text-center"><?= date('j F, Y', strtotime($kain->created_at_pola)) ?></td>
                                 <td class="text-center">
                                     <select class="form-control vendor-pola" data-id="<?= $kain->id ?>" name="vendor-pola">
                                         <option value="0">-</option>

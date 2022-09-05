@@ -25,8 +25,6 @@ class ProductModel extends Model
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
-            ->join('product_logs', 'product_logs.product_id = products.id')
-            ->where('product_logs.status', 1)
             ->orderBy('created_at', 'desc')
             ->get();
         return $query;
@@ -55,7 +53,6 @@ class ProductModel extends Model
             ->join('users', 'users.id = products.user_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
             ->where('product_logs.status', 2)
-            ->where('products.status', 1)
             ->orderBy('created_at', 'desc')
             ->get();
         return $query;

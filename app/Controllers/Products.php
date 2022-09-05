@@ -241,13 +241,10 @@ class Products extends BaseController
             'price' => $post['harga']
         ];
         $this->productModel->save($product);
-        $productId = $this->productModel->insertID();
-        
+        $productId = $this->productModel->insertID();        
         for ($i=0; $i < $post['qty']; $i++) {
             $this->productModel->createBarcode($productId);
         }
-
-        $this->productModel->createLog($productId, $post['qty']);
 
         $getProduct = $this->productModel
             ->select('products.id, product_name, model_name, color')
