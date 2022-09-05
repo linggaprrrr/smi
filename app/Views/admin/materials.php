@@ -24,99 +24,104 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="form-group">
-                                <label for="">Jenis Kain*</label>
-                                <select class="form-control" name="jenis">
-                                    <?php if ($materials->getNumRows() > 0) : ?>
-                                        <?php foreach ($materials->getResultObject() as $material) : ?>
-                                            <option value="<?= $material->id ?>"><?= $material->type ?></option>
-                                        <?php endforeach ?>
-                                    <?php endif ?>
-                                </select>                             
-                            </div>                            
-                            <div class="form-group">
-                                <label for="">Warna*</label>
-                                <select class="form-control" name="warna">
-                                <?php if ($colors->getNumRows() > 0) : ?>
-                                    <?php foreach ($colors->getResultObject() as $color) : ?>
-                                        <option value="<?= $color->id ?>"><?= $color->color ?></option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
-                                </select>    
-            
-                            </div>
-                            <div class="form-group">
-                                <label for="">Berat (gr)</label>
-                                <input type="text" class="form-control" name="berat" id="tambah-berat" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="...">
-                                <small id="modelName" class="form-text text-muted">Contoh 1,5 kg menjadi <b>1500</b> </small>
-                            </div>
-                            <div class="form-group">
-                                <label for="">Vendor Kain*</label>
-                                <select class="form-control vendor-kain" name="vendor" required>
-                                    <option>-</option>
-                                    <?php if ($materialVendors->getNumRows() > 0) : ?>
-                                        <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
-                                            <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
-                                        <?php endforeach ?>
-                                    <?php endif ?>
-                                </select>    
-            
-                            </div>
-                            <div class="form-group">
-                                <label for="">Harga Kain</label>
-                                <input type="text" class="form-control harga-kain" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." required>                                
-                            </div>
-                            <div class="form-group">
-                                <label for="">Tgl Cutting</label>
-                                <input type="text" class="form-control tgl-cutting" name="tgl-cutting" value="<?= date("m/d/Y") ?>" readonly>                                
-                            </div>
-                            <div class="form-group">
-                            <label for="">Gelar 1*</label>
-                                <select class="form-control" name="gelar1">
-                                <?php if ($timGelars->getNumRows() > 0) : ?>
-                                    <?php foreach ($timGelars->getResultObject() as $gelar1) : ?>
-                                        <option value="<?= $gelar1->id ?>"><?= $gelar1->name ?></option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
-                                </select>      
-            
-                            </div>
-                            <div class="form-group">
-                                <label for="">Gelar 2*</label>
-                                <select class="form-control" name="gelar2">
-                                <?php if ($timGelars->getNumRows() > 0) : ?>
-                                    <?php foreach ($timGelars->getResultObject() as $gelar2) : ?>
-                                        <option value="<?= $gelar2->id ?>"><?= $gelar2->name ?></option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
-                                </select>    
-            
-                            </div>
-                            <div class="form-group">
-                                <label for="">PIC Cutting*</label>
-                                <select class="form-control" name="pic-cutting">
-                                <?php if ($picCutting->getNumRows() > 0) : ?>
-                                    <?php foreach ($picCutting->getResultObject() as $cut) : ?>
-                                        <option value="<?= $cut->id ?>"><?= $cut->name ?></option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
-                                </select>    
-            
-                            </div>
-                            <div class="form-group">
-                                <label for="">Gudang*</label>
-                                <select class="form-control" name="gudang">
-                                <?php if ($gudangs->getNumRows() > 0) : ?>
-                                    <?php foreach ($gudangs->getResultObject() as $gudang) : ?>
-                                        <option value="<?= $gudang->id ?>"><?= $gudang->gudang ?></option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
-                                </select>                
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="">Roll</label>
-                                <input type="text" class="form-control" name="roll" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah roll" disabled>                                
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="">Jenis Kain*</label>
+                                        <select class="form-control" name="jenis">
+                                            <?php if ($materials->getNumRows() > 0) : ?>
+                                                <?php foreach ($materials->getResultObject() as $material) : ?>
+                                                    <option value="<?= $material->id ?>"><?= $material->type ?></option>
+                                                <?php endforeach ?>
+                                            <?php endif ?>
+                                        </select>                             
+                                    </div>                            
+                                    <div class="form-group">
+                                        <label for="">Warna*</label>
+                                        <select class="form-control" name="warna">
+                                        <?php if ($colors->getNumRows() > 0) : ?>
+                                            <?php foreach ($colors->getResultObject() as $color) : ?>
+                                                <option value="<?= $color->id ?>"><?= $color->color ?></option>
+                                            <?php endforeach ?>
+                                        <?php endif ?>
+                                        </select>    
+                    
+                                    </div>                                   
+                                    <div class="form-group">
+                                        <label for="">Vendor Kain*</label>
+                                        <select class="form-control vendor-kain" name="vendor" required>
+                                            <option>-</option>
+                                            <?php if ($materialVendors->getNumRows() > 0) : ?>
+                                                <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
+                                                    <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
+                                                <?php endforeach ?>
+                                            <?php endif ?>
+                                        </select>    
+                    
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Harga Kain</label>
+                                        <input type="text" class="form-control harga-kain" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." required>                                
+                                    </div> 
+                                    <div class="form-group">
+                                        <label for="">Berat (gr)</label>
+                                        <input type="text" class="form-control" name="berat" id="tambah-berat" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="...">
+                                        <small id="modelName" class="form-text text-muted">Contoh 1,5 kg menjadi <b>1500</b> </small>
+                                    </div>                                                                  
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="">Tgl Cutting</label>
+                                        <input type="text" class="form-control tgl-cutting" name="tgl-cutting" value="<?= date("m/d/Y") ?>" readonly>                                
+                                    </div>     
+                                    <div class="form-group">
+                                    <label for="">Gelar 1*</label>
+                                        <select class="form-control" name="gelar1">
+                                        <?php if ($timGelars->getNumRows() > 0) : ?>
+                                            <?php foreach ($timGelars->getResultObject() as $gelar1) : ?>
+                                                <option value="<?= $gelar1->id ?>"><?= $gelar1->name ?></option>
+                                            <?php endforeach ?>
+                                        <?php endif ?>
+                                        </select>      
+                    
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Gelar 2*</label>
+                                        <select class="form-control" name="gelar2">
+                                        <?php if ($timGelars->getNumRows() > 0) : ?>
+                                            <?php foreach ($timGelars->getResultObject() as $gelar2) : ?>
+                                                <option value="<?= $gelar2->id ?>"><?= $gelar2->name ?></option>
+                                            <?php endforeach ?>
+                                        <?php endif ?>
+                                        </select>    
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">PIC Cutting*</label>
+                                        <select class="form-control" name="pic-cutting">
+                                        <?php if ($picCutting->getNumRows() > 0) : ?>
+                                            <?php foreach ($picCutting->getResultObject() as $cut) : ?>
+                                                <option value="<?= $cut->id ?>"><?= $cut->name ?></option>
+                                            <?php endforeach ?>
+                                        <?php endif ?>
+                                        </select>    
+                    
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Gudang*</label>
+                                        <select class="form-control" name="gudang">
+                                        <?php if ($gudangs->getNumRows() > 0) : ?>
+                                            <?php foreach ($gudangs->getResultObject() as $gudang) : ?>
+                                                <option value="<?= $gudang->id ?>"><?= $gudang->gudang ?></option>
+                                            <?php endforeach ?>
+                                        <?php endif ?>
+                                        </select>                
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="">Roll</label>
+                                        <input type="text" class="form-control" name="roll" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah roll" disabled>                                
+                                    </div>
+                                </div>
                             </div>
                             
                         </div>
@@ -175,10 +180,10 @@
                                 <td>
                                     <input type="text" class="form-control berat" name="weight" data-id='<?= $kain->id ?>' style="width: 90px" value="<?= number_format($kain->weight/1000, 2) ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 </td>
-                                <td class="text-center"><?= date('j F, Y', strtotime($kain->created_at)) ?></td>
-                                <td class="text-center"><?= $kain->roll ?></td>
+                                <td class="text-center align-middle"><?= date('j F, Y', strtotime($kain->created_at)) ?></td>
+                                <td class="text-center align-middle"><?= $kain->roll ?></td>
                                 <td class="text-center">
-                                    <select class="form-control vendor-kain" name="vendor" data-id='<?= $kain->id ?>' style="width: 160px">                                        
+                                    <select class="form-control vendor-kain-edit" name="vendor" data-id='<?= $kain->id ?>' style="width: 160px">                                        
                                         <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
                                             <option value="<?= $vendor->id ?>" <?= $vendor->id == $kain->vendor_id ? 'selected="selected"' : '' ?> ><?= $vendor->vendor ?></option>
                                         <?php endforeach ?>
@@ -358,7 +363,7 @@
         $.get('/get-kain-detail', {material_id: id})
             .done(function(data) {
                 const kain = JSON.parse(data);
-                console.log(kain);
+                
                 $('#id-kain').val(kain['id']);
                 $('#jenis').val(kain['material_id']);
                 $('#warna').val(kain['color_id']);
@@ -402,14 +407,6 @@
         })
     });
 
-    $('.vendor-kain-edit').change(function() {
-        const id = $(this).val();
-        $.get('/get-vendor-kain', {id: id}, function(data) {
-            const price = JSON.parse(data);            
-            $('.harga-kain-edit').val(price[0]['harga']);
-        })
-    });
-
     $('.jenis').on('change', function() {
         const id = $(this).data('id');
         const type = $(this).val();
@@ -446,11 +443,15 @@
             });   
     });
 
-    $('.vendor-kain').on('change', function() {
+    $('.vendor-kain-edit').on('change', function() {
         const id = $(this).data('id');
         const vendor = $(this).val();
+        var temp = $(this).closest('tr').find('.harga');
         $.post('/on-change-material-vendor', {id: id, vendor: vendor})
             .done(function(data) {
+                const price = JSON.parse(data);                    
+                console.log(price);
+                temp.val(price[0].harga);
                 $.notify('Vendor kain berhasil diubah', "success");
             });   
     });
@@ -500,7 +501,6 @@
             });   
     });
 
-   
 
     $('.vendor-pola').on('change', function() {
         const id = $(this).data('id');

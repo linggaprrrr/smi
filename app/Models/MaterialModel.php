@@ -150,8 +150,8 @@ class MaterialModel extends Model
         $this->db->query("INSERT INTO colors(color) VALUES('$warna') ");
     }
 
-    public function saveVendorSupplier($vendor) {
-        $this->db->query("INSERT INTO supplier_vendors(vendor) VALUES('$vendor') ");
+    public function saveVendorSupplier($vendor, $harga = null) {
+        $this->db->query("INSERT INTO material_vendors(vendor, harga) VALUES('$vendor', '$harga') ");
     }
 
     public function saveVendorPenjualan($vendor) {

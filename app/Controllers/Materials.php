@@ -444,7 +444,8 @@ class Materials extends BaseController
 
     public function saveVendorSupplier() {
         $vendor = $this->request->getVar('vendor');
-        $this->materialModel->saveVendorSupplier($vendor);
+        $harga = $this->request->getVar('harga');
+        $this->materialModel->saveVendorSupplier($vendor, $harga );
         return redirect()->back()->with('create', 'Vendor berhasil ditambahkan');
     }
 

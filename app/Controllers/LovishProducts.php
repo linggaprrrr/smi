@@ -6,12 +6,14 @@ use App\Models\LovishProductModel;
 use App\Models\DesignModel;
 use App\Models\LogModel;
 use App\Models\MaterialModel;
+use App\Models\ProductModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class LovishProducts extends BaseController
 { 
     protected $productModel = "";
+    protected $productLovishModel = "";
     protected $designModel = "";
     protected $logModel = "";
     protected $materialModel = "";
@@ -22,17 +24,17 @@ class LovishProducts extends BaseController
             header('Location: '.base_url('/'));
             exit(); 
         }
-        $this->productModel = new LovishProductModel();
+        $this->productModel = new ProductModel();
+        $this->productLovishModel = new LovishProductModel();
         $this->designModel = new DesignModel();
         $this->logModel = new LogModel();
         $this->materialModel = new MaterialModel();
-
     }
 
     public function gudangLovishProduk() {
-        $productsIn = $this->productModel->getAllProductLovish();
-        $productsOut = $this->productModel->getAllProductOut();
-        $productsExp = $this->productModel->getAllProductExp();
+        $productsIn = $this->productLovishModel->getAllProductLovish();        
+        $productsOut = $this->productModel->getAllProductOut();        
+        $productsExp = $this->productModel->getAllProductExp();        
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $products = $this->productModel->getAllProduct();

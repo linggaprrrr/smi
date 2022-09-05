@@ -264,6 +264,42 @@ class Products extends BaseController
         return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
     }
 
+    public function addProductLovish() {
+        $post = $this->request->getVar();
+        $product = [
+            'product_id' => $post['nama_produk'],
+            'color_id'  => $post['warna'],
+            'weight'  => $post['berat'],
+            'model_id'  => $post['model'],
+            'user_id' => session()->get('user_id'),
+            'qty' => $post['qty'],
+            'vendor_id' => $post['vendor'],
+            'price' => $post['harga']
+        ];
+        $this->productModel->save($product);
+        $productId = $this->productModel->insertID();
+        
+        for ($i=0; $i < $post['qty']; $i++) {
+            $this->productModel->createBarcode($productId);
+        }
+
+        $this->productModel->createLog($productId, $post['qty']);
+
+        $getProduct = $this->productModel
+            ->select('products.id, product_name, model_name, color')
+            ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->orderBy('products.id', 'desc')
+            ->first();
+        
+        $this->logModel->save([
+            'description' => 'Menambahkan produk baru ('.$getProduct['product_name'].' '.$getProduct['model_name'].' '.$getProduct['color'].') sebanyak '.$post['qty'].'. ',
+            'user_id' =>  session()->get('user_id'),
+        ]);
+        return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
+    }
+
     public function updateProductDetail() {
         $post = $this->request->getVar();
         $product = [

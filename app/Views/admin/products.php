@@ -87,7 +87,7 @@
             </div>
         </div>
     </div>
-    <div class="card-body">
+        <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                 <thead>
@@ -185,7 +185,7 @@
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
                                 <td><?= $product->weight ?></td>
-                                <td class="text-center"><?= $product->qty ?></td>
+                                <td class="text-center">1</td>
                                 <td class="text-center"><?= $product->created_at ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
                             </tr>

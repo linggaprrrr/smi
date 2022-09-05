@@ -75,7 +75,7 @@ $routes->post('/simpan-user', 'Users::saveUser');
 $routes->post('/update-user', 'Users::updateUser');
 
 $routes->post('/tambah-produk', 'Products::addProduct');
-$routes->post('/tambah-produk-lovish', 'Products::addProductLovish');
+$routes->post('/tambah-produk-lovish', 'LovishProducts::addProductLovish');
 $routes->get('/get-produk-detail', 'Products::getProductDetail');
 $routes->post('/update-produk-detail', 'Products::updateProductDetail');
 $routes->post('/tambah-kain', 'Materials::addMaterial');

@@ -11,7 +11,7 @@ class LovishProductModel extends Model
 
     public function getAllProductLovish() {
         $query = $this->db->table('lovish_products')
-        ->select('product_logs.qty as qtyy, lovish_products.*, model_name, product_name, color, name, price')
+        ->select('lovish_products.*, model_name, product_name, color, name, price, qty')
         ->join('models', 'models.id = lovish_products.model_id')
         ->join('product_types', 'product_types.id = product_id')
         ->join('colors', 'colors.id = lovish_products.color_id')
@@ -21,5 +21,21 @@ class LovishProductModel extends Model
         ->get();
         return $query;
     }
+
+    public function getAllProductOut() {
+        $query = $this->db->table('products')
+            ->select('product_logs.qty as qtyy, products.*, model_name, product_name, color, name, price')
+            ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('users', 'users.id = products.user_id')
+            ->join('product_logs', 'product_logs.product_id = products.id')
+            ->where('product_logs.status', 2)
+            ->where('products.status', 1)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return $query;
+    }
+    
     
 }   

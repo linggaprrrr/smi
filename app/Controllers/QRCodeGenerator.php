@@ -62,13 +62,14 @@ class QRCodeGenerator extends BaseController
     }
 
     public function QRGeneratorProductInGesit() {
-        $products = $this->produkModel->select('products.*, model_name, product_name, color, name')
+        $products = $this->produkModel->select('products.*, model_name, product_name, color, name, product_barcodes.qrcode as qr')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
-            ->where('status', 1)
-            ->orderBy('qrcode', 'asc')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->where('products.status', 1)
+            ->groupBy('products.id')
             ->orderBy('created_at', 'desc')
             ->get();
         

@@ -44,7 +44,7 @@
                         <?php $no = 1; ?>
                         <?php if ($products->getNumRows() > 0) : ?>
                             <?php foreach ($products->getResultObject() as $product) : ?>
-                                <?php if (is_null($product->qrcode) || empty($product->qrcode)) :?>
+                                <?php if (is_null($product->qr) || empty($product->qr)) :?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td class=""><?= $product->product_name ?></td>
@@ -71,8 +71,6 @@
                                         </td>
                                     </tr>
                                 <?php endif ?>
-                                    
-                                
                             <?php endforeach ?>
                         <?php endif ?>
                     </tbody>
