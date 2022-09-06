@@ -17,8 +17,7 @@
                         <th class="text-center">Berat (kg)</th>
                         <th class="text-center">Tanggal Masuk</th>
                     </tr>
-                </thead>
-                
+                </thead>                
                 <tbody>
                     <?php $no = 1; ?>
                     <?php if ($materials->getNumRows() > 0) : ?>

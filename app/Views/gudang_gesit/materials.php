@@ -267,7 +267,7 @@
                         <th class="text-center">Roll</th>
                         <th class="text-center">Tanggal Keluar</th>
                         <th class="text-center">Vendor Pola</th>
-                        <th class="text-center">PIC</th>
+                        <th class="text-ce  nter">PIC</th>
                     </tr>
                 </thead>
                 

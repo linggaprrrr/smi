@@ -125,6 +125,7 @@ $routes->get('/gudang-gesit/qr-generator-produk-masuk', 'QRCodeGenerator::QRGene
 $routes->get('/gudang-gesit/qr-scanner-in', 'QRCodeGenerator::scannerMaterialIn');
 $routes->get('/gudang-gesit/qr-scanner-pola-in', 'QRCodeGenerator::scannerPolaIn');
 $routes->get('/gudang-gesit/qr-scanner-pola-out', 'QRCodeGenerator::scannerPolaOut');
+$routes->get('/gudang-gesit/qr-scanner-retur', 'QRCodeGenerator::scannerMaterialRetur');
 $routes->get('/gudang-gesit/qr-scanner-produk-in', 'QRCodeGenerator::scannerProductIn');
 $routes->get('/gudang-gesit/laporan', 'Reports::reportGesit');
 $routes->get('export-data-pola-in', 'Materials::exportDataPolaIn');

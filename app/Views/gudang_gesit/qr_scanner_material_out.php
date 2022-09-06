@@ -33,18 +33,16 @@
         </div>   
         <template id="scaned-item">
         <style>
-            .wrapper {
-            
-            border: none;
-            border-radius: 1rem;
-            padding: 1rem;
-            background: linear-gradient(var(--gradient-start), var(--gradient-end));
-            box-shadow: 0 3px -3px 10px #000;
+            .wrapper { 
+                border: none;
+                border-radius: 1rem;
+                padding: 1rem;
+                background: linear-gradient(var(--gradient-start), var(--gradient-end));
+                box-shadow: 0 3px -3px 10px #000;
             }
             .wrapper span {
-            font-family: Arial, Helvetica, sans-serif;
-            
-            display: block;
+                font-family: Arial, Helvetica, sans-serif;
+                display: block;
             }
         </style>
         <div class="wrapper">
@@ -199,8 +197,11 @@
                 const kode = barcode['rawValue'].split("-"); 
                 $.post('/material-out-scanning', {qr: barcode['rawValue']}, function(data) {
                     const stat = JSON.parse(data);
+                    console.log(stat);
                     if (stat == '1') {
                         $.notify(kode[1] +' '+ kode[2] +' berhasil di-scan!', "success");
+                    } else if (stat == '3') {
+                        $.notify("Warning: Data kain sudah di-scan!", "warn");
                     } else {
                         $.notify("Warning: Data kain tidak ada!", "warn");
                     }

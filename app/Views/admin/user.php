@@ -46,7 +46,7 @@
                                             </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="3"  id="customSwitch3">
-                                                <label class="custom-control-label" for="customSwitch3" style="padding-top: 5px;">QR Scanner Kain (IN)</label>
+                                                <label class="custom-control-label" for="customSwitch3" style="padding-top: 5px;">QR Scanner Kain Retur</label>
                                             </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="7" id="customSwitch30">
@@ -63,7 +63,7 @@
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="5" id="customSwitch5">
                                                 <label class="custom-control-label" for="customSwitch5" style="padding-top: 5px;">QR Scanner Produk (IN)</label>
-                                            </div>
+                                            </div>                                            
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="6" id="customSwitch6">
                                                 <label class="custom-control-label" for="customSwitch6" style="padding-top: 5px;">Laporan</label>
@@ -230,10 +230,10 @@
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="2" id="customSwitch14">
                                                 <label class="custom-control-label" for="customSwitch14" style="padding-top: 5px;">Cetak QR Kain & Produk</label>
                                             </div>
-                                            <!-- <div class="custom-control custom-switch">
+                                            <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="3" id="customSwitch15">
-                                                <label class="custom-control-label" for="customSwitch15" style="padding-top: 5px;">QR Scanner Kain (IN)</label>
-                                            </div> -->
+                                                <label class="custom-control-label" for="customSwitch15" style="padding-top: 5px;">QR Scanner Kain Retur</label>
+                                            </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="7" id="customSwitch31">
                                                 <label class="custom-control-label" for="customSwitch31" style="padding-top: 5px;">QR Scanner Pola (IN)</label>

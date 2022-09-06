@@ -189,6 +189,13 @@ class QRCodeGenerator extends BaseController
         return view('gudang_gesit/qr_scanner_material_out', $data);    
     }
 
+    public function scannerMaterialRetur() {
+        $data = array(
+            'title' => 'QR Scanner Retur Kain (OUT)'
+        );
+        return view('gudang_gesit/qr_scanner_material_retur', $data);    
+    }
+
     public function scannerProductIn() {
         $data = array(
             'title' => 'QR Scanner Produk (IN)'
@@ -248,18 +255,18 @@ class QRCodeGenerator extends BaseController
                 
         $getMaterial = $this->materialModel->find($qr[0]);
         $status = '0';
-        if (!is_null($getMaterial) && $getMaterial['status'] == '1') {
-            $status = '1';
-            $this->materialModel->save([
-                'id' => $qr[0],
-                'status' => 2,
-                'updated_at' => date("Y-m-d H:i:s")
-            ]);
-            $this->logModel->save([
-                'description' => 'melakukan scan untuk input pola ',
-                'user_id' =>  session()->get('user_id'),
-            ]);
-            $this->materialModel->setPolaOut($qr[0], session()->get('user_id'));
+        if (!is_null($getMaterial)) {
+            if ($getMaterial['status'] != '1') {
+                $status = '3';   
+            } else {
+                $status = '1';
+                $this->materialModel->save([
+                    'id' => $qr[0],
+                    'status' => 2,
+                    'updated_at' => date("Y-m-d H:i:s")
+                ]);
+                $this->materialModel->setPolaOut($qr[0], session()->get('user_id'));
+            }
         }
         echo json_encode($status);
     }
@@ -299,11 +306,18 @@ class QRCodeGenerator extends BaseController
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
         
-        $getProduct = $this->produkModel->find($qr[0]);
+        $getMaterial = $this->materialModel->find($qr[0]);
         $status = '0';
-        if (!is_null($getProduct)) {
+        if (!is_null($getMaterial)) {
             $status = '1';           
-            $this->produkModel->setProductIn($qr[0], session()->get('user_id'));
+            $this->materialModel->save([
+                'id' => $qr[0],
+                'status' => 0
+            ]);
+            $this->logModel->save([
+                'description' => 'Meretur data kain ('.$qr[1].' '.$qr[2].')',
+                'user_id' =>  session()->get('user_id'),
+            ]);
         }
         echo json_encode($status);
     }

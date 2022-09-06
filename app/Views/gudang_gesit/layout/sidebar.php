@@ -59,16 +59,7 @@
                             </div>
                         </li>
                         <?php
-                    break;
-                // case "3": 
-                //         ?>
-                //         <li class="nav-item">
-                //             <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-in') ?>">
-                //                 <i class="fas fa-fw fa-qrcode"></i>
-                //                 <span>QR Scanner Kain (IN)</span></a>
-                //         </li>
-                //         <?php
-                //     break;
+                    break;                
                 case "4": 
                         ?>
                         <li class="nav-item">
@@ -93,6 +84,15 @@
                             <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-produk-in') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Produk (IN)</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "3": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-retur') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Kain Retur</span></a>
                         </li>
                         <?php
                     break;

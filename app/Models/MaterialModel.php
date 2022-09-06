@@ -46,7 +46,7 @@ class MaterialModel extends Model
         ->join('tim_cutting', 'tim_cutting.id = materials.pic_cutting')
         ->join('material_vendors', 'material_vendors.id = materials.vendor_id')
         ->join('material_patterns', 'material_patterns.material_id = materials.id')
-        ->join('users', 'users.id = material_patterns.user_id_in')
+        ->join('users', 'users.id = material_patterns.user_id_out')
         ->where('status', '2')
         ->orderBy('created_at', 'desc')->get();
         return $query;
@@ -97,6 +97,9 @@ class MaterialModel extends Model
     public function setPolaIn($id, $user) {
         $this->db->query("UPDATE material_patterns SET user_id_in= '$user', updated_at = date('Y-m-d H:i:s') WHERE material_id='$id' ");
     }
+
+    
+
     public function getMaterialVendors() {
         $query = $this->db->table('material_vendors')->get();
         return $query;
