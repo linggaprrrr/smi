@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Models\ProductModel;
 use App\Models\ShippingModel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Shippings extends BaseController
 {
@@ -22,7 +24,10 @@ class Shippings extends BaseController
     }
 
     public function index() {
-        $shippings = $this->shippinglModel->getAllShipping();
+        $shippings = $this->shippinglModel
+            ->orderBy('qrcode', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
         $data = array(
             'title' => 'Pengiriman',
             'shippings' => $shippings
@@ -73,7 +78,42 @@ class Shippings extends BaseController
         
         $info = 'BOX-'.substr($str, 0, 3).''.$numbers;
         
-        
 
     }
+
+    public function exportShipments() {
+        $shippings = $this->shippinglModel->getAllShippingDetail();
+        $date = time();
+        $fileName = "Data Pengiriman {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Resi');
+		$sheet->setCellValue('C1', 'Tanggal');
+		$sheet->setCellValue('D1', 'Produk');
+        $i = 2;
+        $no = 1;
+        foreach($shippings->getResultObject() as $row) {
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $row->resi);
+            $sheet->setCellValue('C' . $i, $row->created_at);            
+            $sheet->setCellValue('D' . $i, $row->product_name.' '.$row->model_name.' '.$row->color);
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save($fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize($fileName));
+		flush();
+		readfile($fileName);
+		exit;
+    }
+
 }

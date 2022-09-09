@@ -43,7 +43,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-out') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
-                                <span>QR Scanner OUT</span></a>
+                                <span>QR Scanner Produk (OUT)</span></a>
                         </li>
                         <?php
                     break;

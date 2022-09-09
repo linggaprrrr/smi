@@ -39,13 +39,13 @@
                                     <h6 class="modal-title ml-2" id="exampleModalLabel">Scanning resi...</h6>
                                     <div class="wrapper">
                                         <div>
-                                            <div id="video-wrapper">
-                                                <video id="video" width="360" autoplay></video>
-                                                <canvas id="canvas" width="0" height="0"></canvas>
+                                            <div id="video-wrapper">                    
+                                                <div id="qr-reader" style="width: 300px; margin-left: auto; margin-right: auto;"></div>
                                             </div>
                                             <div>
+                                                <!-- <h6>Scanned: </h6> -->
                                             <div id="scanned"></div>
-                                                <input type="hidden" class="box">
+                                            <input type="hidden" class="box" >
                                             </div>
                                         </div>
                                     </div>   
@@ -107,9 +107,7 @@
                                                 <i class="fas fa-box"></i>
                                             </span>
                                         </a>
-                                    </td>
-                                
-                                    
+                                    </td>           
                                 </tr>
                             <?php else :?>
                                 <tr class="table-info">
@@ -137,7 +135,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Detail Pengiriman</h5>
+                            <h5 class="modal-title" >Detail Pengiriman</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>
@@ -170,187 +168,49 @@
 <!-- <script src="/assets/js/main.js" async></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 <script>
-    $(document).ready(function() {
+    var audio = new Audio('/assets/sounds/beep.wav');        
+    var lastResult, countResults = 0;
+    function onScanSuccess(decodedText, decodedResult) {
         
+        const qr = decodedText;
+        const kode = decodedText.split("-");         
+        if (decodedText !== lastResult) {
+            ++countResults;
+            lastResult = decodedText;
+            $.post('/box-check-scanning', {qr: qr, 'box_name': $('.box').val() }, function(data) {
+                const stat = JSON.parse(data);
+                if (stat == '1') {
+                    $.notify(kode +' berhasil di-scan!', "success");      
+                    $('.box').val(qr);
+                    $('#exampleModalLabel').html("Scanning the products ...");      
+                    $.post('/tambah-pengiriman', function(data) {});                                
+                } else if (stat == '2') {
+                    $.notify(kode +' berhasil di-scan!', "success");  
+                    $('#exampleModalLabel').html("Scanning the products ...");    
+                } else {
+                    $.notify("Warning: Data pengiriman tidak ada!", "warn");
+                    $('#exampleModalLabel').html("Scanning the resi ...");
+                    // $('.bd-example-modal-lg-produk').modal('hide');
+                    $('.box').val(qr);
+                }
+                audio.play();
+            }); 
+            console.log(`Code scanned = ${decodedText}`, decodedResult);
+        } else {
+            $.notify("Resi atau Produk sudah discan!", "info");
+        }
         
-    })
+    }
 
+    
     $('#print').click(function(){
         const id = $(this).data('id');
         $('.bd-example-modal-lg-produk').modal('show');
-        let codes = [];
-        var audio = new Audio('/assets/sounds/beep.wav');
-        
-        const seen = new Set();
-        // Create new barcode detector
-        const barcodeDetector = new BarcodeDetector({ formats: ['qr_code'] });
-
-        // Define custom element
-        customElements.define('scaned-item', class extends HTMLElement {
-        constructor() {
-            super();
-            const template = document.querySelector('#scaned-item').content;
-            const shadowRoot = this.attachShadow({mode: 'open'}).appendChild(template.cloneNode(true));
-        };
-        });
-
-        // Codes proxy/state
-        const codesProxy = new Proxy(codes, {
-        set (target, prop, value, receiver) {
-            // Throw err if value is a number
-            // Stops from saving undefined codes
-            if (typeof value === 'number') throw value;
-            
-            target.push(value);
-
-            // Check if code has already been scanned
-            target = target.filter((c) => {
-            if (c.rawValue !== window.barcodeVal) return c;
-            const d = seen.has(c.rawValue);
-            seen.add(c.rawValue);
-            return !d;
-            })
-            
-            // Select the container scanned
-            const scanned = document.querySelector('#scanned')
-            const temp = document.createElement('scaned-item')
-            const format = document.createElement('span')
-            const rawValue = document.createElement('span')
-
-            // Goes into the custom elements formate slot
-            format.setAttribute('slot', 'format');
-            format.innerHTML = value.format;
-            
-            // Goes into the custom elements raw slot 
-            rawValue.setAttribute('slot', 'raw');
-            rawValue.innerHTML = value.rawValue;
-
-            // Append elements to custom element
-            temp.appendChild(rawValue);
-            temp.appendChild(format);
-
-            // Append Custom element to scanned container
-            scanned.appendChild(temp);
-            return true;
-        }
-        });
-
-        // Get video element 
-        const video = document.getElementById('video');
-
-        // Check for a camera
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const constraints = {
-            audio: false,
-            video: {
-                facingMode: 'environment'
-            }
-        };
-        
-        // Start video stream
-        navigator.mediaDevices.getUserMedia(constraints).then(stream => video.srcObject = stream);
-        }
-
-        // Draw outline to canvas 
-        /* --NOTE-- 
-        Some codes will not out line the whole barcode 
-        instead may have a thin line this is because for a lot of 
-        barcodes that is all that is needed.
-
-        if you would like to out line the whole code you can have 
-        a look at using the boundingBox object instead of 
-        the cornerPoints array in this example it is not used 
-        but my edit this to make a square around other codes
-        that do not get outlined :) 
-        */
-        const drawCodePath = ({cornerPoints}) => {
-        const canvas = document.querySelector('#canvas');
-        const ctx = canvas.getContext('2d');
-        const strokeGradient = ctx.createLinearGradient(0, 0, canvas.scrollWidth, canvas.scrollHeight);
-        
-        // Exit function and clear canvas if no corner points
-        if (!cornerPoints) return ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Clear canvas for new redraw
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Create new gradient
-        strokeGradient.addColorStop('0', '#c471ed');
-        strokeGradient.addColorStop('1', '#f7797d');
-
-        // Define stoke styles
-        ctx.strokeStyle = strokeGradient;
-        ctx.lineWidth = 4;
-
-        // Begin draw
-        ctx.beginPath();
-
-        // Draw code outline path
-        for (const [i, {x, y}] of cornerPoints.entries()) {
-            if (i === 0) {
-            // Move x half of the stroke width back 
-            // makes the start and end corner line up
-            ctx.moveTo(x - ctx.lineWidth/2, y);
-            continue;
-            }
-
-            // Draw line from current pos to x, y
-            ctx.lineTo(x, y);
-
-            // Complete square draw to starting position
-            if (i === cornerPoints.length-1) ctx.lineTo(cornerPoints[0].x, cornerPoints[0].y);
-        }
-
-        // Make path to stroke
-        ctx.stroke();
-        }
-
-        // Detect code function 
-        const detectCode = () => {
-        barcodeDetector.detect(video).then(codes => {
-            // If no codes exit function and clear canvas
-            if (codes.length === 0) return drawCodePath({});
-            
-            for (const barcode of codes)  {
-                const kode = barcode['rawValue'];
-                $.post('/box-check-scanning', {qr: barcode['rawValue'], 'box_name': $('.box').val() }, function(data) {
-                    const stat = JSON.parse(data);
-                    if (stat == '1') {
-                        $.notify(kode +' berhasil di-scan!', "success");      
-                        $('.box').val(barcode['rawValue']);
-                        $('#exampleModalLabel').html("Scanning the products ...");      
-                        $.post('/tambah-pengiriman', function(data) {
-                            
-                        });                                
-                    } else if (stat == '2') {
-                        $.notify(kode +' berhasil di-scan!', "success");  
-                        $('#exampleModalLabel').html("Scanning the products ...");    
-                    } else {
-                        $.notify("Warning: Data pengiriman tidak ada!", "warn");
-                        $('#exampleModalLabel').html("Scanning the box ...");
-                        // $('.bd-example-modal-lg-produk').modal('hide');
-                    }
-                }); 
-                // Draw outline
-                drawCodePath(barcode);
-                audio.play();        
-                // Code in seen set then exit loop 
-                if (seen.has(barcode.rawValue)) return;
-                        
-                // Save barcode to window to use later on
-                // then push to the codes proxy
-                window.barcodeVal = barcode.rawValue;
-                codesProxy.push(barcode);
-
-            }
-        }).catch(err => {
-            console.error(err);
-        })
-        }
-
-        setInterval(detectCode, 1000);
-        // Run detect code function every 100 milliseconds
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+        "qr-reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
     });
 
     $('.btn-detail-produk').click(function(){

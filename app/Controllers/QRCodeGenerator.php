@@ -7,13 +7,14 @@ use Endroid\QrCode\Writer\PngWriter;
 use App\Models\MaterialModel;
 use App\Models\ProductModel;
 use App\Models\ShippingModel;
+use App\Models\LogModel;
 
 class QRCodeGenerator extends BaseController
 {
     protected $materialModel = "";
     protected $produkModel = "";
     protected $shippinglModel = "";
-    
+    protected $logModel = "";
 
     public function __construct() { 
         $userId = session()->get('user_id');
@@ -24,6 +25,7 @@ class QRCodeGenerator extends BaseController
         $this->materialModel = new MaterialModel();
         $this->produkModel = new ProductModel();
         $this->shippinglModel = new ShippingModel();
+        $this->logModel = new LogModel();
     }
     
     public function QRGeneratorMaterial() {
@@ -37,12 +39,13 @@ class QRCodeGenerator extends BaseController
     }
 
     public function QRGeneratorProductIn() {
-        $products = $this->produkModel->select('products.*, models.model_name')
+        $products = $this->produkModel->select('products.product_name, models.model_name, color, weight, qty, products.created_at, product_barcodes.qrcode')
             ->join('models', 'models.id = products.model_id')
-            ->orderBy('qrcode', 'asc')
-            ->orderBy('created_at', 'desc')
-            ->get();
-        
+            ->join('product_types', 'product_types.id = products.product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')            
+            ->orderBy('products.created_at', 'desc')
+            ->get();        
         $data = array(
             'title' => 'QR Generator - Produk',
             'products' => $products
@@ -220,7 +223,7 @@ class QRCodeGenerator extends BaseController
     public function scannerShipment() {
         $shippings = $this->shippinglModel
             ->select('shippings.*, shipping_details.product_id')
-            ->join('shipping_details', 'shipping_details.shipping_id = shippings.id')
+            ->join('shipping_details', 'shipping_details.shipping_id = shippings.id', 'left')
             ->orderBy('qrcode', 'asc')
             ->orderBy('created_at', 'desc')
             ->groupBy('shippings.id')
@@ -237,14 +240,18 @@ class QRCodeGenerator extends BaseController
         $qr = explode("-",$qr);
                 
         $getMaterial = $this->materialModel->find($qr[0]);
-        $status = '0';
+        $status = '0';        
         if (!is_null($getMaterial) && $getMaterial['status'] == '2') {
-            $status = '1';
+            $status = '1'; // ada barang di vendor
             $this->materialModel->save([
                 'id' => $qr[0],
                 'status' => 3,
             ]);    
             $this->materialModel->setPolaIn($qr[0], session()->get('user_id'));
+        } else if (!is_null($getMaterial)) {
+            $status = '2'; // tidak ada barang di vendor
+        } else if ($getMaterial['status'] == '3') {
+            $status = '3'; // sudah di scan
         }
         echo json_encode($status);
     }
@@ -275,16 +282,16 @@ class QRCodeGenerator extends BaseController
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
         
-        $getProduct = $this->produkModel->findQR($qr[0]);
-        
+        // $getProduct = $this->produkModel->findQR($qr[0]);        
         $productStatus = $this->produkModel->productStatus($qr[0]);        
         $status = '0';
         
-        if ($getProduct != false && $productStatus[0]->status == '1') {
+        if ($productStatus[0]->status == '1') {
             $status = '1';       
             $this->produkModel->updateQRStatus($qr[0]);     
             $this->produkModel->setProductIn($qr[0], session()->get('user_id'));
-        }
+            
+        }        
         echo json_encode($status);
         
     }
@@ -293,9 +300,9 @@ class QRCodeGenerator extends BaseController
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
         
-        $getProduct = $this->produkModel->find($qr[0]);
+        $getProduct = $this->produkModel->findProductOut($qr[0]);
         $status = '0';
-        if (!is_null($getProduct)) {
+        if ($getProduct->getNumRows() > 0) {
             $status = '1'; 
             $this->produkModel->setProductOut($qr[0], session()->get('user_id'));
         }
@@ -306,16 +313,17 @@ class QRCodeGenerator extends BaseController
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
         
-        $getMaterial = $this->materialModel->find($qr[0]);
+        $getProduct = $this->produkModel
+        ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+        ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
+        ->where('product_logs.product_id', $qr[0])
+        ->get();
         $status = '0';
-        if (!is_null($getMaterial)) {
+        if ($getProduct->getNumRows() > 0) {
             $status = '1';           
-            $this->materialModel->save([
-                'id' => $qr[0],
-                'status' => 0
-            ]);
+            $this->produkModel->returProduct($qr[0]);
             $this->logModel->save([
-                'description' => 'Meretur data kain ('.$qr[1].' '.$qr[2].')',
+                'description' => 'Meretur data Produk ('.$qr[1].' '.$qr[2].' '.$qr[3].')',
                 'user_id' =>  session()->get('user_id'),
             ]);
         }
@@ -338,17 +346,21 @@ class QRCodeGenerator extends BaseController
 
     public function scanningBox() {
         $qr = $this->request->getVar('qr');    
+        $qr = explode("-",$qr);
         $status = '0';
-        $getProduct = $this->produkModel->find($qr);
-        if (!is_null($getProduct) || !empty($getProduct)) {
-            $qr = explode("-",$qr);
+        $getProduct = $this->produkModel
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
+            ->where('product_barcodes.id', $qr[0])
+            ->get();
+        
+        if ($getProduct->getNumRows() > 0) { 
             $resi = $this->request->getVar('box_name'); 
             $getShipment = $this->shippinglModel->where('resi', $resi)->first();            
             if (!is_null($getShipment) || !empty($getShipment)) {
-                $status = '2'; 
-                $this->produkModel->updateStokOut($qr[0]);     
-                $this->shippinglModel->insertProductShipment($getProduct['id'], $getShipment['id']);   
-                // $this->produkModel->setProductOut($qr[0], session()->get('user_id'));
+                $status = '2';                 
+                $this->shippinglModel->insertProductShipment($qr[0], $getShipment['id']);   
+                $this->produkModel->setProductOut($qr[0], session()->get('user_id'));
             }            
         } else {            
             $getShipment = $this->shippinglModel->where('resi', $qr)->first();
@@ -362,6 +374,12 @@ class QRCodeGenerator extends BaseController
         }
         echo json_encode($status);
     }
+    
+    public function test() {
+        $resi = '1138439005';
+        $getShipment = $this->shippinglModel->where('resi', $resi)->first();            
+        d($getShipment);
+    } 
 
     public function scanningShipment() {
         $qr = $this->request->getVar('qr');
@@ -377,13 +395,6 @@ class QRCodeGenerator extends BaseController
 
     
 
-    public function test() {
-        $getMaterial = $this->materialModel->find(1);
-        if (is_null($getMaterial)) {
-            echo "heyy";
-        } else {
-            echo "hoyy";
-        }
-    } 
+    
 
 }

@@ -132,6 +132,7 @@ $routes->get('export-data-pola-in', 'Materials::exportDataPolaIn');
 $routes->get('export-data-pola-out', 'Materials::exportDataPolaOut');
 $routes->get('export-produk-gesit', 'Products::exportDataGesit');
 $routes->get('export-produk-masuk-lovish', 'Products::exportDataLovishIn');
+$routes->get('export-pengiriman', 'Shippings::exportShipments');
 
 // produk gesit
 $routes->post('on-change-product-type', 'Products::onChangeProductType');

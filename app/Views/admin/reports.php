@@ -195,6 +195,71 @@
         
     </div>
 </div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary float-left">Data Produk Masuk (Lovish)</h6>
+        <a class="btn btn-success float-right" href="<?= base_url('/export-pengiriman') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable6" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 5%">No</th>
+                        <th class="text-center">Pengiriman</th>
+                        <th class="text-center">Tanggal</th>
+                        <th class="text-center">No. Resi</th>
+                        <th class="text-center" style="width: 10%;"><i class="fas fa-info-circle"></i></th>                            
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <?php $no = 1; ?>
+                    <?php if ($shippings->getNumRows() > 0) : ?>
+                        <?php foreach ($shippings->getResultObject() as $ship) : ?>
+                            <?php if (is_null($ship->qrcode) || empty($ship->qrcode)) : ?>
+                                <tr>
+                                    <td class="text-center align-middle"><?= $no++ ?></td>
+                                    <td class="align-middle"><?= $ship->box_name ?></td>                       
+                                    <td class="text-center align-middle"><?= date('j F Y, H:m', strtotime($ship->created_at)) ?></td>
+                                    <td class="text-center align-middle">
+                                        <?php if (empty($ship->resi) || is_null($ship->resi)) : ?>
+                                            -
+                                        <?php else : ?>
+                                            <?= $ship->resi ?>
+                                        <?php endif ?>
+                                    </td>
+                                    <td class="text-center align-middle">                                           
+                                        <a href="#" class="btn btn-default btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
+                                            <span class="icon text-white-25">
+                                                <i class="fas fa-box"></i>
+                                            </span>
+                                        </a>
+                                    </td>                                                                            
+                                </tr>
+                            <?php else :?>
+                                <tr class="table-info">
+                                    <td class="text-center align-middle"><?= $no++ ?></td>
+                                    <td class="align-middle"><?= $ship->box_name ?></td>                       
+                                    <td class="text-center align-middle"><?= date('j F Y, H:m', strtotime($ship->created_at)) ?></td>
+                                    <td class="text-center align-middle"><?= $ship->resi ?></td>
+                                    <td class="text-center align-middle">                                            
+                                        <a href="#" class="btn btn-info btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
+                                            <span class="icon text-white-25">
+                                                <i class="fas fa-box"></i>
+                                            </span>
+                                        </a>
+                                    </td>                                                                                
+                                </tr>
+                            <?php endif ?>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
 
 
 

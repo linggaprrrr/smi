@@ -133,7 +133,7 @@
                                     </select>      
                                 </td>
                                 <td><input type="text" class="form-control berat" name="weight" data-id='<?= $product->id ?>' value="<?= $product->weight ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
-                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>        
+                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->stok ?>" readonly></td>        
                                 <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->price ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
                                 <td class="text-center align-middle"><?= $product->created_at ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>
@@ -170,7 +170,7 @@
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (gr)</th>
                         <th class="text-center">Qty</th>
-                        <th class="text-center">Tanggal Masuk</th>
+                        <th class="text-center">Tanggal Keluar</th>
                         <th class="text-center">PIC</th>
                     </tr>
                 </thead>
@@ -181,12 +181,12 @@
                         <?php foreach ($productsOut->getResultObject() as $product) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td><div contenteditable><?= $product->product_name ?></div></td>
+                                <td><div><?= $product->product_name ?></div></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
                                 <td><?= $product->weight ?></td>
                                 <td class="text-center">1</td>
-                                <td class="text-center"><?= $product->created_at ?></td>
+                                <td class="text-center"><?= date('j F Y, H:m:s', strtotime($product->created_at)) ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
                             </tr>
                         <?php endforeach ?>
@@ -270,14 +270,6 @@
                 });   
         });
 
-        $('.qty').on('change', function() {
-            const id = $(this).data('id');
-            const qty = $(this).val();
-            $.post('/on-change-product-qty', {product: id, qty: qty})
-                .done(function(data) {
-                    $.notify('Qty produk berhasil diubah', "success");
-                });   
-        });
 
 
         $('.hpp').on('change', function() {

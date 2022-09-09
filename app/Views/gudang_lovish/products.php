@@ -5,6 +5,51 @@
 }
 </style>
 <?= $this->section('content') ?>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Produk Masuk Dari Gesit</h6>
+        <!-- <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-produk"><i class="fa fa-plus mr-2"></i>Tambah Produk</button> -->
+        
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 5%">No</th>
+                        <th class="text-center">Jenis Produk</th>
+                        <th class="text-center">Model</th>
+                        <th class="text-center">Warna</th>
+                        <th class="text-center">Berat (gr)</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-center">Tanggal Masuk</th>
+                        <th class="text-center">PIC</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <?php $no = 1; ?>
+                    <?php if ($productsOut->getNumRows() > 0) : ?>
+                        <?php foreach ($productsOut->getResultObject() as $product) : ?>
+                            <tr>
+                                <td class="text-center"><?= $no++ ?></td>
+                                <td><div><?= $product->product_name ?></div></td>
+                                <td class="text-center"><?= $product->model_name ?></td>
+                                <td><?= $product->color ?></td>
+                                <td><?= $product->weight ?></td>
+                                <td class="text-center">1</td>
+                                <td class="text-center"><?= $product->created_at ?></td>
+                                <td class="text-center"><?= $product->name ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary float-left">Stok Produk</h6>
@@ -135,7 +180,7 @@
                                 <td><input type="text" class="form-control berat" name="weight" data-id='<?= $product->id ?>' value="<?= $product->weight ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>        
                                 <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->price ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
-                                <td class="text-center align-middle"><?= date('j F, Y', strtotime($product->created_at)) ?></td>
+                                <td class="text-center align-middle"><?= $product->created_at ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>
                                 <td class="text-center">                                    
                                     <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-produk" data-id='<?= $product->id ?>'>
@@ -153,52 +198,6 @@
         
     </div>
 </div>
-
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Produk Masuk Dari Gesit</h6>
-        <!-- <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-produk"><i class="fa fa-plus mr-2"></i>Tambah Produk</button> -->
-        
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th class="text-center" style="width: 5%">No</th>
-                        <th class="text-center">Jenis Produk</th>
-                        <th class="text-center">Model</th>
-                        <th class="text-center">Warna</th>
-                        <th class="text-center">Berat (gr)</th>
-                        <th class="text-center">Qty</th>
-                        <th class="text-center">Tanggal Masuk</th>
-                        <th class="text-center">PIC</th>
-                    </tr>
-                </thead>
-                
-                <tbody>
-                    <?php $no = 1; ?>
-                    <?php if ($productsOut->getNumRows() > 0) : ?>
-                        <?php foreach ($productsOut->getResultObject() as $product) : ?>
-                            <tr>
-                                <td class="text-center"><?= $no++ ?></td>
-                                <td><div contenteditable><?= $product->product_name ?></div></td>
-                                <td class="text-center"><?= $product->model_name ?></td>
-                                <td><?= $product->color ?></td>
-                                <td><?= $product->weight ?></td>
-                                <td class="text-center">1</td>
-                                <td class="text-center"><?= date('j F, Y', strtotime($product->created_at)) ?></td>
-                                <td class="text-center"><?= $product->name ?></td>
-                            </tr>
-                        <?php endforeach ?>
-                    <?php endif ?>
-                </tbody>
-            </table>
-        </div>
-        
-    </div>
-</div>
-
 
 
 <?= $this->endSection() ?>

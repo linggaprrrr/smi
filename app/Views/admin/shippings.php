@@ -14,9 +14,8 @@
                         <th class="text-center" style="width: 5%">No</th>
                         <th class="text-center">Pengiriman</th>
                         <th class="text-center">Tanggal</th>
-                        <th class="text-center">Resi</th>
-                        <th class="text-center">PIC</th>
-                        <th class="text-center" style="width: 10%">Detail</th>
+                        <th class="text-center">No. Resi</th>
+                        <th class="text-center" style="width: 10%;"><i class="fas fa-info-circle"></i></th>                            
                     </tr>
                 </thead>
                 
@@ -24,21 +23,41 @@
                     <?php $no = 1; ?>
                     <?php if ($shippings->getNumRows() > 0) : ?>
                         <?php foreach ($shippings->getResultObject() as $ship) : ?>
-                            <tr>
-                                <td class="text-center"><?= $no++ ?></td>
-                                <td><?= $ship->box_name ?></td>                       
-                                <td class="text-center"><?= $ship->created_at ?></td>
-                                <td class="text-center"><?= $ship->resi ?></td>
-                                <td class="text-center"><?= $ship->name ?></td>
-                                <td class="text-center">
-                                    <a href="#" class="btn btn-info btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
-                                        <span class="icon text-white-25">
-                                            <i class="fas fa-info"></i>
-                                        </span>
-                                    </a>
-                                </td>
-                                
-                            </tr>
+                            <?php if (is_null($ship->qrcode) || empty($ship->qrcode)) : ?>
+                                <tr>
+                                    <td class="text-center align-middle"><?= $no++ ?></td>
+                                    <td class="align-middle"><?= $ship->box_name ?></td>                       
+                                    <td class="text-center align-middle"><?= date('j F Y, H:m', strtotime($ship->created_at)) ?></td>
+                                    <td class="text-center align-middle">
+                                        <?php if (empty($ship->resi) || is_null($ship->resi)) : ?>
+                                            -
+                                        <?php else : ?>
+                                            <?= $ship->resi ?>
+                                        <?php endif ?>
+                                    </td>
+                                    <td class="text-center align-middle">                                           
+                                        <a href="#" class="btn btn-default btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
+                                            <span class="icon text-white-25">
+                                                <i class="fas fa-box"></i>
+                                            </span>
+                                        </a>
+                                    </td>                                                                            
+                                </tr>
+                            <?php else :?>
+                                <tr class="table-info">
+                                    <td class="text-center align-middle"><?= $no++ ?></td>
+                                    <td class="align-middle"><?= $ship->box_name ?></td>                       
+                                    <td class="text-center align-middle"><?= date('j F Y, H:m', strtotime($ship->created_at)) ?></td>
+                                    <td class="text-center align-middle"><?= $ship->resi ?></td>
+                                    <td class="text-center align-middle">                                            
+                                        <a href="#" class="btn btn-info btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
+                                            <span class="icon text-white-25">
+                                                <i class="fas fa-box"></i>
+                                            </span>
+                                        </a>
+                                    </td>                                                                                
+                                </tr>
+                            <?php endif ?>
                         <?php endforeach ?>
                     <?php endif ?>
                 </tbody>

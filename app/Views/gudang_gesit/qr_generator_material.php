@@ -146,17 +146,17 @@
                         const desc1 = qr[i]['key'].split("-");
                         const desc2 = qr[i+1]['key'].split("-");
                         const desc3 = qr[i+2]['key'].split("-");                      
-                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 117.11px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'</small></td>');
                         $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px; width: 157.11px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'</small></td>');
-                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 117.11px"><img src="'+qr[i+2]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc3[1]+'<br>'+desc3[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i+2]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc3[1]+'<br>'+desc3[2]+'</small></td>');
                     } else if (qr.length - i == 2) {
                         const desc1 = qr[i]['key'].split("-");
                         const desc2 = qr[i+1]['key'].split("-");
-                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 117.11px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'</small></td>');
-                        $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px; width: 157.11px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px; width: 158px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'</small></td>');
                     } else {
                         const desc1 = qr[i]['key'].split("-");
-                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 117.11px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'</small></td>');
+                        $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center; font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'</small></td>');
                     }
                     $('#qr-handler').append('</tr>');
                 }

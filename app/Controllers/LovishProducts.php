@@ -33,7 +33,7 @@ class LovishProducts extends BaseController
 
     public function gudangLovishProduk() {
         $productsIn = $this->productLovishModel->getAllProductLovish();        
-        $productsOut = $this->productModel->getAllProductOut();        
+        $productsOut = $this->productLovishModel->getAllProductOut();        
         $productsExp = $this->productModel->getAllProductExp();        
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
@@ -65,6 +65,7 @@ class LovishProducts extends BaseController
             'price' => $post['harga'],
             'status' => '2'
         ];
+        $this->productLovishModel->save($product);
         $getProduct = $this->productLovishModel
             ->select('lovish_products.id, product_name, model_name, color')
             ->join('models', 'models.id = lovish_products.model_id')

@@ -5,8 +5,10 @@ namespace App\Controllers;
 use App\Models\MaterialModel;
 use App\Models\ProductModel;
 use App\Models\LogModel;
+use App\Models\ShippingModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class Reports extends BaseController
 {   
@@ -14,6 +16,7 @@ class Reports extends BaseController
     protected $materialModel = "";
     protected $productModel = "";
     protected $logModel = "";
+    protected $shippingModel = "";
     
     public function __construct() { 
         $userId = session()->get('user_id');
@@ -24,6 +27,7 @@ class Reports extends BaseController
         $this->materialModel = new MaterialModel();
         $this->productModel = new ProductModel();
         $this->logModel = new LogModel();
+        $this->shippingModel = new ShippingModel();
     }
 
     public function index() {
@@ -32,6 +36,10 @@ class Reports extends BaseController
         $polaIn = $this->materialModel->getAllPolaIn();
         $productsIn = $this->productModel->getAllProductIn();
         $productsOut = $this->productModel->getAllProductOut();
+        $shippings = $this->shippingModel
+            ->orderBy('qrcode', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
         $data = array(
             'title' => 'Laporan',
             'materials' => $materials,
@@ -39,6 +47,7 @@ class Reports extends BaseController
             'productsOut' => $productsOut,
             'polaIn' => $polaIn,
             'polaOut' => $polaOut,
+            'shippings' => $shippings
 
         );
         return view('admin/reports', $data);    
