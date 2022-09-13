@@ -4,6 +4,8 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
+use function PHPUnit\Framework\returnSelf;
+
 class MaterialModel extends Model
 {
     protected $table = 'materials';
@@ -246,4 +248,21 @@ class MaterialModel extends Model
     public function importVendorSell($type) {
         $this->db->query("INSERT INTO selling_vendors(vendor) VALUES('$type') ");
     }
+
+    public function getAllCuttingData() {
+        $query = $this->db->table('materials as m')
+            ->select('ct.*, mt.type, md.model_name, c.color, g1.name as gelar1, g2.name as gelar2')
+            ->join('material_types as mt', 'mt.id = m.material_id')
+            ->join('colors as c', 'c.id = m.color_id')
+            ->join('cutting as ct', 'ct.material_id = m.id')
+            ->join('models as md', 'md.id = ct.model_id')
+            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
+            ->get();
+
+        return $query;
+    }
+
+
+
 }

@@ -72,7 +72,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label for="">Tgl Cutting</label>
-                                        <input type="text" class="form-control tgl-cutting" name="tgl-cutting" value="<?= date("m/d/Y") ?>" readonly>                                
+                                        <input type="text" class="form-control" name="tgl-cutting-old" value="-" disabled>                                
                                     </div>     
                                     <div class="form-group">
                                     <label for="">Gelar 1*</label>
@@ -180,7 +180,7 @@
                                 <td>
                                     <input type="text" class="form-control berat" name="weight" data-id='<?= $kain->id ?>' style="width: 90px" value="<?= number_format($kain->weight/1000, 2) ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 </td>
-                                <td class="text-center align-middle"><?= date('j F, Y', strtotime($kain->created_at)) ?></td>
+                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($kain->created_at)) ?></td>
                                 <td class="text-center align-middle"><?= $kain->roll ?></td>
                                 <td class="text-center">
                                     <select class="form-control vendor-kain-edit" name="vendor" data-id='<?= $kain->id ?>' style="width: 160px">                                        
@@ -192,7 +192,11 @@
                                 <td>
                                     <input type="text" class="form-control harga" name="price" data-id='<?= $kain->id ?>' value="<?= $kain->price ?>"  style="width: 90px" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 </td>
-                                <td class="text-center"><input type="text" class="form-control tgl-cutting-edit" name="tgl-cutting" data-id='<?= $kain->id ?>' value="<?= date("m/d/Y", strtotime($kain->tgl_cutting)) ?>" readonly>  </td>
+                                <?php if (is_null($kain->tgl_cutting)) : ?>
+                                    <td class="text-center"><input type="text" class="form-control tgl-cutting-edit" name="tgl-cutting" data-id='<?= $kain->id ?>' value="-" disabled>  </td>
+                                <?php else : ?>
+                                    <td class="text-center"><input type="text" class="form-control tgl-cutting-edit" name="tgl-cutting" data-id='<?= $kain->id ?>' value="<?= date("m/d/Y", strtotime($kain->tgl_cutting)) ?>" disabled>  </td>
+                                <?php endif ?>
                                 <td class="text-center">
                                     <form>
                                         <div class="form-row">
@@ -252,11 +256,105 @@
 </div>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Kain Keluar (Pola)</h6>
+        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Data Cutting</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive" id="tabel-kain">
             <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 5%">No</th>
+                        <th class="text-center">Tanggal</th>
+                        <th class="text-center">Produk</th>
+                        <th class="text-center">Warna</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-center">Gelar 1</th>
+                        <th class="text-center">Gelar 2</th>                        
+                        <th class="text-center">PIC</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-right"><i class="fa fa-ellipsis-v"></i></th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <?php $no = 1; ?>
+                    <?php if ($cuttings->getNumRows() > 0) : ?>
+                        <?php foreach ($cuttings->getResultObject() as $cutting) : ?>
+                            <tr>
+                                <td class="text-center align-middle"><?= $no++ ?></td>
+                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($cutting->tgl)) ?></td>
+                                <td class="text-center align-middle"><?= $cutting->type ?></td>
+                                <td class="text-center align-middle"><?= $cutting->color ?></td>
+                                <td class="text-center align-middle">
+                                    <input type="text" class="form-control qty-cutting" name="qty" data-id='<?= $cutting->id ?>' value="<?= $cutting->qty ?>"  style="width: 90px" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                </td>
+                                <td class="text-center align-middle">                                
+                                    <?= $cutting->gelar1 ?>
+                                    <br>
+                                    <small><mark>Rp <?= number_format($cutting->biaya_gelar1, 0) ?></mark></small>
+                                </td>  
+                                <td class="text-center align-middle">   
+                                    <?= $cutting->gelar2 ?>                             
+                                    <br>
+                                    <small><mark>Rp <?= number_format($cutting->biaya_gelar2, 0) ?></mark></small>
+                                </td>  
+                                <td class="text-center align-middle">                                
+                                    <?= $cutting->gelar1 ?>
+                                    <br>
+                                    <small><mark>Rp <?= number_format($cutting->biaya_cutting, 0) ?></mark></small>
+                                </td>  
+                                <td class="text-center font-weight-bold align-middle">Rp <?= number_format($cutting->total) ?></td>  
+                                <td class="text-center align-middle">
+                                    <a href="#" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-info-circle"></i></a>
+                                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Biaya</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">GELAR</th>
+                                                                <th scope="col">CUTTING</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Rp <?= number_format($cutting->harga_gelar) ?></td>
+                                                                <td>Rp <?= number_format($cutting->harga_cutting) ?></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </tbody>
+            </table>
+           
+        </div>
+        
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Kain Keluar (Pola)</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive" id="tabel-kain">
+            <table class="table table-bordered" id="dataTable5" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">No</th>
@@ -277,12 +375,12 @@
                         <?php foreach ($materialsOut->getResultObject() as $kain) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td class="text-center"><?= date('j F, Y', strtotime($kain->created_at)) ?></td>
+                                <td class="text-center"><?= date('m/d/Y', strtotime($kain->created_at)) ?></td>
                                 <td class=""><?= $kain->type ?></td>
                                 <td><?= $kain->color ?></td>
                                 <td><?= number_format($kain->weight/1000, 2) ?></td>
                                 <td class="text-center"><?= $kain->roll ?></td>
-                                <td class="text-center"><?= date('j F, Y', strtotime($kain->created_at_pola)) ?></td>
+                                <td class="text-center"><?= date('m/d/Y', strtotime($kain->created_at_pola)) ?></td>
                                 <td class="text-center">
                                     <select class="form-control vendor-pola" data-id="<?= $kain->id ?>" name="vendor-pola">
                                         <option value="0">-</option>

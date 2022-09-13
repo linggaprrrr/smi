@@ -72,7 +72,7 @@ class Materials extends BaseController
             'price' => $post['harga'],
             'user_id' => session()->get('user_id'),
             'gudang_id' => $post['gudang'],
-            'tgl_cutting' => date('Y-m-d', strtotime($post['tgl-cutting'])),
+            'tgl_cutting' => NULL,
             'gelar1' => $post['gelar1'],
             'gelar2' => $post['gelar2'],
             'pic_cutting' => $post['pic-cutting'],
@@ -201,6 +201,7 @@ class Materials extends BaseController
         $picCutting = $this->materialModel->getAllPICCutting();
         $getAllTimGelar = $this->materialModel->getAllTimGelar();
         $vendorPola = $this->materialModel->getAllVendorPola();
+        $cuttings = $this->materialModel->getAllCuttingData();        
         $data = array(
             'title' => 'Kain',
             'materials' => $materials,
@@ -212,7 +213,8 @@ class Materials extends BaseController
             'materialVendors' => $materialVendors,
             'picCutting' => $picCutting,
             'timGelars' => $getAllTimGelar,
-            'vendorPola' => $vendorPola
+            'vendorPola' => $vendorPola,
+            'cuttings' => $cuttings
         );
 
         return view('gudang_gesit/materials', $data);    
