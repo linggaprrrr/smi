@@ -243,7 +243,8 @@ class Products extends BaseController
         $this->productModel->save($product);
         $productId = $this->productModel->insertID();        
         for ($i=0; $i < $post['qty']; $i++) {
-            $this->productModel->createBarcode($productId);
+            $temp = $this->productModel->createBarcode($productId);
+            $this->productModel->createLog($temp, '0', '2');
         }
 
         $getProduct = $this->productModel

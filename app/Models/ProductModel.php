@@ -27,7 +27,7 @@ class ProductModel extends Model
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id', 'left')
             ->join('users', 'users.id = products.user_id')
-            ->where('product_logs.status', '2')
+            ->where('product_logs.status', '2')             
             ->groupBy('products.id')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -58,6 +58,7 @@ class ProductModel extends Model
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
             ->where('product_logs.status','2')
+            ->where('product_logs.qty !=','0')
             ->orderBy('created_at', 'desc')
             ->get();
         return $query;
@@ -230,6 +231,8 @@ class ProductModel extends Model
 
     public function createBarcode($productId) {
         $this->db->query("INSERT INTO product_barcodes(product_id) VALUES('$productId') ");
+        $insert_id = $this->db->insertID();
+        return $insert_id;
     }
 
     public function setBarocde($id, $qrcode) {
@@ -238,11 +241,7 @@ class ProductModel extends Model
 
     public function createLog($id, $qty, $status = null) {
         $user = session()->get('user_id');
-        if (!is_null($status)) {
-            $this->db->query("INSERT product_logs(product_id, qty, status, user_id) VALUES('$id', '$qty', '$status', '$user')");
-        } else {
-            $this->db->query("INSERT product_logs(product_id, qty, user_id) VALUES('$id', '$qty', '$user')");
-        }
+        $this->db->query("INSERT product_logs(product_id, qty, user_id, status) VALUES('$id', '$qty', '$user', '$status')");
     }
 
     public function productStatus($id) {
