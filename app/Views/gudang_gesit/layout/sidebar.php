@@ -57,25 +57,31 @@
                                     <a class="collapse-item" href="<?= base_url('/gudang-gesit/qr-generator-produk-masuk') ?>">Produk</a>
                                 </div>
                             </div>
-                        </li>
+                        </li>                        
                         <?php
                     break;                
                 case "4": 
                         ?>
+<!--                         
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-pola-out') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Pola (OUT)</span></a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-cutting') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Cutting</span></a>
                         </li>
                         <?php
                     break;
                 case "7": 
                         ?>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-pola-in') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Pola (IN)</span></a>
-                        </li>
+                        </li> -->
                         <?php
                     break;
                 case "5": 

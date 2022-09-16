@@ -21,7 +21,7 @@
 <form id="generate-qr">
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Produk Keluar (Gudang Gesit)</h6>
+        <h6 class="m-0 font-weight-bold text-primary float-left">Produk Keluar (Gesit)</h6>
         <button type="submit" id="print" class="btn btn-primary float-right"><i class="fa fa-qrcode mr-2"></i>Print</button>
     </div>
     <div class="card-body">        
@@ -40,7 +40,7 @@
                         </tr>
                     </thead>
                     
-                    <tbody>
+                    <!-- <tbody>
                         <?php $no = 1; ?>
                         <?php if ($products->getNumRows() > 0) : ?>
                             <?php foreach ($products->getResultObject() as $product) : ?>
@@ -73,7 +73,7 @@
                                 <?php endif ?>
                             <?php endforeach ?>
                         <?php endif ?>
-                    </tbody>
+                    </tbody> -->
                 </table>
             </div>
     </div>
@@ -130,6 +130,67 @@
         </div>
     </div>
 </div>
+<form id="generate-qr">
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary float-left">Produk Gudang (Requested)</h6>
+        <button type="submit" id="print" class="btn btn-primary float-right"><i class="fa fa-qrcode mr-2"></i>Print</button>
+    </div>
+    <div class="card-body">        
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableProdukPrint2" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 5%">No</th>
+                            <th class="text-center">Produk</th>
+                            <th class="text-center">Model</th>
+                            <th class="text-center">Warna</th>
+                            <th class="text-center">Berat (gr)</th>
+                            <th class="text-center">Qty</th>
+                            <th class="text-center">Tanggal Masuk</th>
+                            <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all" /></th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <?php $no = 1; ?>
+                        <?php if ($products->getNumRows() > 0) : ?>
+                            <?php foreach ($products->getResultObject() as $product) : ?>
+                                <?php if (is_null($product->qr) || empty($product->qr)) :?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td class=""><?= $product->product_name ?></td>
+                                        <td class=""><?= $product->model_name ?></td>
+                                        <td><?= $product->color ?></td>
+                                        <td><?= $product->weight ?></td>                                    
+                                        <td class="text-center"><?= $product->qty ?></td>
+                                        <td class="text-center"><?= $product->created_at ?></td>
+                                        <td class="text-center">
+                                            <input type="checkbox" class="unprinted" name="print[]" value="<?= $product->id ?>" />
+                                        </td>
+                                    </tr>
+                                <?php else: ?>
+                                    <tr class="table-info">
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td class=""><?= $product->product_name ?></td>
+                                        <td class=""><?= $product->model_name ?></td>
+                                        <td><?= $product->color ?></td>
+                                        <td><?= $product->weight ?></td>    
+                                        <td class="text-center"><?= $product->qty ?></td>                                
+                                        <td class="text-center"><?= $product->created_at ?></td>
+                                        <td class="text-center">
+                                            <input type="checkbox" class="printed" name="print[]" value="<?= $product->id ?>" />
+                                        </td>
+                                    </tr>
+                                <?php endif ?>
+                            <?php endforeach ?>
+                        <?php endif ?>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</div>
+</form>
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <script>

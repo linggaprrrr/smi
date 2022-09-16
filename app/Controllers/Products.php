@@ -105,6 +105,7 @@ class Products extends BaseController
         $post = $this->request->getVar();
         $model = [
             'model_name' => $post['nama_model'],
+            'harga_jahit' => $post['jahit'],
             'hpp' => $post['hpp']
         ];
         $this->designModel->save($model);
@@ -116,6 +117,8 @@ class Products extends BaseController
         $model = [
             'id' => $post['id'],
             'model_name' => $post['nama_model'],
+            'harga_jahit' => $post['jahit'],
+            'hpp' => $post['hpp'],
         ];
         $this->designModel->save($model);
         return redirect()->back()->with('update', 'Model berhasil ditambahkan');

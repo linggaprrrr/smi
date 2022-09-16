@@ -220,6 +220,14 @@ class QRCodeGenerator extends BaseController
         return view('gudang_lovish/qr_scanner_retur_in', $data);    
     }
 
+    public function scannerCutting() {
+        $data = array(
+            'title' => 'QR Scanner Cutting'
+        );
+
+        return view('gudang_gesit/qr_scanner_cutting', $data);
+    }
+
     public function scannerShipment() {
         $shippings = $this->shippinglModel
             ->select('shippings.*, shipping_details.product_id')
@@ -294,6 +302,24 @@ class QRCodeGenerator extends BaseController
         }        
         echo json_encode($status);
         
+    }
+
+    public function scanningCutting() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode('-', $qr);
+        $status = 0;
+
+        $getMaterial = $this->materialModel->find($qr[0]);
+        if ($getMaterial) {
+            $status = 1;
+            $getCOA = $this->materialModel->getCOA();
+            $this->materialModel->insertCutting($qr[0], $getCOA[0]->biaya, $getCOA[1]->biaya);
+            $this->materialModel->save([
+                'id' => $qr[0],
+                'tgl_cutting' => date('Y-m-d')
+            ]);
+        }
+        echo json_encode($status);
     }
 
     public function scanningProductOut() {
@@ -374,11 +400,29 @@ class QRCodeGenerator extends BaseController
         }
         echo json_encode($status);
     }
-    
+
+    public function scanningCut() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $getProduct = $this->materialModel->find($qr[0]);
+        $status = '0';
+        if (!is_null($getProduct)) {
+            $status = '1'; 
+            $coa = $this->materialModel->getCOA();
+            $this->materialModel->setCutting($qr[0]);
+            
+        }
+        echo json_encode($status);
+    }   
+
     public function test() {
-        $resi = '1138439005';
-        $getShipment = $this->shippinglModel->where('resi', $resi)->first();            
-        d($getShipment);
+        // $str = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        // $numbers = rand(1000, 9999);
+        // $id = 'M-'.substr($str, 0, 3).''.$numbers;    
+        // $isExist = $this->materialModel->getWhere(['material_id' => $id]);
+        // dd($isExist->getNumRows());
+        d(date('Y-m-d', strtotime('09/01/1998')));
     } 
 
     public function scanningShipment() {

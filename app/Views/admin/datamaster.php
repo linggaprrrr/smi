@@ -199,6 +199,11 @@
                                         <small id="modelName" class="form-text text-muted">Pastikan nama model tidak ada dalam list.</small>
                                     </div>
                                     <div class="form-group">
+                                        <label for="">Harga Jahit</label>
+                                        <input type="text" class="form-control set-jahit" name="jahit" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
+                                    
+                                    </div>
+                                    <div class="form-group">
                                         <label for="">HPP</label>
                                         <input type="text" class="form-control set-hpp" name="hpp" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
                                     
@@ -220,6 +225,7 @@
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
                                 <th class="text-center">Nama Model</th>
+                                <th class="text-center">Harga Jahit</th>
                                 <th class="text-center">HPP</th>
                                 <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
                             </tr>
@@ -232,6 +238,7 @@
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td class=""><?= $model->model_name ?></td>
+                                        <td class=""><?= $model->harga_jahit ?></td>
                                         <td class=""><?= $model->hpp ?></td>
                                         <td class="text-center">
                                             <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-model" data-id="<?= $model->id ?>">
@@ -268,6 +275,16 @@
                                         <input type="hidden" name="id" id="id-model" >
                                         <input type="text" class="form-control" name="nama_model" id="nama-model" placeholder="Masukkan Nama Model" required>
                                         <small id="modelName" class="form-text text-muted">Pastikan nama model tidak ada dalam list.</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Harga Jahit</label>
+                                        <input type="text" class="form-control" id="set-jahit"  name="jahit" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
+                                    
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">HPP</label>
+                                        <input type="text" class="form-control" id="set-hpp" name="hpp" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
+                                    
                                     </div>
                                     
                                 </div>
@@ -808,7 +825,7 @@
                                     <div class="form-group">
                                         <label for="">Vendor*</label>
                                         <input type="hidden" name="id" id="id-penjualan">
-                                        <input type="text" class="form-control" id="vendor-penjualan" name="vendor" placeholder="Masukkan Nama Model" required>                                
+                                        <input type="text" class="form-control" id="vendor-penjualan" name="vendor" placeholder="Masukkan Nama Vendor" required>                                
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -822,6 +839,7 @@
             </div>
         </div>             
     </div>
+    
 </div>
 
 <?= $this->endSection() ?>
@@ -888,6 +906,8 @@
                 const model = JSON.parse(data);
                 $('#id-model').val(model['id']);
                 $('#nama-model').val(model['model_name']);
+                $('#set-jahit').val(model['harga_jahit']);
+                $('#set-hpp').val(model['hpp']);
         });
     });
 

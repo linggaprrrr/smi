@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\DesignModel;
 use App\Models\MaterialModel;
 use App\Models\ProductModel;
 use App\Models\LogModel;
@@ -17,6 +18,7 @@ class Reports extends BaseController
     protected $productModel = "";
     protected $logModel = "";
     protected $shippingModel = "";
+    protected $designModel = "";
     
     public function __construct() { 
         $userId = session()->get('user_id');
@@ -28,18 +30,23 @@ class Reports extends BaseController
         $this->productModel = new ProductModel();
         $this->logModel = new LogModel();
         $this->shippingModel = new ShippingModel();
+        $this->designModel = new DesignModel();
     }
 
     public function index() {
         $materials = $this->materialModel->getAllMaterial();
-        $polaOut = $this->materialModel->getAllMaterialOut();
+        $models = $this->designModel->getAllModel();
+        $polaOut = $this->materialModel->getAllPolaOut();        
         $polaIn = $this->materialModel->getAllPolaIn();
         $productsIn = $this->productModel->getAllProductIn();
         $productsOut = $this->productModel->getAllProductOut();
+        $cuttings = $this->materialModel->getAllCuttingData();
         $shippings = $this->shippingModel
             ->orderBy('qrcode', 'asc')
             ->orderBy('created_at', 'desc')
             ->get();
+
+            
         $data = array(
             'title' => 'Laporan',
             'materials' => $materials,
@@ -47,7 +54,9 @@ class Reports extends BaseController
             'productsOut' => $productsOut,
             'polaIn' => $polaIn,
             'polaOut' => $polaOut,
-            'shippings' => $shippings
+            'cuttings' => $cuttings,
+            'shippings' => $shippings,
+            'models' => $models
 
         );
         return view('admin/reports', $data);    
@@ -66,10 +75,12 @@ class Reports extends BaseController
 
     public function reportGesit() {
         $materials = $this->materialModel->getAllMaterial();
-        $polaOut = $this->materialModel->getAllMaterialOut();
+        $models = $this->designModel->getAllModel();
+        $polaOut = $this->materialModel->getAllPolaOut();        
         $polaIn = $this->materialModel->getAllPolaIn();
         $productsIn = $this->productModel->getAllProductIn();
         $productsOut = $this->productModel->getAllProductOut();
+        $cuttings = $this->materialModel->getAllCuttingData();  
         $data = array(
             'title' => 'Laporan',
             'materials' => $materials,
@@ -77,6 +88,8 @@ class Reports extends BaseController
             'productsOut' => $productsOut,
             'polaIn' => $polaIn,
             'polaOut' => $polaOut,
+            'cuttings' => $cuttings,
+            'models' => $models
 
         );
         return view('gudang_gesit/reports', $data);    

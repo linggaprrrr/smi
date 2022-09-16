@@ -9,12 +9,12 @@ use function PHPUnit\Framework\returnSelf;
 class MaterialModel extends Model
 {
     protected $table = 'materials';
-    protected $allowedFields = ['material_id', 'vendor_id', 'color_id', 'weight', 'roll', 'qrcode', 'status', 'price', 'user_id', 'gudang_id', 'updated_at', 'pic_cutting', 'gelar1', 'gelar2', 'tgl_cutting', 'vendor_pola'];
+    protected $allowedFields = ['material_id', 'material_type', 'vendor_id', 'color_id', 'weight', 'roll', 'qrcode', 'status', 'price', 'user_id', 'gudang_id', 'updated_at', 'pic_cutting', 'gelar1', 'gelar2', 'tgl_cutting', 'vendor_pola'];
 
     public function getAllMaterial() {
         $query =  $this->db->table('materials')
         ->select('materials.*, material_types.type, colors.color, gudang, roll, vendor, tim_cutting.name as pic')
-        ->join('material_types', 'material_types.id = materials.material_id')
+        ->join('material_types', 'material_types.id = materials.material_type')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
         ->join('tim_cutting', 'tim_cutting.id = materials.pic_cutting')
@@ -27,7 +27,7 @@ class MaterialModel extends Model
     public function getAllMaterialQR() {
         $query =  $this->db->table('materials')
         ->select('materials.*, material_types.type, colors.color, users.name, gudang, roll, vendor')
-        ->join('material_types', 'material_types.id = materials.material_id')
+        ->join('material_types', 'material_types.id = materials.material_type')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
         ->join('material_vendors', 'material_vendors.id = materials.vendor_id')
@@ -42,7 +42,7 @@ class MaterialModel extends Model
     public function getAllMaterialOut() {
         $query =  $this->db->table('materials')
         ->select('materials.*, material_types.type, colors.color, gudang, roll, vendor, tim_cutting.name as pic, material_patterns.created_at as created_at_pola, users.name ')
-        ->join('material_types', 'material_types.id = materials.material_id')
+        ->join('material_types', 'material_types.id = materials.material_type')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
         ->join('tim_cutting', 'tim_cutting.id = materials.pic_cutting')
@@ -57,7 +57,7 @@ class MaterialModel extends Model
     public function getMaterialDetail($id) {
         $query =  $this->db->table('materials')
         ->select('materials.*, material_types.type, colors.color, users.name, gudang, roll, vendor_id, price')
-        ->join('material_types', 'material_types.id = materials.material_id')
+        ->join('material_types', 'material_types.id = materials.material_type')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
         ->join('material_vendors', 'material_vendors.id = materials.vendor_id')
@@ -67,24 +67,12 @@ class MaterialModel extends Model
         return $query->getResult();
     }
 
-    public function getAllPolaIn() {
-        $query =  $this->db->table('materials')
-        ->select('material_patterns.*, weight, material_types.type, colors.color, users.name, gudang, roll, vendor_pola.name as vendor_pola')
-        ->join('material_types', 'material_types.id = materials.material_id')
-        ->join('colors', 'colors.id = materials.color_id')
-        ->join('gudang', 'gudang.id = materials.gudang_id')
-        ->join('vendor_pola', 'vendor_pola.id = materials.vendor_pola', 'left')
-        ->join('material_patterns', 'material_patterns.material_id = materials.id')
-        ->join('users', 'users.id = material_patterns.user_id_in')
-        ->where('status', '3')
-        ->orderBy('created_at', 'desc')->get();
-        return $query;
-    }
+ 
 
     public function getAllMaterialStock() {
         $query = $this->db->table('materials')
             ->select('material_types.type, colors.color, SUM(roll) as roll, SUM(weight) as berat')
-            ->join('material_types', 'material_types.id = materials.material_id')
+            ->join('material_types', 'material_types.id = materials.material_type')
             ->join('colors', 'colors.id = materials.color_id')
             ->groupBy('material_types.type')
             ->groupBy('colors.color')
@@ -93,11 +81,11 @@ class MaterialModel extends Model
     }
 
     public function setPolaOut($id, $user) {
-        $this->db->query("INSERT INTO material_patterns(material_id, user_id_out) VALUES('$id', '$user') ");
+        $this->db->query("INSERT INTO material_patterns(material_type, user_id_out) VALUES('$id', '$user') ");
     }
 
     public function setPolaIn($id, $user) {
-        $this->db->query("UPDATE material_patterns SET user_id_in= '$user', updated_at = date('Y-m-d H:i:s') WHERE material_id='$id' ");
+        $this->db->query("UPDATE material_patterns SET user_id_in= '$user', updated_at = date('Y-m-d H:i:s') WHERE material_type='$id' ");
     }
 
     
@@ -251,18 +239,116 @@ class MaterialModel extends Model
 
     public function getAllCuttingData() {
         $query = $this->db->table('materials as m')
-            ->select('ct.*, mt.type, md.model_name, c.color, g1.name as gelar1, g2.name as gelar2')
-            ->join('material_types as mt', 'mt.id = m.material_id')
+            ->select('m.material_id as mid, ct.*, mt.type, md.model_name, c.color, g1.name as gelar1, g2.name as gelar2, tc.name as pic, p.id as pid')
+            ->join('material_types as mt', 'mt.id = m.material_type')
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
-            ->join('models as md', 'md.id = ct.model_id')
+            ->join('models as md', 'md.id = ct.model_id', 'left')
             ->join('tim_gelar as g1', 'g1.id = m.gelar1')
             ->join('tim_gelar as g2', 'g2.id = m.gelar2')
+            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('pola as p', 'p.cutting_id = ct.id', 'left')
+            ->groupBy('ct.id')
+            ->orderBy('ct.id', 'desc')
             ->get();
 
         return $query;
     }
 
+    public function insertCutting($id, $gelar, $jahit) {        
+        $this->db->query("INSERT INTO cutting(material_id, harga_gelar, harga_cutting) VALUES('$id','$gelar', '$jahit') ");
+    }
 
+    public function getCOA() {
+        $query = $this->db->query('SELECT * FROM coa');
+        return $query->getResultObject();
+    }
+
+    public function updateCuttingProduct($id, $prod) {
+        $this->db->query("UPDATE cutting SET model_id = '$prod' WHERE id = '$id' ");
+    }
+
+    public function updateCuttingQty($id, $qty, $gelar, $cutting) {
+        $biayaGelar = $qty * $gelar;
+        $biayaCutting = $qty * $cutting;
+        $total = (2 * $biayaGelar) + $biayaCutting;
+        $this->db->query("UPDATE cutting SET qty = '$qty', biaya_gelar1 = '$biayaGelar', biaya_gelar2 = '$biayaGelar', biaya_cutting = '$biayaCutting', total = '$total' WHERE id='$id' ");
+        $res = [
+            'gelar1' => $biayaGelar,
+            'gelar2' => $biayaGelar,
+            'cutting' => $biayaCutting,
+            'total' => $total
+        ];
+        return $res;
+    }
+
+    public function getCutting($id) {
+        $query = $this->db->query("SELECT * FROM cutting WHERE id='$id' ");
+        return $query->getResultObject();
+    }
+    
+    public function savePolaOut($id, $tgl, $jumlah, $vendor) {
+        $this->db->query("INSERT INTO pola(cutting_id, tgl_ambil, jumlah_pola, vendor_id) VALUES('$id', '$tgl', '$jumlah', '$vendor') ");
+    }
+
+    public function savePolaIn($arr) {
+        $this->db->query("INSERT INTO pola(cutting_id, tgl_ambil, jumlah_pola, vendor_id, tgl_setor, jumlah_setor, reject, sisa, harga, total_harga, status) VALUES (".$arr['cuttingID'].", '".$arr['tglAmbil']."', ".$arr['jumlahPola'].", ".$arr['vendorID'].", '".$arr['tglSetor']."',".$arr['jumlahSetor'].",".$arr['reject'].",".$arr['sisa'].",".$arr['harga'].", ".$arr['total'].", 2) ");
+    } 
+
+    public function getAllPolaOut() {
+        $query = $this->db->table('materials as m')
+            ->select('m.material_id, ct.tgl, mt.type, md.model_name, c.color, g1.name as gelar1, g2.name as gelar2, tc.name as pic, p.*, vend.name, COUNT(p.id) as jum')
+            ->join('material_types as mt', 'mt.id = m.material_type')
+            ->join('colors as c', 'c.id = m.color_id')
+            ->join('cutting as ct', 'ct.material_id = m.id')
+            ->join('models as md', 'md.id = ct.model_id', 'left')
+            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
+            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('pola as p', 'p.cutting_id = ct.id')
+            ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
+            ->groupBy('ct.id')
+            ->orderBy('COUNT(p.id) ASC, p.id DESC')
+            ->get();
+        return $query;
+    }
+
+    public function getAllPolaIn() {
+        $query = $this->db->table('materials as m')
+            ->select('m.material_id, ct.tgl, mt.type, md.model_name, c.color, g1.name as gelar1, g2.name as gelar2, tc.name as pic, p.*, vend.name')
+            ->join('material_types as mt', 'mt.id = m.material_type')
+            ->join('colors as c', 'c.id = m.color_id')
+            ->join('cutting as ct', 'ct.material_id = m.id')
+            ->join('models as md', 'md.id = ct.model_id', 'left')
+            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
+            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('pola as p', 'p.cutting_id = ct.id')
+            ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
+            ->orderBy('p.id', 'desc')
+            ->get();
+        return $query;
+    }
+
+    public function getPolaOut($id) {
+        $query = $this->db->table('materials as m')
+            ->select('ct.tgl, mt.type, md.id as model_id, md.harga_jahit, md.model_name, c.color, g1.name as gelar1, g2.name as gelar2, tc.name as pic, p.*, vend.name')
+            ->join('material_types as mt', 'mt.id = m.material_type')
+            ->join('colors as c', 'c.id = m.color_id')
+            ->join('cutting as ct', 'ct.material_id = m.id')
+            ->join('models as md', 'md.id = ct.model_id', 'left')
+            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
+            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('pola as p', 'p.cutting_id = ct.id')
+            ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
+            ->where('p.id', $id)
+            ->get();
+        return $query->getResultObject();
+    }
+
+    public function setCutting($id) {
+        $this->db->query("INSERT INTO cutting(material_id) VALUES('$id') ");
+    }
 
 }
