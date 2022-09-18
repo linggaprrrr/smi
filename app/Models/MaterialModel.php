@@ -268,6 +268,19 @@ class MaterialModel extends Model
         $this->db->query("UPDATE cutting SET model_id = '$prod' WHERE id = '$id' ");
     }
 
+    public function updateCuttingProductPola($id, $prod) {
+        $this->db->query("UPDATE cutting SET model_id = '$prod' WHERE id = '$id' ");
+        $query = $this->db->table('cutting')
+            ->select('models.model_name')
+            ->join('models', 'models.id = cutting.model_id')
+            ->getWhere(['cutting.id' => 22])->getRow();
+        return $query;
+    }
+
+    public function updateJumlahPolaOut($id, $jum) {
+        $this->db->query("UPDATE pola SET jumlah_pola='$jum' WHERE cutting_id='$id' ");
+    }
+
     public function updateCuttingQty($id, $qty, $gelar, $cutting) {
         $biayaGelar = $qty * $gelar;
         $biayaCutting = $qty * $cutting;
@@ -280,6 +293,48 @@ class MaterialModel extends Model
             'total' => $total
         ];
         return $res;
+    }
+
+    public function updateCuttingQtyPola($id, $qty, $gelar, $cutting) {
+        $biayaGelar = $qty * $gelar;
+        $biayaCutting = $qty * $cutting;
+        $total = (2 * $biayaGelar) + $biayaCutting;
+        $this->db->query("UPDATE cutting SET qty = '$qty', biaya_gelar1 = '$biayaGelar', biaya_gelar2 = '$biayaGelar', biaya_cutting = '$biayaCutting', total = '$total' WHERE id='$id' ");
+        $this->db->query("UPDATE pola SET jumlah_pola = '$qty' WHERE cutting_id='$id' ");
+        $res = [
+            'gelar1' => $biayaGelar,
+            'gelar2' => $biayaGelar,
+            'cutting' => $biayaCutting,
+            'total' => $total,
+            'qty' => $qty,
+        ];
+        return $res;
+    }
+
+    public function updateVendorPolaOut($id, $vendor) {
+        $this->db->query("UPDATE pola SET vendor_id='$vendor' WHERE cutting_id='$id' ");
+        $query = $this->db->table('vendor_pola')
+            ->getWhere(['id' => $vendor])
+            ->getRow();
+        return $query;
+    }
+
+    public function updateJumlahSetorPolaIn($id, $jum) {
+        $this->db->query("UPDATE pola SET jumlah_setor = '$jum', sisa=jumlah_pola-'$jum' WHERE id='$id' ");
+        $query = $this->db->table('pola')
+            ->getWhere(['id' => $id])
+            ->getRow();
+
+        return $query;
+    }
+
+    public function updateReject($id, $val) {
+        $this->db->query("UPDATE pola SET reject = '$val' WHERE id='$id' ");
+        $query = $this->db->table('pola')
+            ->getWhere(['id' => $id])
+            ->getRow();
+
+        return $query;
     }
 
     public function getCutting($id) {

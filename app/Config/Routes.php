@@ -146,7 +146,14 @@ $routes->post('on-change-product-hpp', 'Products::onChangeProductHPP');
 $routes->get('get-hpp-product', 'Products::getHPP');
 
 $routes->post('/on-change-cutting-product-type', 'Materials::onChangeCuttingProductType');
+$routes->post('/on-change-cutting-product-type-pola', 'Materials::onChangeCuttingProductTypePola');
 $routes->post('/on-change-cutting-qty', 'Materials::onChangeCuttingQty');
+$routes->post('/on-change-cutting-qty-pola', 'Materials::onChangeCuttingQtyPola');
+$routes->post('/on-change-jumlah-pola-out', 'Materials::onChangeJumlahPola');
+$routes->post('/on-change-vendor-pola-out', 'Materials::onChangeVendorPola');
+$routes->post('/on-change-reject', 'Materials::onChangeReject');
+
+$routes->post('/on-change-jumlah-setor-pola-in', 'Materials::onChangeJumlahSetor');
 $routes->get('/get-cutting', 'Materials::getCutting');
 $routes->post('/save-pola-keluar', 'Materials::savePolaKeluar');
 $routes->post('/save-pola-masuk', 'Materials::savePolaMasuk');

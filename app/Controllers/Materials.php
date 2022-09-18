@@ -237,7 +237,6 @@ class Materials extends BaseController
             'polaOut' => $polaOut,
             'polaIn' => $polaIn
         );
-
         return view('gudang_gesit/materials', $data);    
     }
     
@@ -247,7 +246,7 @@ class Materials extends BaseController
 
         $this->materialModel->save([
             'id' => $id,
-            'material_id' => $type
+            'material_type' => $type
         ]);
     }
 
@@ -362,7 +361,15 @@ class Materials extends BaseController
         $prod = $this->request->getVar('type');
         
         $this->materialModel->updateCuttingProduct($id, $prod);        
-    }    
+    }
+    
+    public function onChangeCuttingProductTypePola() {
+        $id = $this->request->getVar('id');
+        $prod = $this->request->getVar('type');
+        
+        $res = $this->materialModel->updateCuttingProductPola($id, $prod);     
+        echo json_encode($res);   
+    }
 
     public function onChangeCuttingQty() {
         $id = $this->request->getVar('id');
@@ -371,6 +378,44 @@ class Materials extends BaseController
         $cutting = $this->request->getVar('cutting');
         $res = $this->materialModel->updateCuttingQty($id, $qty, $gelar, $cutting);
         echo json_encode($res);
+    }
+
+    public function onChangeCuttingQtyPola() {
+        $id = $this->request->getVar('id');
+        $qty = $this->request->getVar('qty');
+        $gelar = $this->request->getVar('gelar');
+        $cutting = $this->request->getVar('cutting');
+        $res = $this->materialModel->updateCuttingQtyPola($id, $qty, $gelar, $cutting);
+        echo json_encode($res);
+    }
+
+    public function onChangeJumlahPola() {
+        $id = $this->request->getVar('id');
+        $jum = $this->request->getVar('jum');
+        $this->materialModel->updateJumlahPolaOut($id, $jum);
+    }
+
+    public function onChangeVendorPola() {
+        $id = $this->request->getVar('id');
+        $vendor = $this->request->getVar('vendor');
+        $data = $this->materialModel->updateVendorPolaOut($id, $vendor);
+        echo json_encode($data);
+    }
+
+    public function onChangeJumlahSetor() {
+        $id = $this->request->getVar('id');
+        $jum = $this->request->getVar('jum');
+        
+        $data = $this->materialModel->updateJumlahSetorPolaIn($id, $jum);
+        echo json_encode($data);
+    }
+
+    public function onChangeReject() {
+        $id = $this->request->getVar('id');
+        $reject = $this->request->getVar('reject');
+
+        $data = $this->materialModel->updateReject($id, $reject);
+        echo json_encode($data);
     }
 
     public function exportDataPolaIn() {
@@ -547,8 +592,6 @@ class Materials extends BaseController
 		exit;
     }
 
-    
-
     public function getVendor() {
         $id = $this->request->getVar('id');
         $vendor = $this->materialModel->getVendor($id);
@@ -561,7 +604,8 @@ class Materials extends BaseController
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $vendorPenjualan = $this->productModel->getAllVendorPenjualan();
-        $vendorKain = $this->materialModel->getAllVendorKain();        
+        $vendorKain = $this->materialModel->getAllVendorKain();    
+        $coa =     
         $data = array(
             'title' => 'Data Master',
             'materials' => $materials,

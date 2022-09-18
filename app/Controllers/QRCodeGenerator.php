@@ -417,12 +417,10 @@ class QRCodeGenerator extends BaseController
     }   
 
     public function test() {
-        // $str = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-        // $numbers = rand(1000, 9999);
-        // $id = 'M-'.substr($str, 0, 3).''.$numbers;    
-        // $isExist = $this->materialModel->getWhere(['material_id' => $id]);
-        // dd($isExist->getNumRows());
-        d(date('Y-m-d', strtotime('09/01/1998')));
+        $query = $this->materialModel->updateVendorPolaOut(22, 3);
+        dd($query);
+
+
     } 
 
     public function scanningShipment() {

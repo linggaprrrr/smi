@@ -48,7 +48,6 @@
 <script>
     var audio = new Audio('/assets/sounds/beep.wav');
     function onScanSuccess(decodedText, decodedResult) {
-        console.log(`Code scanned = ${decodedText}`, decodedResult);
         const qr = decodedText;
         const kode = decodedText.split("-"); 
         $.post('/cut-in-scanning', {qr: qr}, function(data) {            
@@ -62,8 +61,11 @@
             audio.play();   
         }); 
     }
+
+    
     var html5QrcodeScanner = new Html5QrcodeScanner(
     "qr-reader", { fps: 10, qrbox: 250 });
-    html5QrcodeScanner.render(onScanSuccess);
+    var scann = html5QrcodeScanner.render(onScanSuccess);
+    console.log(scann);
 </script>
 <?= $this->endSection() ?>
