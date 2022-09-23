@@ -1,4 +1,4 @@
-<?= $this->extend('admin/layout/content') ?>
+<?= $this->extend('gudang_lovish/layout/content') ?>
 <style>
     option {
     background:transparent; 

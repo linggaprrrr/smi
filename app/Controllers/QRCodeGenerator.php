@@ -76,9 +76,21 @@ class QRCodeGenerator extends BaseController
             ->orderBy('created_at', 'desc')
             ->get();
         
+        $productsGudang = $this->produkModel->select('products.*, model_name, product_name, color, name, product_barcodes.qrcode as qr')
+            ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('users', 'users.id = products.user_id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->where('products.status', 2)
+            ->groupBy('products.id')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         $data = array(
             'title' => 'QR Generator - Produk',
-            'products' => $products
+            'products' => $products,
+            'productsGudang' => $productsGudang
             
         );
         return view('gudang_gesit/qr_generator_produk', $data);    

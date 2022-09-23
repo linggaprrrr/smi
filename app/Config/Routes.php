@@ -67,6 +67,14 @@ $routes->post('/update-warna', 'Materials::updateWarna');
 $routes->post('/simpan-vendor-supplier', 'Materials::saveVendorSupplier');
 $routes->post('/update-vendor-supplier', 'Materials::updateVendorSupplier');
 $routes->post('/simpan-vendor-penjualan', 'Materials::saveVendorPenjualan');
+$routes->post('/import-vendor-pola', 'Reports::importVendorPola');
+$routes->post('/simpan-vendor-pola', 'Materials::saveVendorPola');
+$routes->post('/update-vendor-pola', 'Materials::updateVendorPola');
+$routes->post('/simpan-gelar', 'Materials::saveGelar');
+$routes->post('/update-gelar', 'Materials::updateGelar');
+$routes->post('/simpan-cutting', 'Materials::saveCutting');
+$routes->post('/update-cutting', 'Materials::updateCutting');
+
 
 $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
 $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
@@ -75,7 +83,7 @@ $routes->post('/simpan-user', 'Users::saveUser');
 $routes->post('/update-user', 'Users::updateUser');
 
 $routes->post('/tambah-produk', 'Products::addProduct');
-$routes->post('/tambah-produk-lovish', 'LovishProducts::addProductLovish');
+$routes->post('/tambah-produk-lovish', 'Products::addProductLovish');
 $routes->get('/get-produk-detail', 'Products::getProductDetail');
 $routes->post('/update-produk-detail', 'Products::updateProductDetail');
 $routes->post('/tambah-kain', 'Materials::addMaterial');
@@ -88,6 +96,9 @@ $routes->post('/upload-jenis-produk', 'Reports::uploadProductType');
 $routes->post('/upload-warna', 'Reports::uploadColor');
 $routes->post('/upload-vendor-supplier', 'Reports::uploadVendorSupplier');
 $routes->post('/upload-vendor-penjualan', 'Reports::uploadVendorSeller');
+$routes->post('/upload-vendor-pola', 'Reports::uploadVendorPola');
+$routes->post('/upload-gelar', 'Reports::uploadTimGelar');
+$routes->post('/upload-cutting', 'Reports::uploadTimCutting');
 
 // ADMIN API
 $routes->get('/get-user', 'Users::getUser');
@@ -99,7 +110,7 @@ $routes->get('/get-produk', 'Products::getProduct');
 $routes->get('/get-produk-detail', 'Products::getProductDetail');
 $routes->post('/delete-product', 'Products::deleteProduct');
 $routes->post('/delete-product-detail', 'Products::deleteProductDetail');
-$routes->post('/delete-product-detail-lovish', 'LovishProducts::deleteProductDetail');
+$routes->post('/delete-product-detail-lovish', 'Products::deleteProductDetail');
 $routes->get('/get-model', 'Products::getModel');
 $routes->post('/delete-model', 'Products::deleteModel');
 $routes->post('/delete-model-detail', 'Products::deleteModelDetail');
@@ -109,10 +120,16 @@ $routes->get('/get-vendor-supplier', 'Materials::getVendorSupplier');
 $routes->post('/update-vendor-supplier', 'Materials::updateVendorSupplier');
 $routes->post('/delete-vendor-supplier', 'Materials::deleteVendorSupplier');
 $routes->get('/get-vendor-penjualan', 'Materials::getVendorSelling');
+$routes->get('/get-vendor-pola', 'Materials::getVendorPola');
 $routes->post('/update-vendor-penjualan', 'Materials::updateVendorSelling');
 $routes->post('/delete-vendor-penjualan', 'Materials::deleteVendorSelling');
+$routes->post('/delete-vendor-pola', 'Materials::deleteVendorPola');
+$routes->post('/delete-gelar', 'Materials::deleteGelar');
+$routes->post('/delete-cutting', 'Materials::deleteCutting');
 $routes->get('/get-pengiriman-detail', 'Shippings::getShippingDetail');
 $routes->get('/get-vendor-kain', 'Materials::getVendor');
+$routes->post('/update-coa', 'Materials::updateCOA');
+$routes->get('/get-coa', 'Materials::getCOA');
 
 
 
@@ -135,6 +152,7 @@ $routes->get('export-produk-gesit', 'Products::exportDataGesit');
 $routes->get('export-produk-masuk-lovish', 'Products::exportDataLovishIn');
 $routes->get('export-pengiriman', 'Shippings::exportShipments');
 $routes->get('export-data-cutting', 'Materials::exportDataCutting');
+$routes->get('export-data-stok-produk', 'Products::exportDataStokProduct');
 
 // produk gesit
 $routes->post('on-change-product-type', 'Products::onChangeProductType');
@@ -144,6 +162,7 @@ $routes->post('on-change-product-weight', 'Products::onChangeProductWeight');
 $routes->post('on-change-product-color', 'Products::onChangeProductColor');
 $routes->post('on-change-product-hpp', 'Products::onChangeProductHPP');
 $routes->get('get-hpp-product', 'Products::getHPP');
+$routes->get('/get-jenis-kain', 'Materials::getJenisKain');
 
 $routes->post('/on-change-cutting-product-type', 'Materials::onChangeCuttingProductType');
 $routes->post('/on-change-cutting-product-type-pola', 'Materials::onChangeCuttingProductTypePola');
@@ -160,13 +179,13 @@ $routes->post('/save-pola-masuk', 'Materials::savePolaMasuk');
 $routes->get('/get-pola-out', 'Materials::getPolaOut');
 
 // produk lovish
-$routes->post('on-change-product-type-lovish', 'LovishProducts::onChangeProductType');
-$routes->post('on-change-model-name-lovish', 'LovishProducts::onChangeModelName');
-$routes->post('on-change-product-qty-lovish', 'LovishProducts::onChangeProductQty');
-$routes->post('on-change-product-weight-lovish', 'LovishProducts::onChangeProductWeight');
-$routes->post('on-change-product-color-lovish', 'LovishProducts::onChangeProductColor');
-$routes->post('on-change-product-hpp-lovish', 'LovishProducts::onChangeProductHPP');
-$routes->get('get-hpp-product-lovish', 'LovishProducts::getHPP');
+$routes->post('on-change-product-type-lovish', 'Products::onChangeProductType');
+$routes->post('on-change-model-name-lovish', 'Products::onChangeModelName');
+$routes->post('on-change-product-qty-lovish', 'Products::onChangeProductQty');
+$routes->post('on-change-product-weight-lovish', 'Products::onChangeProductWeight');
+$routes->post('on-change-product-color-lovish', 'Products::onChangeProductColor');
+$routes->post('on-change-product-hpp-lovish', 'Products::onChangeProductHPP');
+$routes->get('get-hpp-product-lovish', 'Products::getHPP');
 
 
 // kain
@@ -185,15 +204,18 @@ $routes->post('on-change-material-vendor-pola', 'Materials::onChangeMaterialVend
 
 // GUDANG Lovish
 $routes->get('/gudang-lovish/dashboard', 'Home::gudangLovish');
-$routes->get('/gudang-lovish/produk', 'LovishProducts::gudangLovishProduk');
+$routes->get('/gudang-lovish/produk', 'Products::gudangProduk');
+$routes->get('/gudang-lovish/stok-produk', 'Products::gudangLovishStokProduk');
 $routes->get('/gudang-lovish/qr-scanner-product-out', 'QRCodeGenerator::scannerProductOut');
 $routes->get('/gudang-lovish/qr-scanner-product-in', 'QRCodeGenerator::scannerProductRetur');
 $routes->get('/gudang-lovish/qr-scanner-shipment', 'QRCodeGenerator::scannerShipment');
 $routes->get('/gudang-lovish/cetak-pengiriman', 'Shippings::shipmentLovish');
+$routes->get('/gudang-lovish/laporan', 'Reports::reportGudang');
 $routes->get('/get-pengiriman-resi', 'Shippings::getResi');
 $routes->post('/update-resi', 'Shippings::updateResi');
 $routes->post('/tambah-pengiriman', 'Shippings::addShipping');
 $routes->post('/generate-qr-shipment', 'QRCodeGenerator::generateQRShipment');
+$routes->post('/import-product', 'Products::importProduct');
 
 
 // GLOBAL API

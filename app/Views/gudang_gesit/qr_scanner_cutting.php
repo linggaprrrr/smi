@@ -54,7 +54,7 @@
             const stat = JSON.parse(data);
             if (stat == '1') {
                 $.notify(kode[1] +' '+ kode[2] +' berhasil di-scan!', "success");                     
-                alert(kode[1] +' '+ kode[2]);
+                alert(kode[1] +' '+ kode[2]);                
             } else {
                 $.notify("Warning: Data kain tidak ada!", "warn");
             }

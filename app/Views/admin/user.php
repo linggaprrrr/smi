@@ -29,7 +29,7 @@
                                 <select class="form-control" name="role" id="roleAction">
                                     <option value="administrator">Administrator</option>
                                     <option value="gudang_1"> Gesit </option>
-                                    <option value="gudang_2"> Gudang Lovish </option>
+                                    <option value="gudang_2"> Gudang </option>
                                 </select>
                             </div>
                             <div id="gesit-access" style="display: none">
@@ -48,22 +48,18 @@
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="3"  id="customSwitch3">
                                                 <label class="custom-control-label" for="customSwitch3" style="padding-top: 5px;">QR Scanner Kain Retur</label>
                                             </div>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="7" id="customSwitch30">
-                                                <label class="custom-control-label" for="customSwitch30" style="padding-top: 5px;">QR Scanner Pola (IN)</label>
-                                            </div>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="4" id="customSwitch4">
-                                                <label class="custom-control-label" for="customSwitch4" style="padding-top: 5px;">QR Scanner Pola (OUT)</label>
+                                                <label class="custom-control-label" for="customSwitch4" style="padding-top: 5px;">QR Scanner Cutting</label>
                                             </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="5" id="customSwitch5">
                                                 <label class="custom-control-label" for="customSwitch5" style="padding-top: 5px;">QR Scanner Produk (IN)</label>
-                                            </div>                                            
+                                            </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="6" id="customSwitch6">
                                                 <label class="custom-control-label" for="customSwitch6" style="padding-top: 5px;">Laporan</label>
@@ -165,7 +161,7 @@
                                     <?php elseif ($user->role == 'gudang_1') : ?>
                                         <b>Gesit</b>
                                     <?php else : ?>
-                                        <b>Gudang Lovish</b>
+                                        <b>Gudang</b>
                                     <?php endif ?>
                                 </td>
                                 <td class="text-center">
@@ -215,7 +211,7 @@
                                 <select class="form-control" id="role" name="role"">
                                     <option value="administrator">Administrator</option>
                                     <option value="gudang_1">Gesit </option>
-                                    <option value="gudang_2">Gudang Lovish </option>
+                                    <option value="gudang_2">Gudang </option>
                                 </select>
                             </div>
                             <div id="gesit-access-edit" style="display: none">
@@ -234,17 +230,13 @@
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="3" id="customSwitch15">
                                                 <label class="custom-control-label" for="customSwitch15" style="padding-top: 5px;">QR Scanner Kain Retur</label>
                                             </div>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="7" id="customSwitch31">
-                                                <label class="custom-control-label" for="customSwitch31" style="padding-top: 5px;">QR Scanner Pola (IN)</label>
-                                            </div>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="4" id="customSwitch16">
-                                                <label class="custom-control-label" for="customSwitch16" style="padding-top: 5px;">QR Scanner Pola (OUT)</label>
+                                                <label class="custom-control-label" for="customSwitch16" style="padding-top: 5px;">QR Scanner Cutting</label>
                                             </div>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="5" id="customSwitch17">
@@ -282,6 +274,10 @@
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" name="lovish[]" value="5"  id="customSwitch24">
                                                 <label class="custom-control-label" for="customSwitch24" style="padding-top: 5px;">QR Scanner Retur Produk (IN)</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="lovish[]" value="6"  id="customSwitch25">
+                                                <label class="custom-control-label" for="customSwitch25" style="padding-top: 5px;">Laporan</label>
                                             </div>
                                         </div>
                                     </td>

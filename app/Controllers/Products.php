@@ -30,19 +30,14 @@ class Products extends BaseController
     }
     
     public function index() {
-        $productsIn = $this->productModel->getAllProductIn();
-        $productsOut = $this->productModel->getAllProductOut();
-        $productsExp = $this->productModel->getAllProductExp();
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $products = $this->productModel->getAllProduct();
         $vendors = $this->productModel->getAllVendorPenjualan();
-       
+        $products = $this->productModel->getAllStockProductLovish();
+        
         $data = array(
             'title' => 'Produk',
-            'productsIn' => $productsIn,
-            'productsOut' => $productsOut,
-            'productsExp' => $productsExp,
             'models' => $models,
             'products' => $products,
             'colors' => $colors,
@@ -364,10 +359,11 @@ class Products extends BaseController
 		exit;
     }
 
+        
     public function exportDataLovishIn() {
         $products = $this->productModel->getAllProductOut();
         $date = time();
-        $fileName = "Data Produk Masuk Lovish {$date}.xlsx";  
+        $fileName = "Data Produk Masuk Gudang {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
 		$sheet->setCellValue('A1', 'No');
@@ -403,10 +399,179 @@ class Products extends BaseController
 		exit;
     }
 
+    public function exportDataStokProduct() {
+        $products = $this->productModel->getAllStockProductLovish();
+        $date = time();
+        $fileName = "Data Stok Produk {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Tanggal Masuk');
+		$sheet->setCellValue('C1', 'Produk');
+		$sheet->setCellValue('D1', 'Stok Awal');
+        $sheet->setCellValue('E1', 'Stok Masuk');
+        $sheet->setCellValue('F1', 'Stok Retur');
+        $sheet->setCellValue('G1', 'Penjualan');
+        $sheet->setCellValue('H1', 'Sisa Stok');
+        $sheet->setCellValue('I1', 'HPP');
+        $sheet->setCellValue('J1', 'Nilai Barang');
+        
+        $i = 2;
+        $no = 1;
+        foreach($products->getResultObject() as $row) {
+            $prod = $row->product_name.' '.$row->model_name.' '.$row->color.' '.$row->size;
+            $sisa = ($row->stok + $row->stok_masuk - ($row->penjualan - $row->stok_retur));
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, date('d/m/Y', strtotime($row->created_at)));
+            $sheet->setCellValue('C' . $i, $prod);
+            $sheet->setCellValue('D' . $i, $row->stok);
+            $sheet->setCellValue('E' . $i, $row->stok_masuk);
+            $sheet->setCellValue('F' . $i, $row->stok_retur);
+            $sheet->setCellValue('G' . $i, $row->penjualan);
+            $sheet->setCellValue('H' . $i, $sisa);
+            $sheet->setCellValue('I' . $i, $row->hpp);
+            $sheet->setCellValue('J' . $i, ($row->hpp * $sisa));
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save($fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize($fileName));
+		flush();
+		readfile($fileName);
+		exit;
+    }
+
     public function getHPP() {
         $id = $this->request->getVar('id');
         $hpp = $this->designModel->find($id);
         echo json_encode($hpp);
+    }
+
+    // gudang 
+    public function gudangProduk() {               
+        $productsIn = $this->productModel->getAllProductLovish();        
+        $productsOut = $this->productModel->getAllProductOut();        
+        $productsExp = $this->productModel->getAllProductExp();        
+        $models = $this->designModel->getAllModel();
+        $colors = $this->materialModel->getAllColors();
+        $products = $this->productModel->getAllProductLovish();
+        $vendors = $this->productModel->getAllVendorPenjualan();
+        $data = array(
+            'title' => 'Produk',
+            'productsIn' => $productsIn,
+            'productsOut' => $productsOut,
+            'productsExp' => $productsExp,
+            'models' => $models,
+            'products' => $products,
+            'colors' => $colors,
+            'vendors' => $vendors
+        );
+        return view('gudang_lovish/products', $data);       
+    }
+
+    public function importProduct() {
+        $file = $this->request->getFile('file');        
+        $ext = $file->getClientExtension();
+        if ($ext == 'xls') {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+        } else {
+            $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        }
+        $spreadsheet = $render->load($file);
+        $data = $spreadsheet->getActiveSheet()->toArray();     
+        // dd($data);   
+        foreach ($data as $idx => $row) {
+            if ($idx > 0) {
+                $temp = explode(' ', $row[1]);  
+                $modelID = "";
+                $productTypeID = "";
+                $colorID = "";
+                $size = NULL;
+                $hpp = 0;
+
+                $getProductType = $this->productModel->getProductType($temp[0]);
+                if (is_null($getProductType)) {
+                    $productTypeID = $this->productModel->saveProductType($temp[0]);                    
+                }  else {
+                    $productTypeID = $getProductType->id;
+                }                       
+
+                $getModel = $this->designModel->where(['model_name' => $temp[1]])->first();                                
+                if (is_null($getModel)) {
+                    $model = [
+                        'model_name' => $temp[1],                        
+                    ];
+                    $this->designModel->save($model); 
+                    $modelID = $this->designModel->getInsertID();
+                } else {
+                    $modelID = $getModel['id'];
+                    $hpp = $getModel['hpp'];
+                }
+                
+                if (count($temp) == 3) {
+                    $color = $temp[2];
+                } else if (count($temp) > 3) {
+                    $color = $temp[2]. ' '. $temp[3];
+                }
+
+                $getColor = $this->materialModel->getColorByName($color);
+                if (is_null($getColor)) {
+                    $colorID = $this->materialModel->saveWarna($color);
+                } else {
+                    $colorID = $getColor->id;
+                }
+
+
+                if (strpos($row[1], 'REG') !== false) {
+                    $size = "REG";
+                } else if (strpos($row[1], 'JUMBO') !== false) {
+                    $size = "JUMBO";
+                }
+
+
+                $this->productModel->save([
+                    'product_id' => $productTypeID,
+                    'model_id' => $modelID,
+                    'color_id' => $colorID,
+                    'user_id' => session()->get('user_id'),
+                    'qty' => $row[2],
+                    'size' => $size,
+                    'price' => $hpp,
+                    'status' => 2
+                ]);         
+                $productId = $this->productModel->insertID();        
+                for ($i=0; $i < $row[2]; $i++) {
+                    $temp = $this->productModel->createBarcode($productId);
+                    $this->productModel->createLog($productId, '0', '2');
+                }                       
+            }
+        }
+        return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
+    }
+
+    public function gudangLovishStokProduk() {
+        $models = $this->designModel->getAllModel();
+        $colors = $this->materialModel->getAllColors();
+        $products = $this->productModel->getAllProduct();
+        $vendors = $this->productModel->getAllVendorPenjualan();
+        $products = $this->productModel->getAllStockProductLovish();
+        
+        $data = array(
+            'title' => 'Produk',
+            'models' => $models,
+            'products' => $products,
+            'colors' => $colors,
+            'vendors' => $vendors
+        );
+        return view('gudang_lovish/products_stock', $data);    
     }
 
 }

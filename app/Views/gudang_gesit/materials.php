@@ -28,7 +28,8 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label for="">Jenis Kain*</label>
-                                        <select class="form-control" name="jenis">
+                                        <select class="form-control jenis-kain" name="jenis" required>
+                                        <option value="">-</option>
                                             <?php if ($materials->getNumRows() > 0) : ?>
                                                 <?php foreach ($materials->getResultObject() as $material) : ?>
                                                     <option value="<?= $material->id ?>"><?= $material->type ?></option>
@@ -168,7 +169,7 @@
                                 <td class="">
                                     <select class="form-control jenis" data-id="<?= $kain->id ?>" name="jenis" style="width: 140px">                                         
                                         <?php foreach ($materials->getResultObject() as $material) : ?>
-                                            <option value="<?= $material->id ?>" <?= $material->id == $kain->material_id ? 'selected="selected" ' : ''; ?> ><?= $material->type ?></option>
+                                            <option value="<?= $material->id ?>" <?= $material->id == $kain->material_type ? 'selected="selected" ' : ''; ?> ><?= $material->type ?></option>
                                         <?php endforeach ?>                                        
                                     </select>    
                                 </td>
@@ -237,9 +238,8 @@
                                     </select>
                                 </td>
                                 <td class="text-center">
-                                    <div class="action">
-                                    
-                                        <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus" data-id='<?= $kain->id ?>'>
+                                    <div class="action">                                    
+                                        <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus" data-id='<?= $kain->id ?>'>
                                             <span class="icon text-white-25">
                                                 <i class="fas fas fa-trash"></i>
                                             </span>
@@ -502,7 +502,7 @@
                                     <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl)) ?></td>
                                     <td class="text-center align-middle" id="pola_out_produk_<?= $pola->cutting_id ?>"><?= $pola->model_name ?></td>
                                     <td class="text-center align-middle"><?= $pola->color ?></td>
-                                    <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->id ?>" value="<?= $pola->jumlah_pola ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->jumlah_pola ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
+                                    <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->cutting_id ?>" value="<?= $pola->jumlah_pola ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->jumlah_pola ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
                                     <td class="text-center align-middle"><?= $pola->type ?></td>
                                     <td class="text-center align-middle">
                                         <select class="form-control" >
@@ -523,7 +523,7 @@
                                     <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl)) ?></td>
                                     <td class="text-center align-middle" id="pola_out_produk_<?= $pola->cutting_id ?>"><?= $pola->model_name ?></td>
                                     <td class="text-center align-middle"><?= $pola->color ?></td>
-                                    <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->id ?>" value="<?= $pola->jumlah_pola ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->jumlah_pola ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
+                                    <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->cutting_id ?>" value="<?= $pola->jumlah_pola ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->jumlah_pola ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
                                     <td class="text-center align-middle"><?= $pola->type ?></td>
                                     <td class="text-center align-middle">
                                         <select class="form-control pola-out-vendor-edit" data-id="<?= $pola->cutting_id ?> " id="pola_out_vendor_<?= $pola->id ?>" disabled>
@@ -771,9 +771,9 @@
     });
 
     // kain    
-    $('.vendor-kain').change(function() {
+    $('.jenis-kain').change(function() {
         const id = $(this).val();
-        $.get('/get-vendor-kain', {id: id}, function(data) {
+        $.get('/get-jenis-kain', {id: id}, function(data) {
             const price = JSON.parse(data);            
             $('.harga-kain').val(price[0]['harga']);
         })
@@ -934,8 +934,9 @@
                 $('#gelar2_'+id).html('Rp. '+ numberForm(res['gelar2']));
                 $('#pic_'+id).html('Rp. '+ numberForm(res['cutting']));
                 $('#total_'+id).html('Rp. '+ numberForm(res['total']));                
-                $('#pola_out_jumlah_'+id).html(res['qty']);
+                $('#pola_out_jumlah_'+id).val(res['qty']);
                 $.notify('Qty berhasil diubah', "success"); 
+                console.log("test"+id);
             });
     });
 

@@ -6,7 +6,7 @@
     <div class="sidebar-brand-icon">
         <i class="fas fa-store"></i>
     </div>
-    <div class="sidebar-brand-text mx-2">Lovish</div>
+    <div class="sidebar-brand-text mx-2">Gudang</div>
 </a>
 
 <!-- Divider -->
@@ -32,6 +32,11 @@
                             <a class="nav-link" href="<?= base_url('/gudang-lovish/produk') ?>">
                                 <i class="fas fa-fw fa-tshirt"></i>
                                 <span>Produk</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/stok-produk') ?>">
+                                <i class="fas fa-fw fa-cubes"></i>
+                                <span>Stok Produk</span></a>
                         </li>
                         <?php
                     break;
@@ -62,6 +67,15 @@
                             <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-in') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Retur (IN)</span></a>
+                        </li>
+                        <?php
+                    break;
+                case "6": 
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/laporan') ?>">
+                                <i class="fas fa-fw fa-chart-area"></i>
+                                <span>Laporan</span></a>
                         </li>
                         <?php
                     break;

@@ -13,14 +13,30 @@ class MaterialModel extends Model
 
     public function getAllMaterial() {
         $query =  $this->db->table('materials')
-        ->select('materials.*, material_types.type, colors.color, gudang, roll, vendor, tim_cutting.name as pic')
+        ->select('materials.*, material_types.type, colors.color')
         ->join('material_types', 'material_types.id = materials.material_type')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
         ->join('tim_cutting', 'tim_cutting.id = materials.pic_cutting')
-        ->join('material_vendors', 'material_vendors.id = materials.vendor_id')
+        ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
         ->where('status', '1')
         ->orderBy('created_at', 'desc')->get();
+        return $query;
+    }
+
+    public function getStokMaterialIn() {
+
+        $query =  $this->db->table('materials')
+        ->select('material_types.type, colors.color, stok, stok_masuk, stok_retur')
+        ->join('material_types', 'material_types.id = materials.material_type')
+        ->join('colors', 'colors.id = materials.color_id')
+        ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
+        ->join('(SELECT materials.id, COUNT(*) as stok_masuk FROM materials WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as s', 's.id = materials.id', 'left')
+        ->join('(SELECT materials.id, COUNT(*) as stok FROM materials WHERE MONTH(materials.created_at) <= MONTH(CURRENT_DATE())-1 AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as st', 'st.id = materials.id', 'left')
+        ->join('(SELECT materials.id, COUNT(*) as stok_retur FROM materials WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) AND status = "2" GROUP BY material_type, color_id) as sr', 'sr.id = materials.id', 'left')
+        ->where('status', '1')
+        ->groupBy('materials.material_type, materials.color_id')
+        ->orderBy('materials.created_at', 'desc')->get();
         return $query;
     }
 
@@ -102,6 +118,20 @@ class MaterialModel extends Model
         return $query;
     }
 
+    public function getJenisKain($id) {
+        $query = $this->db->table('material_types')
+        ->where('id', $id)
+        ->get();
+    return $query;
+    }
+
+    public function getVendorPola($id) {
+        $query = $this->db->table('vendor_pola')
+            ->where('id', $id)
+            ->get();
+        return $query->getFirstRow();
+    }
+
     public function getAllMaterialType() {
         $query =  $this->db->table('material_types')
         ->orderBy('material_types.id', 'desc')->get();
@@ -121,14 +151,16 @@ class MaterialModel extends Model
         return $query;
     }
 
+   
+
     public function getAllVendorKain() {
         $query = $this->db->table('material_vendors')
         ->orderBy('id', 'desc')->get();
         return $query;
     }
 
-    public function saveMaterialType($type) {
-        $this->db->query("INSERT INTO material_types(type) VALUES('$type') ");
+    public function saveMaterialType($type, $harga) {
+        $this->db->query("INSERT INTO material_types(type, harga) VALUES('$type', '$harga') ");
     }
 
     public function updateMaterialType($id, $type) {
@@ -140,11 +172,16 @@ class MaterialModel extends Model
     }
 
     public function saveWarna($warna) {
-        $this->db->query("INSERT INTO colors(color) VALUES('$warna') ");
+        $this->db->table('colors')->insert([
+            'color' => $warna
+        ]);
+
+        return $this->db->insertID();
+        // $this->db->query("INSERT INTO colors(color) VALUES('$warna') ");
     }
 
-    public function saveVendorSupplier($vendor, $harga = null) {
-        $this->db->query("INSERT INTO material_vendors(vendor, harga) VALUES('$vendor', '$harga') ");
+    public function saveVendorSupplier($vendor) {
+        $this->db->query("INSERT IGNORE INTO material_vendors(vendor) VALUES('$vendor') ");
     }
 
     public function saveVendorPenjualan($vendor) {
@@ -157,6 +194,13 @@ class MaterialModel extends Model
         return $query->getResult();
     }
 
+    public function getColorByName($color) {
+        $query = $this->db->table('colors')
+            ->where('color', $color)
+            ->get();
+        return $query->getFirstRow();
+    }
+
     public function updateColor($id, $color) {
         $this->db->query("UPDATE colors SET color='$color' WHERE id='$id' ");
     }
@@ -165,14 +209,22 @@ class MaterialModel extends Model
         $this->db->query("DELETE FROM colors WHERE id='$id' ");
     }
 
+    public function deleteGelar($id) {
+        $this->db->query("DELETE FROM tim_gelar WHERE id='$id' ");
+    }
+
+    public function deleteCutting($id) {
+        $this->db->query("DELETE FROM tim_cutting WHERE id='$id' ");
+    }
+
     public function getVendorSupplier($id) {
         $query = $this->db->table('material_vendors')
             ->where('id', $id)->get();
         return $query->getResult();
     }
 
-    public function updateVendorSupplier($id, $vendor, $price) {
-        $this->db->query("UPDATE material_vendors SET vendor='$vendor', 'price' = '$price' WHERE id='$id' ");
+    public function updateVendorSupplier($id, $vendor) {
+        $this->db->query("UPDATE material_vendors SET vendor='$vendor' WHERE id='$id' ");
     }
 
     public function getVendorSelling($id) {
@@ -193,6 +245,10 @@ class MaterialModel extends Model
         $this->db->query("DELETE FROM selling_vendors WHERE id='$id' ");
     }
 
+    public function deleteVendorPola($id) {
+        $this->db->query("DELETE FROM vendor_pola WHERE id='$id' ");
+    }
+
     public function getAllGudang() {
         $query = $this->db->table('gudang')->get();
         return $query;
@@ -206,6 +262,11 @@ class MaterialModel extends Model
     public function getAllTimGelar() {
         $query = $this->db->table('tim_gelar')->get();
         return $query;
+    }   
+
+    public function getAllTimCutting() {
+        $query = $this->db->table('tim_cutting')->get();
+        return $query;
     }
 
     public function updateMaterialStokRetur($id) {
@@ -217,24 +278,40 @@ class MaterialModel extends Model
         return $query;
     }
 
-    public function importMaterial($type) {
-        $this->db->query("INSERT INTO material_types(type) VALUES('$type') ");
+    public function saveVendorPola($name) {
+        $this->db->query("INSERT IGNORE INTO vendor_pola(name) VALUES('$name')");
     }
-    public function importModel($type, $hpp) {
-        $this->db->query("INSERT INTO models(model_name, hpp) VALUES('$type', '$hpp') ");
+
+    public function saveTimGelar($name) {
+        $this->db->query("INSERT IGNORE INTO tim_gelar(name) VALUES('$name') ");
+    }
+
+    public function saveTimCutting($name) {
+        $this->db->query("INSERT IGNORE INTO tim_cutting(name) VALUES('$name') ");
+    }
+
+    public function updateVendorPola($id, $name) {
+        $this->db->query("UPDATE vendor_pola SET name = '$name' WHERE id ='$id' ");
+    }
+
+    public function importMaterial($type, $harga) {
+        $this->db->query("INSERT IGNORE INTO material_types(type, harga) VALUES('$type', '$harga') ");
+    }
+    public function importModel($type, $jahit, $hpp) {
+        $this->db->query("INSERT IGNORE INTO models(model_name, harga_jahit, hpp) VALUES('$type', '$jahit', '$hpp') ");
     }
     public function importProduk($type) {
-        $this->db->query("INSERT INTO product_types(product_name) VALUES('$type') ");
+        $this->db->query("INSERT IGNORE INTO product_types(product_name) VALUES('$type') ");
     }
     public function importColor($type) {
-        $this->db->query("INSERT INTO colors(color) VALUES('$type') ");
+        $this->db->query("INSERT IGNORE INTO colors(color) VALUES('$type') ");
     }
     public function importVendorSupp($type) {
-        $this->db->query("INSERT INTO supplier_vendors(vendor) VALUES('$type') ");
+        $this->db->query("INSERT IGNORE INTO material_vendors(vendor) VALUES('$type') ");
     }
 
     public function importVendorSell($type) {
-        $this->db->query("INSERT INTO selling_vendors(vendor) VALUES('$type') ");
+        $this->db->query("INSERT IGNORE INTO selling_vendors(vendor) VALUES('$type') ");
     }
 
     public function getAllCuttingData() {
@@ -262,6 +339,16 @@ class MaterialModel extends Model
     public function getCOA() {
         $query = $this->db->query('SELECT * FROM coa');
         return $query->getResultObject();
+    }
+
+    public function updateCOA($id, $ket, $biaya) {
+        $this->db->query("UPDATE coa SET ket='$ket', biaya='$biaya' WHERE id='$id'  ");
+    }
+
+    public function editCOA($id) {
+        $query = $this->db->table('coa')
+            ->get();
+        return $query->getFirstRow();
     }
 
     public function updateCuttingProduct($id, $prod) {

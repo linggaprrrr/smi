@@ -1,8 +1,3 @@
-<?php 
-    d($materials);
-    d($products);
-   
-?>
 <?= $this->extend('admin/layout/content') ?>
 
 <?= $this->section('content') ?>
@@ -63,6 +58,10 @@
                                         <label for="">Jenis Kain*</label>
                                         <input type="text" class="form-control" name="jenis" id="tambah-jenis" placeholder="Masukkan jenis kain..." required>                                
                                     </div>  
+                                    <div class="form-group">
+                                        <label for="">Harga Kain*</label>                                        
+                                        <input type="text" class="form-control" name="harga" id="harga-kain" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>                                
+                                    </div> 
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -80,6 +79,7 @@
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
                                 <th class="text-center">Jenis</th>
+                                <th class="text-center">Harga</th>
                                 <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
                             </tr>
                         </thead>
@@ -91,14 +91,15 @@
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td class=""><?= $kain->type ?></td>
+                                        <td class=""><?= $kain->harga ?></td>
                                         <td class="text-center">
                                             <div class="action">
-                                                <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-kain" data-id='<?= $kain->id ?>'>
+                                                <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-kain" data-id='<?= $kain->id ?>'>
                                                     <span class="icon text-white-25">
                                                         <i class="fas fa-pen"></i>
                                                     </span>
                                                 </a>
-                                                <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-kain" data-id='<?= $kain->id ?>'>
+                                                <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-kain" data-id='<?= $kain->id ?>'>
                                                     <span class="icon text-white-25">
                                                         <i class="fas fas fa-trash"></i>
                                                     </span>
@@ -128,7 +129,10 @@
                                         <input type="hidden" name="id" id="id-kain" >
                                         <input type="text" class="form-control" name="jenis" id="jenis" placeholder="Masukkan Jenis Kain" required>                                
                                     </div> 
-                                    
+                                    <div class="form-group">
+                                        <label for="">Harga Kain*</label>                                        
+                                        <input type="text" class="form-control" name="harga" id="harga-kain" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>                                
+                                    </div> 
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -241,12 +245,12 @@
                                         <td class=""><?= $model->harga_jahit ?></td>
                                         <td class=""><?= $model->hpp ?></td>
                                         <td class="text-center">
-                                            <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-model" data-id="<?= $model->id ?>">
+                                            <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-model" data-id="<?= $model->id ?>">
                                                 <span class="icon text-white-25">
                                                     <i class="fas fa-pen"></i>
                                                 </span>
                                             </a>
-                                            <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-model" data-id="<?= $model->id ?>">
+                                            <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-model" data-id="<?= $model->id ?>">
                                                 <span class="icon text-white-25">
                                                     <i class="fas fas fa-trash"></i>
                                                 </span>
@@ -385,12 +389,12 @@
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= $product->product_name ?></td>
                                         <td class="text-center">
-                                            <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-produk" data-id='<?= $product->id ?>'>
+                                            <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-produk" data-id='<?= $product->id ?>'>
                                                 <span class="icon text-white-25">
                                                     <i class="fas fa-pen"></i>
                                                 </span>
                                             </a>
-                                            <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-produk" data-id='<?= $product->id ?>'>
+                                            <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-produk" data-id='<?= $product->id ?>'>
                                                 <span class="icon text-white-25">
                                                     <i class="fas fas fa-trash"></i>
                                                 </span>
@@ -517,12 +521,12 @@
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= $col->color ?></td>
                                         <td class="text-center">
-                                            <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-warna" data-id='<?= $col->id ?>'>
+                                            <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-warna" data-id='<?= $col->id ?>'>
                                                 <span class="icon text-white-25">
                                                     <i class="fas fa-pen"></i>
                                                 </span>
                                             </a>
-                                            <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-warna" data-id='<?= $col->id ?>'>
+                                            <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-warna" data-id='<?= $col->id ?>'>
                                                 <span class="icon text-white-25">
                                                     <i class="fas fas fa-trash"></i>
                                                 </span>
@@ -656,12 +660,12 @@
                                         <td><?= $vendor->vendor ?></td>
                                         <td><?= $vendor->harga ?></td>
                                         <td class="text-center">
-                                            <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-vendorsupplier" data-id='<?= $vendor->id ?>'>
+                                            <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-vendorsupplier" data-id='<?= $vendor->id ?>'>
                                                 <span class="icon text-white-25">
                                                     <i class="fas fa-pen"></i>
                                                 </span>
                                             </a>
-                                            <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-vendorsupplier" data-id='<?= $vendor->id ?>'>
+                                            <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-vendorsupplier" data-id='<?= $vendor->id ?>'>
                                                 <span class="icon text-white-25">
                                                     <i class="fas fas fa-trash"></i>
                                                 </span>
@@ -689,11 +693,7 @@
                                         <label for="">Vendor*</label>
                                         <input type="hidden" name="id" id="id-supplier">
                                         <input type="text" class="form-control" id="vendor-supplier" name="vendor" placeholder="Masukkan vendor" required>                                
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="">Harga Kain</label>
-                                        <input type="text" class="form-control harga-kain-edit" id="harga-supplier" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." required>                                
-                                    </div>
+                                    </div>                                    
                                 </div>
                                 
                                 <div class="modal-footer">
@@ -793,12 +793,12 @@
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= $vendor->vendor ?></td>
                                         <td class="text-center">
-                                            <a href="#" class="btn btn-warning btn-icon-split btn-sm btn-edit-vendorpenjualan" data-id='<?= $vendor->id ?>'>
+                                            <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-vendorpenjualan" data-id='<?= $vendor->id ?>'>
                                                 <span class="icon text-white-25">
                                                     <i class="fas fa-pen"></i>
                                                 </span>
                                             </a>
-                                            <a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-vendorpenjualan" data-id='<?= $vendor->id ?>'>
+                                            <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-vendorpenjualan" data-id='<?= $vendor->id ?>'>
                                                 <span class="icon text-white-25">
                                                     <i class="fas fas fa-trash"></i>
                                                 </span>
@@ -839,7 +839,467 @@
             </div>
         </div>             
     </div>
-    
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Vendor Pola</h6>
+                <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-vendorpola"><i class="fa fa-plus mr-2"></i>Tambah Vendor</button>
+                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importvendorpola"><i class="fa fa-file-excel mr-2"></i>
+                    Import
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="importvendorpola" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form action="<?= base_url('/upload-vendor-pola') ?>" method="post" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload Vendor Pola</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>File:</label>
+                                    <label class="custom-file">
+
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload6" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename6">Choose file</span>
+                                    </label>
+                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
+                <div class="modal fade bd-example-modal-lg-vendorpola" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= base_url('/simpan-vendor-pola') ?>" method="post">
+                            <?php csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Vendor Pola</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="">Vendor*</label>
+                                        <input type="text" class="form-control" name="vendor" placeholder="Masukkan vendor" required>                                
+                                    </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable20" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Vendor</th>
+                                <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php if ($vendorPola->getNumRows() > 0) : ?>
+                                <?php foreach ($vendorPola->getResultObject() as $vendor) : ?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td><?= $vendor->name ?></td>
+                                        <td class="text-center">
+                                            <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-vendorpola" data-id='<?= $vendor->id ?>'>
+                                                <span class="icon text-white-25">
+                                                    <i class="fas fa-pen"></i>
+                                                </span>
+                                            </a>
+                                            <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-vendorpola" data-id='<?= $vendor->id ?>'>
+                                                <span class="icon text-white-25">
+                                                    <i class="fas fas fa-trash"></i>
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal fade bd-example-modal-lg-vendorpola-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= base_url('/update-vendor-pola') ?>" method="post">
+                                <?= csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Vendor Pola</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="">Vendor*</label>
+                                        <input type="hidden" name="id" id="id-pola">
+                                        <input type="text" class="form-control" id="vendor-pola" name="vendor" placeholder="Masukkan Nama Vendor" required>                                
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>             
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Tim Gelar</h6>
+                <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-gelar"><i class="fa fa-plus mr-2"></i>Tambah Tim Gelar</button>
+                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importgelar"><i class="fa fa-file-excel mr-2"></i>
+                    Import
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="importgelar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form action="<?= base_url('/upload-gelar') ?>" method="post" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload Tim Gelar</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>File:</label>
+                                    <label class="custom-file">
+
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload7" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename7">Choose file</span>
+                                    </label>
+                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
+                <div class="modal fade bd-example-modal-lg-gelar" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= base_url('/simpan-gelar') ?>" method="post">
+                            <?php csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Tim Gelar</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="">Nama*</label>
+                                        <input type="text" class="form-control" name="name" required>                                
+                                    </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable21" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Nama</th>
+                                <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php if ($timGelar->getNumRows() > 0) : ?>
+                                <?php foreach ($timGelar->getResultObject() as $gelar) : ?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td><?= $gelar->name ?></td>
+                                        <td class="text-center">
+                                            <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-gelar" data-id='<?= $gelar->id ?>'>
+                                                <span class="icon text-white-25">
+                                                    <i class="fas fa-pen"></i>
+                                                </span>
+                                            </a>
+                                            <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-gelar" data-id='<?= $gelar->id ?>'>
+                                                <span class="icon text-white-25">
+                                                    <i class="fas fas fa-trash"></i>
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal fade bd-example-modal-lg-gelar-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= base_url('/update-gelar') ?>" method="post">
+                                <?= csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Tim Gelar</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="">Nama*</label>
+                                        <input type="hidden" name="id" id="id-pola">
+                                        <input type="text" class="form-control" id="vendor-pola" name="name" required>                                
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Tim Cutting</h6>
+                <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-cutting"><i class="fa fa-plus mr-2"></i>Tambah Tim Cutting</button>
+                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importcutting"><i class="fa fa-file-excel mr-2"></i>
+                    Import
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="importcutting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form action="<?= base_url('/upload-cutting') ?>" method="post" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Upload Tim Cutting</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>File:</label>
+                                    <label class="custom-file">
+
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload8" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename8">Choose file</span>
+                                    </label>
+                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
+                <div class="modal fade bd-example-modal-lg-cutting" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= base_url('/simpan-cutting') ?>" method="post">
+                            <?php csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Tim Cutting</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="">Nama*</label>
+                                        <input type="text" class="form-control" name="name" required>                                
+                                    </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable22" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Nama</th>
+                                <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php if ($timCutting->getNumRows() > 0) : ?>
+                                <?php foreach ($timCutting->getResultObject() as $cutting) : ?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td><?= $cutting->name ?></td>
+                                        <td class="text-center">
+                                            <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-cutting" data-id='<?= $cutting->id ?>'>
+                                                <span class="icon text-white-25">
+                                                    <i class="fas fa-pen"></i>
+                                                </span>
+                                            </a>
+                                            <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-cutting" data-id='<?= $cutting->id ?>'>
+                                                <span class="icon text-white-25">
+                                                    <i class="fas fas fa-trash"></i>
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal fade bd-example-modal-lg-cutting-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= base_url('/update-gelar') ?>" method="post">
+                                <?= csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Tim Cutting</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="">Nama*</label>
+                                        <input type="hidden" name="id" id="id-pola">
+                                        <input type="text" class="form-control" id="vendor-pola" name="name" required>                                
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>       
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left">COA</h6>                
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable22" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">COA</th>
+                                <th class="text-center">Biaya</th>
+                                <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php foreach ($coa as $co) : ?>
+                                <tr>
+                                    <td class="text-center"><?= $no++ ?></td>
+                                    <td><?= $co->ket ?></td>
+                                    <td><?= $co->biaya ?></td>
+                                    <td class="text-center">
+                                        <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-coa" data-id='<?= $co->id ?>'>
+                                            <span class="icon text-white-25">
+                                                <i class="fas fa-pen"></i>
+                                            </span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal fade bd-example-modal-lg-coa-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= base_url('/update-coa') ?>" method="post">
+                                <?= csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit COA</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="">COA*</label>
+                                        <input type="hidden" name="id" id="id-coa">
+                                        <input type="text" class="form-control" id="coa" name="ket" required>                                
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Biaya*</label>                                        
+                                        <input type="text" class="form-control" name="biaya" id="biaya" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>                                
+                                    </div> 
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>               
+    </div>
 </div>
 
 <?= $this->endSection() ?>
@@ -943,6 +1403,29 @@
                 const model = JSON.parse(data);
                 $('#id-penjualan').val(model['id']);
                 $('#vendor-penjualan').val(model['vendor']);
+        });
+    });
+
+    $('.btn-edit-vendorpola').click(function(){
+        const id = $(this).data('id');
+        $('.bd-example-modal-lg-vendorpola-edit').modal('show');
+        $.get('/get-vendor-pola', {vendor_id: id})
+            .done(function(data) {
+                const model = JSON.parse(data);
+                $('#id-pola').val(model['id']);
+                $('#vendor-pola').val(model['name']);
+        });
+    });
+
+    $('.btn-edit-coa').click(function(){
+        const id = $(this).data('id');
+        $('.bd-example-modal-lg-coa-edit').modal('show');
+        $.get('/get-coa', {vendor_id: id})
+            .done(function(data) {
+                const model = JSON.parse(data);
+                $('#id-coa').val(model['id']);
+                $('#coa').val(model['ket']);
+                $('#biaya').val(model['biaya']);
         });
     });
 
@@ -1094,6 +1577,77 @@
             });
     }); 
 
+    $('.btn-hapus-vendorpola').click(function() {
+        const id = $(this).data('id');
+        swal({
+                title: "Apakah anda yakin?",
+                text: "Data yang anda hapus tidak akan kembali lagi",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Data berhasil dihapus!", {
+                    icon: "success",
+                    });
+                    $.post('/delete-vendor-pola', {vendor_id: id})
+                        .done(function(data) {
+                            setTimeout(location.reload.bind(location), 1000);
+                        });
+                } else {
+                    swal("Data tidak jadi dihapus!");
+                }
+            });
+    }); 
+
+    $('.btn-hapus-gelar').click(function() {
+        const id = $(this).data('id');
+        swal({
+                title: "Apakah anda yakin?",
+                text: "Data yang anda hapus tidak akan kembali lagi",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Data berhasil dihapus!", {
+                    icon: "success",
+                    });
+                    $.post('/delete-gelar', {id: id})
+                        .done(function(data) {
+                            setTimeout(location.reload.bind(location), 1000);
+                        });
+                } else {
+                    swal("Data tidak jadi dihapus!");
+                }
+            });
+    }); 
+
+    $('.btn-hapus-cutting').click(function() {
+        const id = $(this).data('id');
+        swal({
+                title: "Apakah anda yakin?",
+                text: "Data yang anda hapus tidak akan kembali lagi",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Data berhasil dihapus!", {
+                    icon: "success",
+                    });
+                    $.post('/delete-cutting', {id: id})
+                        .done(function(data) {
+                            setTimeout(location.reload.bind(location), 1000);
+                        });
+                } else {
+                    swal("Data tidak jadi dihapus!");
+                }
+            });
+    }); 
 
     var input = document.getElementById('file-upload');
     var infoArea = document.getElementById('file-upload-filename');
@@ -1106,7 +1660,11 @@
     var input5 = document.getElementById('file-upload5');
     var infoArea5 = document.getElementById('file-upload-filename5');
     var input6 = document.getElementById('file-upload6');
-    var infoArea7 = document.getElementById('file-upload-filename6');
+    var infoArea6 = document.getElementById('file-upload-filename6');
+    var input7= document.getElementById('file-upload7');
+    var infoArea7 = document.getElementById('file-upload-filename7');
+    var input8 = document.getElementById('file-upload8');
+    var infoArea8 = document.getElementById('file-upload-filename8');
 
     input.addEventListener('change', showFileName);
     input2.addEventListener('change', showFileName2);
@@ -1114,6 +1672,8 @@
     input4.addEventListener('change', showFileName4);
     input5.addEventListener('change', showFileName5);
     input6.addEventListener('change', showFileName6);
+    input7.addEventListener('change', showFileName7);
+    input8.addEventListener('change', showFileName8);
 
     function showFileName(event) {
         // the change event gives us the input it occurred in 
@@ -1164,6 +1724,22 @@
         var fileName = input6.files[0].name;
         // use fileName however fits your app best, i.e. add it into a div
         infoArea6.textContent = '' + fileName;
+    }
+    function showFileName7(event) {
+        // the change event gives us the input it occurred in 
+        var input = event.srcElement;
+        // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+        var fileName = input7.files[0].name;
+        // use fileName however fits your app best, i.e. add it into a div
+        infoArea7.textContent = '' + fileName;
+    }
+    function showFileName8(event) {
+        // the change event gives us the input it occurred in 
+        var input = event.srcElement;
+        // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+        var fileName = input8.files[0].name;
+        // use fileName however fits your app best, i.e. add it into a div
+        infoArea8.textContent = '' + fileName;
     }
 
 </script>

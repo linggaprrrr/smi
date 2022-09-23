@@ -34,8 +34,8 @@ class Materials extends BaseController
         $colors = $this->materialModel->getAllColors();
         $materialVendors = $this->materialModel->getMaterialVendors();
         $materialsIn = $this->materialModel->getAllMaterial();        
-        $materialsOut = $this->materialModel->getAllMaterialOut();
-        $materialsPolaIn = $this->materialModel->getAllPolaIn();
+        
+        $materialsOut = $this->materialModel->getAllMaterialOut();        
         $gudangs = $this->materialModel->getAllGudang();
         $picCutting = $this->materialModel->getAllPICCutting();
         $getAllTimGelar = $this->materialModel->getAllTimGelar();
@@ -50,8 +50,6 @@ class Materials extends BaseController
             'colors' => $colors,
             'models' => $models,
             'materialsIn' => $materialsIn,
-            'materialsOut' => $materialsOut,
-            'materialsPolaIn' => $materialsPolaIn,
             'gudangs' => $gudangs,
             'materialVendors' => $materialVendors,
             'picCutting' => $picCutting,
@@ -67,7 +65,8 @@ class Materials extends BaseController
     public function saveMaterial() {
         $post = $this->request->getVar();
         $type = strtoupper($post['jenis']);
-        $this->materialModel->saveMaterialType($type);
+        $harga = strtoupper($post['harga']);
+        $this->materialModel->saveMaterialType($type, $harga);
     }
 
     public function addMaterial() {
@@ -158,7 +157,7 @@ class Materials extends BaseController
         $id = $this->request->getVar('material_id');
         $getMaterial = $this->materialModel
             ->select('material_types.type, colors.color')
-            ->join('material_types', 'material_types.id = materials.material_id')
+            ->join('material_types', 'material_types.id = materials.material_type')
             ->join('colors', 'colors.id = materials.color_id')
             ->where('materials.id', $id)
             ->first();
@@ -598,6 +597,12 @@ class Materials extends BaseController
         echo json_encode($vendor->getResultArray());
     }
 
+    public function getJenisKain() {
+        $id = $this->request->getVar('id');
+        $vendor = $this->materialModel->getJenisKain($id);
+        echo json_encode($vendor->getResultArray());
+    }
+
     public function datamaster() {
         $materials = $this->materialModel->getAllMaterialType();
         $products = $this->productModel->getAllProduct();
@@ -605,7 +610,10 @@ class Materials extends BaseController
         $colors = $this->materialModel->getAllColors();
         $vendorPenjualan = $this->productModel->getAllVendorPenjualan();
         $vendorKain = $this->materialModel->getAllVendorKain();    
-        $coa =     
+        $vendrPola = $this->materialModel->getAllVendorPola();
+        $timGelar = $this->materialModel->getAllTimGelar();
+        $timCutting = $this->materialModel->getAllTimCutting();
+        $coa = $this->materialModel->getCOA();
         $data = array(
             'title' => 'Data Master',
             'materials' => $materials,
@@ -613,7 +621,11 @@ class Materials extends BaseController
             'models' => $models,
             'colors' => $colors,
             'vendorPenjualan' => $vendorPenjualan,
-            'vendorKain' => $vendorKain
+            'vendorKain' => $vendorKain,
+            'vendorPola' => $vendrPola,
+            'timGelar' => $timGelar,
+            'timCutting' => $timCutting,
+            'coa' => $coa
         );
         return view('admin/datamaster', $data);    
     }
@@ -626,8 +638,7 @@ class Materials extends BaseController
 
     public function saveVendorSupplier() {
         $vendor = $this->request->getVar('vendor');
-        $harga = $this->request->getVar('harga');
-        $this->materialModel->saveVendorSupplier($vendor, $harga );
+        $this->materialModel->saveVendorSupplier($vendor );
         return redirect()->back()->with('create', 'Vendor berhasil ditambahkan');
     }
 
@@ -662,7 +673,7 @@ class Materials extends BaseController
 
     public function updateVendorSupplier() {
         $post = $this->request->getVar();
-        $this->materialModel->updateVendorSupplier($post['id'], $post['vendor'], $post['harga']);
+        $this->materialModel->updateVendorSupplier($post['id'], $post['vendor']);
         return redirect()->back()->with('update', 'Vendor berhasil diubah');
     }
 
@@ -724,10 +735,75 @@ class Materials extends BaseController
         $this->materialModel->savePolaIn($pola);
         return redirect()->back()->with('input', 'Pola berhasil diinput');
     }
-    
+
+    public function saveVendorPola() {
+        $vendor = $this->request->getVar('vendor');
+        $this->materialModel->saveVendorPola($vendor);
+        return redirect()->back()->with('create', 'Pola berhasil diinput');
+    }
+
+    public function updateVendorPola() {
+        $id = $this->request->getVar('id');
+        $vendor = $this->request->getVar('vendor');
+        $this->materialModel->updateVendorPola($id, $vendor);
+        return redirect()->back()->with('create', 'Pola berhasil diinput');
+    }
+
+    public function deleteVendorPola() {
+        $id = $this->request->getVar('vendor_id');
+        $this->materialModel->deleteVendorPola($id);        
+    }
+
     public function getPolaOut() {
         $id = $this->request->getVar('id');
         $pola = $this->materialModel->getPolaOut($id);
         echo json_encode($pola[0]);
     }
+
+    public function getVendorPola() {
+        $id = $this->request->getVar('vendor_id');
+        $vendor = $this->materialModel->getVendorPola($id);
+        echo json_encode($vendor);
+    }
+
+    public function saveGelar() {
+        $name = $this->request->getVar('name');
+        $this->materialModel->saveTimGelar($name);
+        return redirect()->back()->with('create', 'Tim berhasil diinput');
+    }
+
+    public function saveCutting() {
+        $name = $this->request->getVar('name');
+        $this->materialModel->saveTimCutting($name);
+        return redirect()->back()->with('create', 'Tim berhasil diinput');
+    }
+
+    public function deleteGelar() {
+        $id = $this->request->getVar('id');
+        $this->materialModel->deleteGelar($id);   
+        echo $id;
+        // return redirect()->back()->with('create', 'Tim berhasil diinput');
+    }
+
+    public function deleteCutting() {
+        $id = $this->request->getVar('id');
+        $this->materialModel->deleteCutting($id);   
+        return redirect()->back()->with('create', 'Tim berhasil diinput');
+    }
+
+    public function getCOA() {
+        $id = $this->request->getVar('id');
+        $data = $this->materialModel->editCOA($id);
+        echo json_encode($data);
+    }
+    
+    public function updateCOA() {
+        $id = $this->request->getVar('id');
+        $ket = $this->request->getVar('ket');
+        $biaya = $this->request->getVar('biaya');
+
+        $this->materialModel->updateCOA($id, $ket, $biaya);
+        return redirect()->back()->with('create', 'Tim berhasil diinput');
+    }
+
 }

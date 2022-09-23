@@ -62,4 +62,9 @@ $(document).ready(function() {
         "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
         "iDisplayLength": 10
     });
+
+    $('#dataTable20').DataTable({
+        "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+        "iDisplayLength": 10
+    });
 });
