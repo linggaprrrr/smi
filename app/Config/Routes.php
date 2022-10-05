@@ -79,6 +79,7 @@ $routes->post('/update-cutting', 'Materials::updateCutting');
 $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
 $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
 $routes->get('/export-data-kain', 'Materials::exportData');
+$routes->get('/export-data-kain/(:any)/(:any)', 'Materials::exportData/$1/$2');
 $routes->post('/simpan-user', 'Users::saveUser');
 $routes->post('/update-user', 'Users::updateUser');
 
@@ -145,13 +146,20 @@ $routes->get('/gudang-gesit/qr-scanner-pola-out', 'QRCodeGenerator::scannerPolaO
 $routes->get('/gudang-gesit/qr-scanner-retur', 'QRCodeGenerator::scannerMaterialRetur');
 $routes->get('/gudang-gesit/qr-scanner-produk-in', 'QRCodeGenerator::scannerProductIn');
 $routes->get('/gudang-gesit/qr-scanner-cutting', 'QRCodeGenerator::scannerCutting');
+$routes->get('/gudang-gesit/qr-scanner-reject', 'QRCodeGenerator::scannerReject');
 $routes->get('/gudang-gesit/laporan', 'Reports::reportGesit');
+$routes->get('/gudang-gesit/laporan/(:any)', 'Reports::reportGesit/$1');
 $routes->get('export-data-pola-in', 'Materials::exportDataPolaIn');
+$routes->get('export-data-pola-in/(:any)/(:any)', 'Materials::exportDataPolaIn/$1/$2');
 $routes->get('export-data-pola-out', 'Materials::exportDataPolaOut');
+$routes->get('export-data-pola-out/(:any)/(:any)', 'Materials::exportDataPolaOut/$1/$2');
 $routes->get('export-produk-gesit', 'Products::exportDataGesit');
+$routes->get('export-produk-gesit/(:any)/(:any)', 'Products::exportDataGesit/$1/$2');
 $routes->get('export-produk-masuk-lovish', 'Products::exportDataLovishIn');
+$routes->get('export-produk-masuk-lovish/(:any)/(:any)', 'Products::exportDataLovishIn/$1/$2');
 $routes->get('export-pengiriman', 'Shippings::exportShipments');
 $routes->get('export-data-cutting', 'Materials::exportDataCutting');
+$routes->get('export-data-cutting/(:any)/(:any)', 'Materials::exportDataCutting/$1/$2');
 $routes->get('export-data-stok-produk', 'Products::exportDataStokProduct');
 
 // produk gesit
@@ -163,6 +171,7 @@ $routes->post('on-change-product-color', 'Products::onChangeProductColor');
 $routes->post('on-change-product-hpp', 'Products::onChangeProductHPP');
 $routes->get('get-hpp-product', 'Products::getHPP');
 $routes->get('/get-jenis-kain', 'Materials::getJenisKain');
+$routes->post('/simpan-reject', 'Products::simpanReject');
 
 $routes->post('/on-change-cutting-product-type', 'Materials::onChangeCuttingProductType');
 $routes->post('/on-change-cutting-product-type-pola', 'Materials::onChangeCuttingProductTypePola');
@@ -207,15 +216,19 @@ $routes->get('/gudang-lovish/dashboard', 'Home::gudangLovish');
 $routes->get('/gudang-lovish/produk', 'Products::gudangProduk');
 $routes->get('/gudang-lovish/stok-produk', 'Products::gudangLovishStokProduk');
 $routes->get('/gudang-lovish/qr-scanner-product-out', 'QRCodeGenerator::scannerProductOut');
-$routes->get('/gudang-lovish/qr-scanner-product-in', 'QRCodeGenerator::scannerProductRetur');
+$routes->get('/gudang-lovish/qr-scanner-product-retur', 'QRCodeGenerator::scannerProductRetur');
+$routes->get('/gudang-lovish/qr-scanner-product-in', 'QRCodeGenerator::scannerProductIn');
+$routes->get('/gudang-lovish/qr-scanner-product-so', 'QRCodeGenerator::scannerProductSO');
 $routes->get('/gudang-lovish/qr-scanner-shipment', 'QRCodeGenerator::scannerShipment');
 $routes->get('/gudang-lovish/cetak-pengiriman', 'Shippings::shipmentLovish');
 $routes->get('/gudang-lovish/laporan', 'Reports::reportGudang');
+$routes->get('/gudang-lovish/laporan/(:any)', 'Reports::reportGudang/$1');
 $routes->get('/get-pengiriman-resi', 'Shippings::getResi');
 $routes->post('/update-resi', 'Shippings::updateResi');
 $routes->post('/tambah-pengiriman', 'Shippings::addShipping');
 $routes->post('/generate-qr-shipment', 'QRCodeGenerator::generateQRShipment');
 $routes->post('/import-product', 'Products::importProduct');
+$routes->get('/gudang-lovish/penjualan', 'Sellings::index');
 
 
 // GLOBAL API
@@ -223,9 +236,13 @@ $routes->post('/material-in-scanning', 'QRCodeGenerator::scanningMaterialIn');
 $routes->post('/material-out-scanning', 'QRCodeGenerator::scanningMaterialOut');
 $routes->post('/product-in-scanning', 'QRCodeGenerator::scanningProductIn');
 $routes->post('/product-out-scanning', 'QRCodeGenerator::scanningProductOut');
+$routes->post('/product-so-scanning', 'QRCodeGenerator::scanningProductSO');
 $routes->post('/product-retur-scanning', 'QRCodeGenerator::scanningProductRetur');
 $routes->post('/box-check-scanning', 'QRCodeGenerator::scanningBox');
 $routes->post('/cut-in-scanning', 'QRCodeGenerator::scanningCutting');
+$routes->post('/reject-in-scanning', 'QRCodeGenerator::scanningReject');
+$routes->post('/reject-in', 'Products::rejectIn');
+
 
 
 // test

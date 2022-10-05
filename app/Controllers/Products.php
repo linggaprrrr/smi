@@ -158,7 +158,7 @@ class Products extends BaseController
         $colors = $this->materialModel->getAllColors();
         $products = $this->productModel->getAllProduct();
         $vendors = $this->productModel->getAllVendorPenjualan();
-       
+        $reject = $this->productModel->rejectedProduct();
         $data = array(
             'title' => 'Produk',
             'productsIn' => $productsIn,
@@ -167,7 +167,8 @@ class Products extends BaseController
             'models' => $models,
             'products' => $products,
             'colors' => $colors,
-            'vendors' => $vendors
+            'vendors' => $vendors,
+            'rejectedProducts' => $reject
         );
         return view('gudang_gesit/products', $data);    
     }
@@ -320,8 +321,13 @@ class Products extends BaseController
         return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
     }
 
-    public function exportDataGesit() {
-        $products = $this->productModel->getAllProductIn();
+    public function exportDataGesit($date1= null, $date2 = null) {
+        if (is_null($date1)) {
+            $products = $this->productModel->getAllProductIn();     
+        } else {
+            $products = $this->productModel->getAllProductIn($date1, $date2);
+        }
+        
         $date = time();
         $fileName = "Data Produk Gesit {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
@@ -360,8 +366,13 @@ class Products extends BaseController
     }
 
         
-    public function exportDataLovishIn() {
-        $products = $this->productModel->getAllProductOut();
+    public function exportDataLovishIn($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $products = $this->productModel->getAllProductOut();
+        } else {
+            $products = $this->productModel->getAllProductOut($date1, $date2);
+        }
+        
         $date = time();
         $fileName = "Data Produk Masuk Gudang {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
@@ -463,6 +474,7 @@ class Products extends BaseController
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $products = $this->productModel->getAllProductLovish();
+        $types = $this->productModel->getAllProduct();
         $vendors = $this->productModel->getAllVendorPenjualan();
         $data = array(
             'title' => 'Produk',
@@ -472,6 +484,7 @@ class Products extends BaseController
             'models' => $models,
             'products' => $products,
             'colors' => $colors,
+            'types' => $types,
             'vendors' => $vendors
         );
         return view('gudang_lovish/products', $data);       
@@ -560,7 +573,6 @@ class Products extends BaseController
     public function gudangLovishStokProduk() {
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
-        $products = $this->productModel->getAllProduct();
         $vendors = $this->productModel->getAllVendorPenjualan();
         $products = $this->productModel->getAllStockProductLovish();
         
@@ -572,6 +584,25 @@ class Products extends BaseController
             'vendors' => $vendors
         );
         return view('gudang_lovish/products_stock', $data);    
+    }
+
+    public function simpanReject() {
+        $id = $this->request->getVar('product');
+        $reject = $this->request->getVar('reject');
+        $check = $this->productModel->findProductReject($id);
+        $status = 0;
+        
+        if ($check->getNumRows() > 0) {
+            $status = 1;
+            $this->productModel->saveReject($id, $reject);    
+        }
+        echo json_encode($status);
+        
+    }
+
+    public function rejectIn() {
+        $id = $this->request->getVar('id');
+        $this->productModel->rejectIn($id);
     }
 
 }

@@ -3,7 +3,20 @@
 <?= $this->section('content') ?>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        
+        <div class="row">
+            <div class="col-xl-3">
+                <form method="GET" action="<?= base_url('/gudang-lovish/laporan') ?>" id="date" >
+                    <div class="form-group">
+                        <label for="">Date Range: </label>
+                        <?php if (is_null($date1)) : ?>
+                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= date('m/d/Y') ?> - <?= date('m/d/Y') ?>" readonly />            
+                        <?php else : ?>
+                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?> - <?= $date2 ?>" readonly />            
+                        <?php endif ?>
+                    </div>    
+                </form>
+            </div>
+        </div>
     </div>
     <div class="card-body">        
         <ul class="nav nav-tabs">
@@ -392,11 +405,15 @@
 
 <?= $this->section('js') ?>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
-    $(document).ready(function() {
+    $('.daterange').daterangepicker();    
 
-
-    });
+    $('.daterange').change(function() {
+        $('#date').submit();
+    })
     
 </script>
 <?= $this->endSection() ?>

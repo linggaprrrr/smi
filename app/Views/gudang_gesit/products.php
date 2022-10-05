@@ -197,7 +197,52 @@
         
     </div>
 </div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-danger float-left">Daftar Produk yang di-reject</h6>
+    
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 5%">No</th>
+                        <th class="text-center">Jenis Produk</th>
+                        <th class="text-center">Model</th>
+                        <th class="text-center">Warna</th>
+                        <th class="text-center">Reject</th>
+                        <th class="text-center">Tanggal</th>
+                        <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <?php $no = 1; ?>
+                    <?php if ($rejectedProducts->getNumRows() > 0) : ?>
+                        <?php foreach ($rejectedProducts->getResultObject() as $product) : ?>
+                            <tr>
+                                <td class="text-center"><?= $no++ ?></td>
+                                <td><div><?= $product->product_name ?></div></td>
+                                <td class="text-center"><?= $product->model_name ?></td>                                
+                                <td class="text-center"><?= $product->color ?></td>                         
+                                <td class="text-center"><?= strtoupper($product->category) ?></td>       
+                                <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td>
+                                <?php if ($product->category != 'permananent') :?>
+                                    <td class="text-center"><a href="" data-toggle="modal"  class="reject-in" data-id="<?= $product->id ?>" ><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a></td>
+                                <?php else : ?>
+                                    <td></td>
+                                <?php endif ?>
 
+                            </tr>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
 
 
 
@@ -288,6 +333,13 @@
                 $('.set-hpp').val(hpp['hpp']);
             })
         });
+
+        $('.reject-in').click(function() {
+            const id = $(this).data('id');
+            $.post('<?= base_url('/reject-in') ?>', {id: id}, function(data) {
+                location.reload();
+            });
+        })
     });
     
 </script>

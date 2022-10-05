@@ -218,6 +218,13 @@ class QRCodeGenerator extends BaseController
         return view('gudang_gesit/qr_scanner_product_in', $data);    
     }
 
+    public function scannerProductSO() {
+        $data = array(
+            'title' => 'QR Scanner Produk SO'
+        );
+        return view('gudang_lovish/qr_scanner_so', $data);    
+    }
+
     public function scannerProductOut() {
         $data = array(
             'title' => 'QR Scanner Product Out'
@@ -226,8 +233,10 @@ class QRCodeGenerator extends BaseController
     }
 
     public function scannerProductRetur() {
+        
         $data = array(
-            'title' => 'QR Scanner Retur'
+            'title' => 'QR Scanner Retur',
+            
         );
         return view('gudang_lovish/qr_scanner_retur_in', $data);    
     }
@@ -238,6 +247,16 @@ class QRCodeGenerator extends BaseController
         );
 
         return view('gudang_gesit/qr_scanner_cutting', $data);
+    }
+
+    public function scannerReject() {
+        $reject = $this->produkModel->rejectedProduct();        
+        $data = array(
+            'title' => 'QR Scanner Reject',
+            'rejectedProducts' => $reject            
+        );
+
+        return view('gudang_gesit/qr_scanner_reject', $data);
     }
 
     public function scannerShipment() {
@@ -334,6 +353,18 @@ class QRCodeGenerator extends BaseController
         echo json_encode($status);
     }
 
+    public function scanningReject() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $getProduct = $this->produkModel->findProductIn($qr[0]);
+        $status = '0';
+        if ($getProduct->getNumRows() > 0) {
+            $status = '1'; 
+        }
+        echo json_encode($status);
+    }
+
     public function scanningProductOut() {
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
@@ -343,6 +374,19 @@ class QRCodeGenerator extends BaseController
         if ($getProduct->getNumRows() > 0) {
             $status = '1'; 
             $this->produkModel->setProductOut($qr[0], session()->get('user_id'));
+        }
+        echo json_encode($status);
+    }
+
+    public function scanningProductSO() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $getProduct = $this->produkModel->findProductOut($qr[0]);
+        $status = '0';
+        if ($getProduct->getNumRows() > 0) {
+            $status = '1'; 
+            $this->produkModel->setProductSO($qr[0]);
         }
         echo json_encode($status);
     }

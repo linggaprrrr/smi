@@ -168,8 +168,12 @@ class Materials extends BaseController
         $this->materialModel->where('id', $id)->delete();
     }
 
-    public function exportData() {
-        $materials = $this->materialModel->getAllMaterial();
+    public function exportData($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $materials = $this->materialModel->getAllMaterial();
+        } else {
+            $materials = $this->materialModel->getAllMaterial($date1, $date2);
+        }
         $date = time();
         $fileName = "Data Kain Masuk {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
@@ -417,8 +421,13 @@ class Materials extends BaseController
         echo json_encode($data);
     }
 
-    public function exportDataPolaIn() {
-        $materials = $this->materialModel->getAllPolaIn();
+    public function exportDataPolaIn($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $materials = $this->materialModel->getAllPolaIn();    
+        } else {
+            $materials = $this->materialModel->getAllPolaIn($date1, $date2);
+        }
+        
         $date = time(); 
         $fileName = "Data Pola In {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
@@ -476,8 +485,13 @@ class Materials extends BaseController
 		exit;
     }
 
-    public function exportDataPolaOut() {
-        $materials = $this->materialModel->getAllPolaOut();
+    public function exportDataPolaOut($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $materials = $this->materialModel->getAllPolaOut();
+        } else {
+            $materials = $this->materialModel->getAllPolaOut($date1, $date2);
+        }
+        
         $date = time();
         $fileName = "Data Pola Out {$date}.xlsx";  
         
@@ -537,8 +551,12 @@ class Materials extends BaseController
 		exit;
     }
 
-    public function exportDataCutting() {
-        $cutting = $this->materialModel->getAllCuttingData();
+    public function exportDataCutting($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $cutting = $this->materialModel->getAllCuttingData();
+        } else {
+            $cutting = $this->materialModel->getAllCuttingData($date1, $date2);
+        }
         $date = time();
         $fileName = "Data Cutting {$date}.xlsx";  
         
@@ -709,8 +727,17 @@ class Materials extends BaseController
         $id = $this->request->getVar('id');
         $tgl = $this->request->getVar('tgl-pola');
         $jumlah = $this->request->getVar('jumlah-pola');
-        $vendor = $this->request->getVar('vendor');
-        
+        $total = $this->request->getVar('total-pola');
+        $remain = $total - $jumlah;
+        $vendor = $this->request->getVar('vendor');        
+        if ($jumlah < $total) {
+            $status = 2;            
+            $this->materialModel->updateStatusCutting($id, $remain, $status);
+        } else if ($jumlah > $total) {
+            $status = 3;
+            $this->materialModel->updateStatusCutting($id, $remain, $status);
+        }
+
         $tgl = date('Y-m-d', strtotime($tgl));
         $this->materialModel->savePolaOut($id, $tgl, $jumlah, $vendor);
         return redirect()->back()->with('input', 'Pola berhasil diinput');
@@ -718,6 +745,7 @@ class Materials extends BaseController
 
     public function savePolaMasuk() {
         $post = $this->request->getVar();
+        $harga = ($post['hargajahit'] == NULL) ? 0 : $post['hargajahit']; 
         $pola = [
             'cuttingID' => $post['cutting-id'],
             'vendorID' => $post['vendor-id'],
@@ -728,8 +756,8 @@ class Materials extends BaseController
             'jumlahSetor' => $post['jumlah-setor'],
             'reject' => $post['reject'],
             'sisa' => $post['jumlah'] - $post['jumlah-setor'],
-            'harga' => $post['hargajahit'],
-            'total' => $post['hargajahit'] * $post['jumlah-setor']          
+            'harga' => $harga,
+            'total' => $harga * $post['jumlah-setor']          
         ];
 
         $this->materialModel->savePolaIn($pola);

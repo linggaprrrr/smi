@@ -19,12 +19,15 @@
                         <th class="text-center" style="width: 5%">No</th>
                         <th class="text-center">Produk</th>                        
                         <th class="text-center">Stok Awal</th>
-                        <th class="text-center">Stok Masuk</th>
+                        <th class="text-center">Stok Masuk (Gesit)</th>
+                        <th class="text-center">Scan SO</th>
                         <th class="text-center">Stok Retur</th>
                         <th class="text-center">Penjualan</th>
                         <th class="text-center">Sisa Stok</th>
-                        <th class="text-center">HPP</th>
+                        <th class="text-center">HPP Gesit</th>
+                        <th class="text-center">HPP Jual</th>
                         <th class="text-center">Nilai Barang</th>
+                        <th class="text-center">Nilai Jual</th>
                     </tr>
                 </thead>
                 
@@ -34,21 +37,24 @@
                         <?php foreach ($products->getResultObject() as $product) : ?>
                             <?php $sisa = ($product->stok + $product->stok_masuk - ($product->penjualan - $product->stok_retur)) ?>
                             <tr>
-                                <td class="text-center"><?= $no++ ?></td>
+                                <td class="text-center align-middle"><?= $no++ ?></td>
                                 <td><?= $product->product_name ?> <?= $product->model_name ?> <?= $product->color ?></td>
-                                <td class="text-center"><?= $product->stok ?></td>
-                                <td class="text-center"><?= $product->stok_masuk > 0 ? $product->stok_masuk : '' ?></td>
-                                <td class="text-center"><?= $product->stok_retur ?></td>
-                                <td class="text-center"><?= $product->penjualan ?></td>
+                                <td class="text-center align-middle"><?= $product->stok ?></td>
+                                <td class="text-center align-middle"><?= $product->stok_masuk > 0 ? $product->stok_masuk : '' ?></td>
+                                <td class="text-center align-middle"><?= $product->stock_opname > 0 ? $product->stock_opname : '' ?></td>
+                                <td class="text-center align-middle"><?= $product->stok_retur ?></td>
+                                <td class="text-center align-middle"><?= $product->penjualan ?></td>
                                 <?php if ($sisa > 20) : ?>
-                                    <td class="text-center"><?= $sisa ?></td>                                        
+                                    <td class="text-center align-middle"><?= $sisa ?></td>                                        
                                 <?php elseif ($sisa > 10 && $sisa < 20): ?>
-                                    <td class="text-center table-warning"><?= $sisa ?></td>                                                                                
+                                    <td class="text-center align-middle table-warning"><?= $sisa ?></td>                                                                                
                                 <?php else : ?>
-                                    <td class="text-center table-danger"><?= $sisa ?></td>                                        
+                                    <td class="text-center align-middle table-danger"><?= $sisa ?></td>                                        
                                 <?php endif ?>
-                                <td class="text-center">Rp <?= number_format($product->hpp, 0) ?></td>
-                                <td class="text-center">Rp <?= number_format(($product->hpp * $sisa), 0) ?></td>
+                                <td class="text-center align-middle">Rp <?= number_format($product->hpp, 0) ?></td>
+                                <td class="text-center align-middle"><input type="text" name="hpp-jual" class="form-control" value="<?= 10000+$product->hpp ?>"></td>
+                                <td class="text-center align-middle">Rp <?= number_format(($product->hpp * $sisa), 0) ?></td>                            
+                                <td class="text-center align-middle">Rp <?= number_format((10000+ ($product->hpp * $sisa) ), 0) ?></td>
                             </tr>
                         <?php endforeach ?>
                     <?php endif ?>

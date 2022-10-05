@@ -53,7 +53,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary float-left">Data Produk</h6>
-        <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-produk"><i class="fa fa-plus mr-2"></i>Tambah Produk</button>
+        
         <button class="btn btn-success float-right mr-2" data-toggle="modal" data-target=".export-produk"><i class="fa fa-file-excel mr-2"></i>Import</button>
         <div class="modal fade export-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -99,8 +99,8 @@
                             <div class="form-group">
                                 <label for="">Nama Produk*</label>
                                 <select class="form-control" name="nama_produk">
-                                    <?php if ($products->getNumRows() > 0) : ?>
-                                        <?php foreach ($products->getResultObject() as $product) : ?>
+                                    <?php if ($types->getNumRows() > 0) : ?>
+                                        <?php foreach ($types->getResultObject() as $product) : ?>
                                             <option value="<?= $product->id ?>"><?= $product->product_name ?></option>
                                         <?php endforeach ?>
                                     <?php endif ?>

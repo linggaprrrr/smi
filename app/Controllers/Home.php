@@ -28,21 +28,7 @@ class Home extends BaseController
     }
 
     public function index() {
-        $totalLovish = $this->productModel->selectSum('qty')->where('status','2')->first();        
-        $totalLovishIn = $this->productModel
-            ->select('SUM(product_logs.qty) as qty')
-            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-            ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
-            // ->where('product_logs.status','2')
-            ->first();
-
-        $totalLovishOut = $this->productModel
-            ->select('SUM(product_logs.qty) as qty')
-            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-            ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
-            ->where('product_logs.status','3')
-            ->orWhere('product_logs.status', '4')
-            ->first();
+        
         $productsOut = $this->productModel->getStokProductOut();
         $productsRetur = $this->productModel->productsRetur();
         $productsExp = $this->productModel->getStokProductExp();
@@ -167,22 +153,7 @@ class Home extends BaseController
         return view('admin/dashboard', $data);
     }
 
-    public function gudangLovish() {
-        $totalLovish = $this->productModel->selectSum('qty')->where('status','2')->first();        
-        $totalLovishIn = $this->productModel
-            ->select('SUM(product_logs.qty) as qty')
-            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-            ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
-            // ->where('product_logs.status','2')
-            ->first();
-
-        $totalLovishOut = $this->productModel
-            ->select('SUM(product_logs.qty) as qty')
-            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-            ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
-            ->where('product_logs.status','3')
-            ->orWhere('product_logs.status', '4')
-            ->first();
+    public function gudangLovish() {        
         $productsOut = $this->productModel->getStokProductOut();
         $productsRetur = $this->productModel->productsRetur();
         $productsExp = $this->productModel->getStokProductExp();
@@ -231,7 +202,12 @@ class Home extends BaseController
             ->orderBy('created_at', 'desc')
             ->groupBy('shippings.id')
             ->get();
-
+        $getStok = $this->productModel->getAllStockProductLovish();
+        $totalNilaiBarang = 0;
+        foreach ($getStok->getResultObject() as $product) {
+            $sisa = ($product->stok + $product->stok_masuk - ($product->penjualan - $product->stok_retur));
+            $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa);
+        }
         
         $data = array(
             'title' => 'Dashboard',
@@ -245,7 +221,7 @@ class Home extends BaseController
             'productLovish' => $productLovish,
             'productsRetur' => $productsRetur,
             'shippings' => $shippings,
-            
+            'totalNilaiBarang' => $totalNilaiBarang
         );
         return view('gudang_lovish/dashboard', $data);
     }

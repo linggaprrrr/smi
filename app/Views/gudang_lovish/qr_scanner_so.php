@@ -1,5 +1,20 @@
-
-<?= $this->extend('gudang_gesit/layout/content') ?>
+<style>
+    #canvas {
+        position: absolute;
+      }
+      #scanned {
+        display: flex;
+        flex-direction: column;
+        gap:1rem;
+      }
+      #video-wrapper {
+        height: 890px;
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+</style>
+<?= $this->extend('gudang_lovish/layout/content') ?>
 
 <?= $this->section('content') ?>
 <div class="row">
@@ -47,26 +62,32 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     var audio = new Audio('/assets/sounds/beep.wav');
-    function onScanSuccess(decodedText, decodedResult) {
-        const qr = decodedText;
-        const kode = decodedText.split("-"); 
-        $.post('/cut-in-scanning', {qr: qr}, function(data) {            
-            const stat = JSON.parse(data);
-            audio.play();   
-            if (stat == '1') {
-                $.notify(kode[1] +' '+ kode[2] +' berhasil di-scan!', "success");                     
-                alert(kode[1] +' '+ kode[2]);                
-            } else {
-                $.notify("Warning: Data kain tidak ada!", "warn");
-            }
-            
-        }); 
-    }
+    var lastResult, countResults = 0;
 
-    
+    function onScanSuccess(decodedText, decodedResult) {
+        console.log(`Code scanned = ${decodedText}`, decodedResult);
+        const qr = decodedText;
+        const kode = qr.split("-"); 
+        if (decodedText !== lastResult) {
+            ++countResults;
+            lastResult = decodedText;
+            $.post('/product-so-scanning', {qr: qr}, function(data) {
+                const stat = JSON.parse(data);
+                if (stat == '1') {
+                    $.notify(kode[1] +' '+ kode[2] +' '+ kode[2] +' berhasil di-scan!', "success");
+                } else {
+                    $.notify("Warning: Data produk tidak ada!", "warn");
+                    lastResult = 0;
+                }
+                audio.play();        
+            }); 
+            
+        }
+
+                          
+    }
     var html5QrcodeScanner = new Html5QrcodeScanner(
     "qr-reader", { fps: 10, qrbox: 250 });
-    var scann = html5QrcodeScanner.render(onScanSuccess);
-    console.log(scann);
+    html5QrcodeScanner.render(onScanSuccess);
 </script>
 <?= $this->endSection() ?>

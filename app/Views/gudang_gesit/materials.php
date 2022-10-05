@@ -353,7 +353,13 @@
                                     </td>
                                 </tr>
                             <?php else : ?>
-                                <tr class="table-active" id="td_<?= $cutting->id ?>">
+                                <?php if ($cutting->status == 1) : ?>
+                                    <tr class="table-active" id="td_<?= $cutting->id ?>">
+                                <?php elseif ($cutting->status == 2) : ?>
+                                    
+                                <?php else : ?>
+                                    <tr class="table-danger" id="td_<?= $cutting->id ?>">
+                                <?php endif ?>
                                     <td class="text-center align-middle"><?= $no++ ?></td>
                                     <td class="text-center font-weight-bold align-middle"><?= $cutting->mid ?></td>
                                     <td class="text-center align-middle"><?= date('m/d/Y', strtotime($cutting->tgl)) ?></td>
@@ -387,7 +393,8 @@
                                     <td class="text-center font-weight-bold align-middle" id="total_<?= $cutting->id ?>">Rp <?= number_format($cutting->total) ?></td>  
                                     <td class="text-center align-middle">
                                         <a href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-info-circle fa-lg mr-2"></i></a>
-                                        <a href="" data-toggle="modal" class="editable-cutting" data-id="<?= $cutting->id ?>"><i class="fa fa-edit fa-lg text-secondary"></i></a>
+                                        <!-- <a href="" data-toggle="modal" class="editable-cutting" data-id="<?= $cutting->id ?>"><i class="fa fa-edit fa-lg text-secondary"></i></a> -->
+                                        <a href="" data-toggle="modal"  class="pola-out" data-id="<?= $cutting->id ?>" ><i class="fa fa-sign-out-alt fa-lg text-danger"></i></a>
                                         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
@@ -446,6 +453,7 @@
                                 <div class="form-group">
                                     <label for="">Jumlah Pola</label>
                                     <input type="text" name="jumlah-pola" class="form-control" id="jumlahPola" aria-describedby="" placeholder="Jumlah Pola" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">                                    
+                                    <input type="hidden" name="total-pola" id="jumlahPolaHide">
                                 </div>
                                 <div class="form-group">
                                     <label for="">Vendor Pola</label>
@@ -743,6 +751,7 @@
         $.get('/get-cutting', {id: id}, function(data) {
             const cutting = JSON.parse(data);   
             $('#jumlahPola').val(cutting);
+            $('#jumlahPolaHide').val(cutting);
             $('#cutting').val(id);
             $('#polaOutModal').modal('show');
         });

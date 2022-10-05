@@ -3,7 +3,20 @@
 <?= $this->section('content') ?>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        
+        <div class="row">
+            <div class="col-xl-3">
+            <form method="GET" action="<?= base_url('/gudang-gesit/laporan') ?>" id="date" >
+                    <div class="form-group">
+                        <label for="">Date Range: </label>
+                        <?php if (is_null($date1)) : ?>
+                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= date('m/d/Y') ?> - <?= date('m/d/Y') ?>" readonly />            
+                        <?php else : ?>
+                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?> - <?= $date2 ?>" readonly />            
+                        <?php endif ?>
+                    </div>    
+                </form>
+            </div>
+        </div>
     </div>
     <div class="card-body">        
         <ul class="nav nav-tabs">
@@ -27,10 +40,15 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Kain Masuk</h6>
-                        <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php if (!is_null($date1)) : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php else : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php endif ?>
+                        
                     </div>
                     <div class="card-body">        
-                        <div class="table-responsive">
+                        <div class="table-responsive">            
                             <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
@@ -67,9 +85,15 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Cutting</h6>
-                        <a class="btn btn-success float-right" href="<?= base_url('/export-data-cutting') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php if (!is_null($date1)) : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-cutting/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                        <?php else : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-cutting') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php endif ?>
+                        
                     </div>
                     <div class="card-body">
+                        
                         <div class="table-responsive" id="tabel-kain">
                             <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
                                 <thead>
@@ -139,7 +163,12 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Pola (Keluar)</h6>
-                        <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-out') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php if (!is_null($date1)) : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-out/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                        <?php else : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-out') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php endif ?>
+                        
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -187,7 +216,12 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Pola (Masuk)</h6>
-                        <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-in') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php if (!is_null($date1)) : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-in/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php else : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-in') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php endif ?>
+                        
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -282,7 +316,12 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Produk (Gesit)</h6>
-                        <a class="btn btn-success float-right" href="<?= base_url('/export-produk-gesit') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php if (!is_null($date1)) : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-gesit/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php else : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-gesit') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php endif ?>
+                       
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -323,7 +362,12 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Produk Masuk (Gudang)</h6>
-                        <a class="btn btn-success float-right" href="<?= base_url('/export-produk-masuk-lovish') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php if (!is_null($date1)) : ?>                            
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-masuk-lovish/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php else : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-masuk-lovish') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php endif ?>
+                        
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -368,12 +412,15 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
+
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
-    $(document).ready(function() {
-
-
-    });
-    
+    $('.daterange').daterangepicker();    
+    $('.daterange').change(function() {
+        $('#date').submit();
+    })
 </script>
 <?= $this->endSection() ?>

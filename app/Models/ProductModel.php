@@ -25,8 +25,24 @@ class ProductModel extends Model
         return $query->getFirstRow();
     }
 
-    public function getAllProductIn() {
-        $query = $this->db->table('products')
+    public function getAllProductIn($date1 = null, $date2=null) {
+        if (is_null($date1)) {
+            $query = $this->db->table('products')
+            ->select('products.*, model_name, product_name, color, name, price, (products.qty - SUM(IFNULL(product_logs.qty,0)) - SUM(IFNULL(reject.qty,0)) ) as stok')
+            ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->join('product_logs', 'product_logs.product_id = product_barcodes.id', 'left')
+            ->join('users', 'users.id = products.user_id')
+            ->join('reject', 'reject.barcode_id = product_logs.product_id', 'left')
+            ->where('product_logs.status', '2')
+            ->where('products.status', '1')             
+            ->groupBy('products.id')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        } else {
+            $query = $this->db->table('products')
             ->select('products.*, model_name, product_name, color, name, price, (products.qty - SUM(IFNULL(product_logs.qty,0))) as stok')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
@@ -35,10 +51,13 @@ class ProductModel extends Model
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id', 'left')
             ->join('users', 'users.id = products.user_id')
             ->where('product_logs.status', '2')
-            ->where('products.status', '1')             
+            ->where('products.status', '1')     
+            ->where('products.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')        
             ->groupBy('products.id')
             ->orderBy('created_at', 'desc')
             ->get();
+        }
+        
         return $query;
     }
 
@@ -70,8 +89,26 @@ class ProductModel extends Model
         return $query;
     }
 
-    public function getAllStockProductLovish() {
-        $query = $this->db->table('products')
+    public function getAllStockProductLovish($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $query = $this->db->table('products')
+            ->select('products.*, model_name, product_name, color, hpp, name, price, stok, stok_retur, stock_opname, stok_masuk, penjualan')
+            ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('users', 'users.id = products.user_id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->join('(SELECT id, SUM(qty) as stok FROM products WHERE status= 2 GROUP BY model_id, product_id, color_id, size) as a','products.id = a.id', 'left')
+            ->join('(SELECT product_id, SUM(qty) as stok_masuk FROM product_logs m  WHERE status = 2 AND (MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) ) GROUP BY product_id) as m','product_barcodes.id = m.product_id', 'left')
+            ->join('(SELECT product_id, SUM(qty) as stok_retur FROM product_logs WHERE status = 4 AND (MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) ) GROUP BY product_id) as r','product_barcodes.id = r.product_id', 'left')            
+            ->join('(SELECT product_id, SUM(qty) as penjualan FROM product_logs WHERE status = 3 AND (MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) ) GROUP BY product_id) as p','product_barcodes.id = p.product_id', 'left')            
+            ->join('(SELECT product_id, SUM(qty) as stock_opname FROM scan_so WHERE (MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) ) GROUP BY product_id) as so','product_barcodes.id = so.product_id', 'left')            
+            // ->where('product_barcodes.status', '2')
+            ->groupBy('model_id, product_id, color_id, size')    
+            ->orderBy('stok_masuk DESC')        
+            ->get();
+        } else {
+            $query = $this->db->table('products')
             ->select('products.*, model_name, product_name, color, hpp, name, price, stok, stok_retur, stok_masuk, penjualan')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
@@ -81,13 +118,17 @@ class ProductModel extends Model
             ->join('(SELECT product_id, SUM(qty) as stok_masuk FROM product_logs m  WHERE status=2 AND (MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) ) GROUP BY product_id) as m','products.id = m.product_id', 'left')
             ->join('(SELECT product_id, SUM(qty) as stok_retur FROM product_logs WHERE status = 4 AND (MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) ) GROUP BY product_id) as r','products.id = r.product_id', 'left')            
             ->join('(SELECT product_id, SUM(qty) as penjualan FROM product_logs WHERE status = 3 AND (MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) ) GROUP BY product_id) as p','products.id = p.product_id', 'left')            
+            ->where('products.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')        
             ->groupBy('model_id, product_id, color_id, size')            
             ->get();
+        }
+        
         return $query;
     }
 
-    public function getAllProductOut() {
-        $query = $this->db->table('products')
+    public function getAllProductOut($date1 = null, $date2 = null) {
+        if (is_null($date1)) { 
+            $query = $this->db->table('products')
             ->select('product_logs.qty as qtyy, product_logs.created_at, model_name, product_name, color, name, price, weight')
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
@@ -99,6 +140,22 @@ class ProductModel extends Model
             ->where('product_logs.qty !=','0')
             ->orderBy('created_at', 'desc')
             ->get();
+        } else {
+            $query = $this->db->table('products')
+            ->select('product_logs.qty as qtyy, product_logs.created_at, model_name, product_name, color, name, price, weight')
+            ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('users', 'users.id = products.user_id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
+            ->where('product_logs.status','2')
+            ->where('product_logs.qty !=','0')
+            ->where('products.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        }
+        
         return $query;
     }
 
@@ -214,6 +271,25 @@ class ProductModel extends Model
 
     }
 
+    public function findProductIn($id) {
+        $query = $this->db->table('products')
+            ->select('product_barcodes.id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
+            ->where('product_logs.product_id', $id)
+            ->where('product_barcodes.status', '1')
+            ->get();
+        return $query;    
+    }
+
+    public function findProductReject($id) {
+        $query = $this->db->table('product_barcodes')            
+            ->where('id', $id)
+            ->where('status', '1')
+            ->get();
+        return $query;    
+    }
+
     public function getAllVendorPenjualan() {
         $query = $this->db->table('selling_vendors')
         ->orderBy('id', 'desc')
@@ -325,6 +401,35 @@ class ProductModel extends Model
             ->orderBy('created_at', 'desc')
             ->get();
         return $query;
+    }
+
+    public function saveReject($id, $reject) {
+        $user = session()->get('user_id');
+        $this->db->query("UPDATE product_barcodes SET status = '0' WHERE id='$id' ");
+        $this->db->query("INSERT reject(barcode_id, category, user_id) VALUES('$id', '$reject', '$user') ");
+        if ($reject == 'permanent') {
+            $this->db->query("UPDATE product_logs SET qty = '1' WHERE product_id='$id' ");
+        }
+    }
+
+    public function rejectedProduct() {
+        $query = $this->db->table('reject')
+            ->select('model_name, product_name, color, reject.category, reject.date, reject.id')
+            ->join('product_barcodes', 'product_barcodes.id = reject.barcode_id')
+            ->join('products', 'products.id = product_barcodes.product_id')
+            ->join('product_types', 'product_types.id = products.product_id')
+            ->join('models', 'models.id = products.model_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->get();
+        return $query;
+    }
+
+    public function rejectIn($id) {
+        $this->db->query("DELETE FROM reject WHERE id = '$id' ");
+    }
+
+    public function setProductSO($id) {
+        $this->db->query("INSERT INTO scan_so(product_id) VALUES('$id') ");
     }
 
 }   

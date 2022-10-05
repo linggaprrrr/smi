@@ -45,6 +45,11 @@
                     break;
                 case "3": 
                         ?>
+                         <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-so') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Produk (IN)</span></a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-out') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
@@ -53,7 +58,7 @@
                         <?php
                     break;
                 case "4": 
-                        ?>
+                        ?>                        
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-shipment') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
@@ -72,6 +77,11 @@
                     break;
                 case "6": 
                         ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-lovish/penjualan') ?>">
+                                <i class="fas fa-fw fa-cart-arrow-down"></i>
+                                <span>Penjualan</span></a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/gudang-lovish/laporan') ?>">
                                 <i class="fas fa-fw fa-chart-area"></i>
