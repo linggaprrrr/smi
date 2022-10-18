@@ -129,6 +129,8 @@ class Reports extends BaseController
         $date = $this->request->getVar('dates');
         $date1 = null;
         $date2 = null;
+            
+        
         if (!is_null($date)) {
             $date = explode("-",$date);            
             $date1 = date('Y-m-d 00:00:00', strtotime($date[0]));
@@ -142,6 +144,60 @@ class Reports extends BaseController
             $productsOut = $this->productModel->getAllProductOut($date1, $date2);
             $cuttings = $this->materialModel->getAllCuttingData($date1, $date2); 
             $stokProduk = $this->productModel->getAllStockProductLovish($date1, $date2);
+            $getStok = $this->productModel->getAllStockProductLovish($date1, $date2);
+            
+            $penjualan = $this->productModel->penjualan();
+            $stok = array();
+            $selling = 0;        
+            
+            if ($getStok->getNumRows() > 0) {
+                foreach ($getStok->getResultObject() as $product) {                
+                    if ($penjualan->getNumRows() > 0) {
+                        foreach ($penjualan->getResultObject() as $sell) {                
+                            
+                            if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                                $selling = $selling + $sell->qty;                         
+                            }
+                        }        
+                        $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                        array_push($stok, [
+                            'product_id' => $product->product_id,
+                            'model_id' => $product->model_id,
+                            'product_name' => $product->product_name,
+                            'model_name' => $product->model_name,
+                            'color' => $product->color,
+                            'size' => $product->size,
+                            'stok' => $product->stok,
+                            'stok_masuk' => $product->stok_masuk,
+                            'penjualan' => $selling,
+                            'scan_in' => $product->scan_in,
+                            'stok_retur' => $product->stok_retur,
+                            'sisa' => $sisa,
+                            'hpp' => $product->hpp,
+                            'hpp_jual' => $product->hpp_jual,
+                        ]);
+                        $selling = 0;
+                    } else {
+                        $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                        array_push($stok, [
+                            'product_id' => $product->product_id,
+                            'model_id' => $product->model_id,
+                            'product_name' => $product->product_name,
+                            'model_name' => $product->model_name,
+                            'color' => $product->color,
+                            'size' => $product->size,
+                            'stok' => $product->stok,
+                            'stok_masuk' => $product->stok_masuk,
+                            'penjualan' => $selling,
+                            'scan_in' => $product->scan_in,
+                            'stok_retur' => $product->stok_retur,
+                            'sisa' => $sisa,
+                            'hpp' => $product->hpp,
+                            'hpp_jual' => $product->hpp_jual,
+                        ]);
+                    }
+                }
+            }
             $shippings = $this->shippingModel
                 ->where('created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')        
                 ->orderBy('qrcode', 'asc')
@@ -170,7 +226,59 @@ class Reports extends BaseController
             $productsIn = $this->productModel->getAllProductIn();
             $productsOut = $this->productModel->getAllProductOut();
             $cuttings = $this->materialModel->getAllCuttingData(); 
-            $stokProduk = $this->productModel->getAllStockProductLovish();
+            $getStok = $this->productModel->getAllStockProductLovish();
+            $penjualan = $this->productModel->penjualan();
+            
+            $stok = array();
+            $selling = 0;        
+            if ($getStok->getNumRows() > 0) {
+                foreach ($getStok->getResultObject() as $product) {                
+                    if ($penjualan->getNumRows() > 0) {
+                        foreach ($penjualan->getResultObject() as $sell) {                
+                            
+                            if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                                $selling = $selling + $sell->qty;                         
+                            }
+                        }        
+                        $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                        array_push($stok, [
+                            'product_id' => $product->product_id,
+                            'model_id' => $product->model_id,
+                            'product_name' => $product->product_name,
+                            'model_name' => $product->model_name,
+                            'color' => $product->color,
+                            'size' => $product->size,
+                            'stok' => $product->stok,
+                            'stok_masuk' => $product->stok_masuk,
+                            'penjualan' => $selling,
+                            'scan_in' => $product->scan_in,
+                            'stok_retur' => $product->stok_retur,
+                            'sisa' => $sisa,
+                            'hpp' => $product->hpp,
+                            'hpp_jual' => $product->hpp_jual,
+                        ]);
+                        $selling = 0;
+                    } else {
+                        $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                        array_push($stok, [
+                            'product_id' => $product->product_id,
+                            'model_id' => $product->model_id,
+                            'product_name' => $product->product_name,
+                            'model_name' => $product->model_name,
+                            'color' => $product->color,
+                            'size' => $product->size,
+                            'stok' => $product->stok,
+                            'stok_masuk' => $product->stok_masuk,
+                            'penjualan' => $selling,
+                            'scan_in' => $product->scan_in,
+                            'stok_retur' => $product->stok_retur,
+                            'sisa' => $sisa,
+                            'hpp' => $product->hpp,
+                            'hpp_jual' => $product->hpp_jual,
+                        ]);
+                    }
+                }
+            }
             $shippings = $this->shippingModel
                 ->orderBy('qrcode', 'asc')
                 ->orderBy('created_at', 'desc')
@@ -184,7 +292,7 @@ class Reports extends BaseController
                 'polaOut' => $polaOut,
                 'cuttings' => $cuttings,
                 'models' => $models,
-                'stokProduk' => $stokProduk,
+                'stokProduk' => $stok,
                 'shippings' => $shippings,
                 'date1' => $date1,  
                 'date2' => $date2,

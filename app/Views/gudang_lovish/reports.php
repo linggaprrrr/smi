@@ -5,7 +5,7 @@
     <div class="card-header py-3">
         <div class="row">
             <div class="col-xl-3">
-                <form method="GET" action="<?= base_url('/gudang-lovish/laporan') ?>" id="date" >
+                <form method="GET" action="<?= base_url('/operasional/laporan') ?>" id="date" >
                     <div class="form-group">
                         <label for="">Date Range: </label>
                         <?php if (is_null($date1)) : ?>
@@ -44,36 +44,41 @@
                                     <th class="text-center" style="width: 5%">No</th>
                                     <th class="text-center">Produk</th>                        
                                     <th class="text-center">Stok Awal</th>
-                                    <th class="text-center">Stok Masuk</th>
+                                    <th class="text-center">Stok Masuk (Gesit)</th>
+                                    <th class="text-center">Scan In</th>
                                     <th class="text-center">Stok Retur</th>
                                     <th class="text-center">Penjualan</th>
                                     <th class="text-center">Sisa Stok</th>
-                                    <th class="text-center">HPP</th>
+                                    <th class="text-center">HPP Gesit</th>
+                                    <th class="text-center">HPP Jual</th>
                                     <th class="text-center">Nilai Barang</th>
+                                    <th class="text-center">Nilai Jual</th>
                                 </tr>
                             </thead>
                             
                             <tbody>
                                 <?php $no = 1; ?>
-                                <?php if ($stokProduk->getNumRows() > 0) : ?>
-                                    <?php foreach ($stokProduk->getResultObject() as $product) : ?>
-                                        <?php $sisa = ($product->stok + $product->stok_masuk - ($product->penjualan - $product->stok_retur)) ?>
+                                <?php if (count($stokProduk) > 0) : ?>
+                                    <?php foreach ($stokProduk as $product) : ?>                                                    
                                         <tr>
-                                            <td class="text-center"><?= $no++ ?></td>
-                                            <td><?= $product->product_name ?> <?= $product->model_name ?> <?= $product->color ?></td>
-                                            <td class="text-center"><?= $product->stok ?></td>
-                                            <td class="text-center"><?= $product->stok_masuk > 0 ? $product->stok_masuk : '' ?></td>
-                                            <td class="text-center"><?= $product->stok_retur ?></td>
-                                            <td class="text-center"><?= $product->penjualan ?></td>
-                                            <?php if ($sisa > 20) : ?>
-                                                <td class="text-center"><?= $sisa ?></td>                                        
-                                            <?php elseif ($sisa > 10 && $sisa < 20): ?>
-                                                <td class="text-center table-warning"><?= $sisa ?></td>                                                                                
+                                            <td class="text-center align-middle"><?= $no++ ?></td>
+                                            <td><?= $product['product_name'] ?> <?= $product['model_name'] ?> <?= $product['color'] ?></td>
+                                            <td class="text-center align-middle"><?= $product['stok'] > 0 ? $product['stok'] : '-' ?></td>
+                                            <td class="text-center align-middle"><?= $product['stok_masuk'] > 0 ? $product['stok_masuk'] : '-' ?></td>
+                                            <td class="text-center align-middle"><?= $product['scan_in'] > 0 ? $product['scan_in'] : '-' ?></td>
+                                            <td class="text-center align-middle"><?= $product['stok_retur'] > 0 ? $product['stok_retur'] : '-' ?></td>
+                                            <td class="text-center align-middle"><?= $product['penjualan'] > 0 ? $product['penjualan'] : '-' ?></td>
+                                            <?php if ($product['sisa'] > 20) : ?>
+                                                <td class="text-center align-middle"><?= $product['sisa'] ?></td>                                        
+                                            <?php elseif ($product['sisa'] > 10 && $product['sisa'] < 20): ?>
+                                                <td class="text-center align-middle table-warning"><?= $product['sisa'] ?></td>                                                                                
                                             <?php else : ?>
-                                                <td class="text-center table-danger"><?= $sisa ?></td>                                        
+                                                <td class="text-center align-middle table-danger"><?= $product['sisa'] ?></td>                                        
                                             <?php endif ?>
-                                            <td class="text-center">Rp <?= number_format($product->hpp, 0) ?></td>
-                                            <td class="text-center">Rp <?= number_format(($product->hpp * $sisa), 0) ?></td>
+                                            <td class="text-center align-middle">Rp <?= number_format($product['hpp'], 0) ?></td>
+                                            <td class="text-center align-middle"><input type="text" name="hpp-jual" data-id="<?= $product['product_id'] ?>" data-model="<?= $product['model_id'] ?>" data-size="<?= $product['size'] ?>" class="form-control hpp-jual" value="<?= $product['hpp_jual'] ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled></td>
+                                            <td class="text-center align-middle">Rp <?= number_format(($product['hpp'] * $product['sisa']), 0) ?></td>                            
+                                            <td class="text-center align-middle">Rp <?= number_format(($product['hpp_jual'] * $product['sisa']), 0) ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php endif ?>

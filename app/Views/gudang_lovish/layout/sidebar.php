@@ -6,7 +6,7 @@
     <div class="sidebar-brand-icon">
         <i class="fas fa-store"></i>
     </div>
-    <div class="sidebar-brand-text mx-2">Gudang</div>
+    <div class="sidebar-brand-text mx-2">Operasional</div>
 </a>
 
 <!-- Divider -->
@@ -14,7 +14,7 @@
 
 <!-- Nav Item - Dashboard -->
 <li class="nav-item active">
-    <a class="nav-link" href="<?= base_url('/gudang-lovish/dashboard') ?>">
+    <a class="nav-link" href="<?= base_url('/operasional/dashboard') ?>">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Dashboard</span></a>
 </li>
@@ -29,12 +29,12 @@
                 case "1": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/produk') ?>">
+                            <a class="nav-link" href="<?= base_url('/operasional/produk') ?>">
                                 <i class="fas fa-fw fa-tshirt"></i>
                                 <span>Produk</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/stok-produk') ?>">
+                            <a class="nav-link" href="<?= base_url('/operasional/stok-produk') ?>">
                                 <i class="fas fa-fw fa-cubes"></i>
                                 <span>Stok Produk</span></a>
                         </li>
@@ -46,21 +46,26 @@
                 case "3": 
                         ?>
                          <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-so') ?>">
+                            <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-so') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Produk (IN)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-out') ?>">
+                            <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-out') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Produk (OUT)</span></a>
-                        </li>
+                        </li> 
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-so-bulanan') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Produk (SO)</span></a>
+                        </li>                     
                         <?php
                     break;
                 case "4": 
                         ?>                        
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-shipment') ?>">
+                            <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-shipment') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Pengiriman</span></a>
                         </li>
@@ -69,21 +74,26 @@
                 case "5": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/qr-scanner-product-in') ?>">
+                            <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-retur') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
-                                <span>QR Scanner Retur (IN)</span></a>
+                                <span>QR Scanner Retur</span></a>
                         </li>
                         <?php
                     break;
                 case "6": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/penjualan') ?>">
+                            <a class="nav-link" href="<?= base_url('/operasional/penjualan') ?>">
                                 <i class="fas fa-fw fa-cart-arrow-down"></i>
                                 <span>Penjualan</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-lovish/laporan') ?>">
+                            <a class="nav-link" href="<?= base_url('/operasional/stock-opname') ?>">
+                                <i class="fas fa-fw fa-list"></i>
+                                <span>Stock Opname</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/operasional/laporan') ?>">
                                 <i class="fas fa-fw fa-chart-area"></i>
                                 <span>Laporan</span></a>
                         </li>

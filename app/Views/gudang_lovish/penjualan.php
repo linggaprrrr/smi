@@ -15,7 +15,7 @@
         <div class="modal fade export-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form action="<?= base_url('/import-product') ?>" method="post" enctype="multipart/form-data">                    
+                    <form action="<?= base_url('/import-penjualan') ?>" method="post" enctype="multipart/form-data">                    
                     <?php csrf_field() ?>
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Import Penjuelan</h5>
@@ -52,19 +52,32 @@
                         <th class="text-center">Tanggal</th>                        
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
-                        <th class="text-center">Warna</th>                        
-                        <th class="text-center">Qty</th>                        
-                        <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
+                        <th class="text-center">Warna</th>  
+                        <th class="text-center">Size</th>  
+                        <th class="text-center">Qty</th>   
+                        <th class="text-center">Brand</th>             
                     </tr>
                 </thead>
                 
                 <tbody>
                     <?php $no = 1; ?>
-                    
+                    <?php if ($sellings->getNumRows() > 0) : ?>
+                        <?php foreach($sellings->getResultObject() as $product) : ?>
+                            <tr>
+                                <td class="text-center"><?= $no++ ?></td>
+                                <td class="text-center"><?= date('m/d/Y', strtotime($product->created_at)) ?></td>
+                                <td class="text-center"><?= $product->product_name ?></td>
+                                <td class="text-center"><?= $product->model_name ?></td>
+                                <td class="text-center"><?= $product->color ?></td>
+                                <td class="text-center"><?= $product->size ?></td>
+                                <td class="text-center"><?= $product->qty ?></td>
+                                <td class="text-center"><?= $product->brand ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php endif ?>
                 </tbody>
             </table>
-        </div>
-        
+        </div>        
     </div>
 </div>
 
@@ -75,6 +88,14 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
+    var input = document.getElementById('file-upload');
+    var infoArea = document.getElementById('file-upload-filename');
+    input.addEventListener('change', showFileName);
 
+    function showFileName(event) {
+        var input = event.srcElement;
+        var fileName = input.files[0].name;
+        infoArea.textContent = '' + fileName;
+    }
 </script>
 <?= $this->endSection() ?>

@@ -33,6 +33,62 @@ class Home extends BaseController
         $productsRetur = $this->productModel->productsRetur();
         $productsExp = $this->productModel->getStokProductExp();
         $productLovish = $this->productModel->getAllStockProductLovish();
+        $getStok = $this->productModel->getAllStockProductLovish();
+        $penjualan = $this->productModel->penjualan();
+        $stok = array();
+        $selling = 0;        
+        $totalNilaiBarang = 0;
+        $totalNilaiBarangJual = 0;
+        if ($getStok->getNumRows() > 0) {
+            foreach ($getStok->getResultObject() as $product) {                
+                if ($penjualan->getNumRows() > 0) {
+                    foreach ($penjualan->getResultObject() as $sell) {                
+                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                            $selling = $selling + $sell->qty;                         
+                        }
+                    }        
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                                               
+                    $selling = 0;
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                } else {
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                   
+                }
+                $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa);
+                $totalNilaiBarangJual = $totalNilaiBarangJual + ($product->hpp_jual * $sisa);
+            }
+        }
         $totalGudang = $this->productModel
             ->select('SUM(qty) as stok')
             ->where('status', '2')
@@ -134,7 +190,9 @@ class Home extends BaseController
             'productsIn' => $productsIn,
             'productsOut' => $productsOut,
             'productsExp' => $productsExp,
-            'productLovish' => $productLovish,
+            'productLovish' => $stok,
+            'totalNilaiBarang' => $totalNilaiBarang,
+            'totalNilaiBarangJual' => $totalNilaiBarangJual,
             'productsRetur' => $productsRetur,
             'shippings' => $shippings,
             'totalGesit' => $totalGesit['qty'],
@@ -158,6 +216,7 @@ class Home extends BaseController
         $productsRetur = $this->productModel->productsRetur();
         $productsExp = $this->productModel->getStokProductExp();
         $productLovish = $this->productModel->getAllStockProductLovish();
+        $top10 = $this->productModel->getTop10();
         $totalGudang = $this->productModel
             ->select('SUM(qty) as stok')
             ->where('status', '2')
@@ -188,13 +247,15 @@ class Home extends BaseController
             ->join('models', 'models.id = products.model_id')
             ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
-            ->join('product_logs', 'product_logs.product_id = products.id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
             ->where('product_logs.status', '2')
             ->where('product_logs.qty > ', '0')
             ->where('MONTH(product_logs.created_at) = MONTH(CURRENT_DATE())')
             ->where('YEAR(product_logs.created_at) = YEAR(CURRENT_DATE())')
             ->groupBy('model_id, product_logs.product_id, color_id, size')   
             ->get();
+        
         $shippings = $this->shippinglModel
             ->select('shippings.*, shipping_details.product_id')
             ->join('shipping_details', 'shipping_details.shipping_id = shippings.id')
@@ -203,11 +264,63 @@ class Home extends BaseController
             ->groupBy('shippings.id')
             ->get();
         $getStok = $this->productModel->getAllStockProductLovish();
+        $penjualan = $this->productModel->penjualan();
+        $stok = array();
+        $selling = 0;        
         $totalNilaiBarang = 0;
-        foreach ($getStok->getResultObject() as $product) {
-            $sisa = ($product->stok + $product->stok_masuk - ($product->penjualan - $product->stok_retur));
-            $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa);
+        $totalNilaiBarangJual = 0;
+        if ($getStok->getNumRows() > 0) {
+            foreach ($getStok->getResultObject() as $product) {                
+                if ($penjualan->getNumRows() > 0) {
+                    foreach ($penjualan->getResultObject() as $sell) {                
+                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                            $selling = $selling + $sell->qty;                         
+                        }
+                    }        
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                                               
+                    $selling = 0;
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                } else {
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                   
+                }
+                $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa);
+                $totalNilaiBarangJual = $totalNilaiBarangJual + ($product->hpp_jual * $sisa);
+            }
         }
+        
+    
         
         $data = array(
             'title' => 'Dashboard',
@@ -218,10 +331,12 @@ class Home extends BaseController
             'productsIn' => $productsIn,
             'productsOut' => $productsOut,
             'productsExp' => $productsExp,
-            'productLovish' => $productLovish,
+            'productLovish' => $stok,
             'productsRetur' => $productsRetur,
             'shippings' => $shippings,
-            'totalNilaiBarang' => $totalNilaiBarang
+            'totalNilaiBarang' => $totalNilaiBarang,
+            'totalNilaiBarangJual' => $totalNilaiBarangJual,
+            'top10' => $top10
         );
         return view('gudang_lovish/dashboard', $data);
     }
@@ -265,18 +380,20 @@ class Home extends BaseController
             ->where('MONTH(tgl_setor) = MONTH(CURRENT_DATE())')
             ->where('YEAR(tgl_setor) = YEAR(CURRENT_DATE())')
             ->first();
-        $totalGesit = $this->productModel
-            ->select('products.qty - SUM(IFNULL(product_logs.qty,0)) as qty')
-            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-            ->join('product_logs', 'product_logs.product_id = product_barcodes.id', 'left')
-            ->first();
+        $totalGesit = $this->productModel->totalGesit();
+        $totalGesit = $totalGesit->getResultArray();        
+        if (count($totalGesit) > 0) {
+            $totalGesit = $totalGesit[0]['stok'];
+        } else {
+            $totalGesit = 0;
+        }
         $materials = $this->materialModel->getStokMaterialIn();
         $productsIn = $this->productModel->getStokProductIn(); 
         $productsOut = $this->productModel->getStokProductOut();           
         $models = $this->designModel->getAllModel();
         $data = array(
             'title' => 'Dashboard',
-            'totalGesit' => $totalGesit['qty'],
+            'totalGesit' => $totalGesit,
             'totalKainGesit' => $totalKainGesit['total_kain'],
             'totalKainGesitMonth' => $totalKainGesitMonth['total_kain_month'],
             'totalCutting' => $totalCutting['total_cutting'],

@@ -221,20 +221,25 @@
                     <?php $no = 1; ?>
                     <?php if ($rejectedProducts->getNumRows() > 0) : ?>
                         <?php foreach ($rejectedProducts->getResultObject() as $product) : ?>
-                            <tr>
-                                <td class="text-center"><?= $no++ ?></td>
-                                <td><div><?= $product->product_name ?></div></td>
-                                <td class="text-center"><?= $product->model_name ?></td>                                
-                                <td class="text-center"><?= $product->color ?></td>                         
-                                <td class="text-center"><?= strtoupper($product->category) ?></td>       
-                                <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td>
-                                <?php if ($product->category != 'permananent') :?>
-                                    <td class="text-center"><a href="" data-toggle="modal"  class="reject-in" data-id="<?= $product->id ?>" ><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a></td>
-                                <?php else : ?>
-                                    <td></td>
-                                <?php endif ?>
+                            <?php if ($product->status == '1') : ?>
+                                <tr>
+                                    <td class="text-center"><?= $no++ ?></td>
+                                    <td><div><?= $product->product_name ?></div></td>
+                                    <td class="text-center"><?= $product->model_name ?></td>                                
+                                    <td class="text-center"><?= $product->color ?></td>                         
+                                    <td class="text-center"><?= strtoupper($product->category) ?></td>       
+                                    <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td>
+                                    <?php if ($product->category != 'permananent') :?>
+                                        <td class="text-center">
+                                            <a href="" data-toggle="modal"  class="reject-in" data-id="<?= $product->id ?>" ><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a>
+                                            <a href="" data-toggle="modal"  class="reject-permanent" data-id="<?= $product->id ?>" ><i class="fa fa-trash fa-lg text-danger"></i></a>
+                                        </td>                                        
+                                    <?php else : ?>
+                                        <td></td>
+                                    <?php endif ?>
 
-                            </tr>
+                                </tr>
+                            <?php endif ?>                            
                         <?php endforeach ?>
                     <?php endif ?>
                 </tbody>
@@ -277,7 +282,30 @@
                 }
             });
         })
-     
+        
+        $(document).on('click', '.reject-permanent', function() {
+            const id = $(this).data('id');
+            swal({
+                    title: "Reject Pemanent?",
+                    text: "Data yang anda hapus tidak akan kembali lagi",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Data berhasil dihapus!", {
+                    icon: "success",
+                    });                                
+                    $.post('/reject-permanent', {product_id: id})
+                        .done(function(data) {
+                            setTimeout(location.reload.bind(location), 1000);
+                        });
+                } else {
+                    swal("Data tidak jadi dihapus!");
+                }
+            });
+        })
 
         $('.jenis-produk').on('change', function() {
             const id = $(this).data('id');

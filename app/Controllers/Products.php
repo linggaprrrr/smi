@@ -34,12 +34,62 @@ class Products extends BaseController
         $colors = $this->materialModel->getAllColors();
         $products = $this->productModel->getAllProduct();
         $vendors = $this->productModel->getAllVendorPenjualan();
-        $products = $this->productModel->getAllStockProductLovish();
+        $penjualan = $this->productModel->penjualan();
+        $getStok = $this->productModel->getAllStockProductLovish();
+        $stok = array();
+        $selling = 0;        
+        if ($getStok->getNumRows() > 0) {
+            foreach ($getStok->getResultObject() as $product) {                
+                if ($penjualan->getNumRows() > 0) {
+                    foreach ($penjualan->getResultObject() as $sell) {                
+                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                            $selling = $selling + $sell->qty;                         
+                        }
+                    }        
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                    $selling = 0;
+                } else {
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                }
+            }
+        }
         
         $data = array(
             'title' => 'Produk',
             'models' => $models,
-            'products' => $products,
+            'products' => $stok,
             'colors' => $colors,
             'vendors' => $vendors
         );
@@ -466,6 +516,17 @@ class Products extends BaseController
         echo json_encode($hpp);
     }
 
+    public function gudangReject() {
+        $rejectedProducts = $this->productModel->listReject();
+        $rejectedSold = $this->productModel->rejectedSold();
+        $data = array(
+            'title' => 'Produk Reject',
+            'rejectedProducts' => $rejectedProducts,
+            'rejectedSold' => $rejectedSold
+        );
+        return view('gudang_gesit/gudang_reject', $data);    
+    }
+
     // gudang 
     public function gudangProduk() {               
         $productsIn = $this->productModel->getAllProductLovish();        
@@ -563,23 +624,75 @@ class Products extends BaseController
                 $productId = $this->productModel->insertID();        
                 for ($i=0; $i < $row[2]; $i++) {
                     $temp = $this->productModel->createBarcode($productId);
-                    $this->productModel->createLog($productId, '0', '2');
+                    $this->productModel->createLog($temp, '0', '2');
                 }                       
             }
         }
         return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
     }
 
+
     public function gudangLovishStokProduk() {
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $vendors = $this->productModel->getAllVendorPenjualan();
         $products = $this->productModel->getAllStockProductLovish();
-        
+        $penjualan = $this->productModel->penjualan();
+        $stok = array();
+        $selling = 0;        
+        if ($products->getNumRows() > 0) {
+            foreach ($products->getResultObject() as $product) {                
+                if ($penjualan->getNumRows() > 0) {
+                    foreach ($penjualan->getResultObject() as $sell) {                
+                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                            $selling = $selling + $sell->qty;                         
+                        }
+                    }        
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                    $selling = 0;
+                } else {
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                }
+            }
+        }
+                
+
         $data = array(
             'title' => 'Produk',
             'models' => $models,
-            'products' => $products,
+            'products' => $stok,
             'colors' => $colors,
             'vendors' => $vendors
         );
@@ -587,8 +700,9 @@ class Products extends BaseController
     }
 
     public function simpanReject() {
-        $id = $this->request->getVar('product');
+        $id = $this->request->getVar('id');
         $reject = $this->request->getVar('reject');
+        
         $check = $this->productModel->findProductReject($id);
         $status = 0;
         
@@ -596,6 +710,7 @@ class Products extends BaseController
             $status = 1;
             $this->productModel->saveReject($id, $reject);    
         }
+        
         echo json_encode($status);
         
     }
@@ -603,6 +718,117 @@ class Products extends BaseController
     public function rejectIn() {
         $id = $this->request->getVar('id');
         $this->productModel->rejectIn($id);
+    }
+
+    public function rejectPermanent() {
+        $id = $this->request->getVar('product_id');
+        $this->productModel->rejectPermanent($id);
+    }
+    
+    public function stockOpname() {
+        $models = $this->designModel->getAllModel();
+        $colors = $this->materialModel->getAllColors();
+        $vendors = $this->productModel->getAllVendorPenjualan();
+        $products = $this->productModel->getAllStockProductLovish();
+        $penjualan = $this->productModel->penjualan();
+        $stok = array();
+        $selling = 0;        
+        if ($products->getNumRows() > 0) {
+            foreach ($products->getResultObject() as $product) {                
+                if ($penjualan->getNumRows() > 0) {
+                    foreach ($penjualan->getResultObject() as $sell) {                
+                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                            $selling = $selling + $sell->qty;                         
+                        }
+                    }        
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                    $selling = 0;
+                } else {
+                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    array_push($stok, [
+                        'product_id' => $product->product_id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling,
+                        'scan_in' => $product->scan_in,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                }
+            }
+        }
+                
+        $data = array(
+            'title' => 'Stok Produk',
+            'models' => $models,
+            'products' => $stok,
+            'colors' => $colors,
+            'vendors' => $vendors
+        );
+        return view('gudang_lovish/stock_opname', $data);    
+    }
+
+    public function exportProductReject($date1 = null, $date2 = null) {
+        
+        if (is_null($date1)) {
+            $products = $this->productModel->getAllProductReject();
+        } else {
+            $products = $this->productModel->getAllProductReject($date1, $date2);
+        }
+        $date = time();
+        $fileName = "Data Product Reject {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Tanggal Reject');
+		$sheet->setCellValue('C1', 'Produk');
+        $sheet->setCellValue('D1', 'Keterangan');
+        $i = 2;
+        $no = 1;
+        foreach($products->getResultObject() as $row) {
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $row->date);
+            $sheet->setCellValue('C' . $i, $row->product_name .' '.$row->model_name.' '.$row->color);            
+            $sheet->setCellValue('D' . $i, strtoupper($row->category));
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save("file/". $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize("file/". $fileName));
+		flush();
+		readfile("file/". $fileName);
+		exit;
     }
 
 }

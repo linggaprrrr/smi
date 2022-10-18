@@ -5,44 +5,10 @@
 <div class="row">
     <div class="col-lg-6">
         <div class="wrapper">
-            <div>
-                
+            <div>                
                 <div>
-                    <!-- <h6>Scanned: </h6> -->
-         
-                <div class="modal fade bd-example-modal-lg" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <form id="simpan-reject">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Kategori Reject</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">        
-                                    <input type="hidden" name="product" id="product-id">                        
-                                    <div class="form-group">
-                                        <select name="reject" class="form-control" id="">
-                                            <option value="noda">Reject Noda</option>
-                                            <option value="jahit">Reject Jahit</option>
-                                            <option value="permanent">Reject Permanent</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <div id="video-wrapper" style="text-align: -webkit-center">                    
-                                            <div id="qr-reader" style="width: 300px"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary button-close" data-dismiss="modal">Close</button>
-                                    
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                    <!-- <h6>Scanned: </h6> -->        
+                            
                 <div id="scanned"></div>
                 </div>
             </div>
@@ -73,10 +39,25 @@
         
     </div>
     <div class="col-lg-12">
+    <form id="simpan-reject">
+    <input type="hidden" name="product" id="product-id">                        
+                                    <div class="form-group">
+                                        <select name="reject" class="form-control reject-stat" >
+                                            <option value="noda">Reject Noda</option>
+                                            <option value="jahit">Reject Jahit</option>
+                                            <option value="permanent">Reject Permanent</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <div id="video-wrapper" style="text-align: -webkit-center">                    
+                                            <div id="qr-reader" style="width: 300px"></div>
+                                        </div>
+                                    </div>
+                            </form>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-danger float-left">Daftar Produk yang di-reject</h6>
-                <button class="btn btn-secondary float-right scan-reject"><i class="fas fa-fw fa-qrcode mr-2"></i>Scan Reject</button>
+                <!-- <button class="btn btn-secondary float-right scan-reject"><i class="fas fa-fw fa-qrcode mr-2"></i>Scan Reject</button> -->
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -88,8 +69,7 @@
                                 <th class="text-center">Model</th>
                                 <th class="text-center">Warna</th>
                                 <th class="text-center">Reject</th>
-                                <th class="text-center">Tanggal</th>
-                                <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
+                                <th class="text-center">Tanggal</th>                                
                             </tr>
                         </thead>
                         
@@ -103,13 +83,7 @@
                                         <td class="text-center"><?= $product->model_name ?></td>                                
                                         <td class="text-center"><?= $product->color ?></td>                         
                                         <td class="text-center"><?= strtoupper($product->category) ?></td>       
-                                        <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td>
-                                        <?php if ($product->category != 'permananent') :?>
-                                            <td class="text-center"><a href="" data-toggle="modal"  class="reject-in" data-id="<?= $product->id ?>" ><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a></td>
-                                        <?php else : ?>
-                                            <td></td>
-                                        <?php endif ?>
-
+                                        <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td>                                        
                                     </tr>
                                 <?php endforeach ?>
                             <?php endif ?>
@@ -137,16 +111,17 @@
             ++countResults;
             lastResult = decodedText;
             $.post('/reject-in-scanning', {qr: qr}, function(data) {            
-                const stat = JSON.parse(data);
+                const stat = JSON.parse(data);               
+                const reject =  $('.reject-stat').val();
                 audio.play();   
                 if (stat == '1') {
-                    $.notify(kode[1] +' '+ kode[2] +' berhasil di-scan!', "success");                     
-                    $('#product-id').val(kode[0]);
-                    $('#rejectModal').modal('show');                    
+                    $.notify(kode[1] +' '+ kode[2] +' berhasil di-scan!', "success");  
+                    $.post('/simpan-reject', {id: kode[0], reject: reject}, function(data) {
+                        const res = JSON.parse(data);                    
+                    });                                                                
                 } else {
                     $.notify("Warning: Produk tidak ada atau sudah masuk reject!", "warn");
-                }
-                
+                }                
             }); 
             
         }
@@ -177,6 +152,7 @@
 
     $('.button-close').click(function() {
         lastResult = 0;
+        location.reload();
     });
 
 </script>

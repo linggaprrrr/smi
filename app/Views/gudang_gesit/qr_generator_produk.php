@@ -26,7 +26,7 @@
         </div>
         <div class="card-body">        
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTableProdukPrint" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
@@ -88,7 +88,7 @@
                 </div>
                 <div class="modal-body" id="print-area" style="align-self: center; margin-top: -5px">
                     <div style="align-self: center; margin-top: -5px">
-                        <table class="text-center"">  
+                        <table class="text-center">  
                             <thead>
                                 <tr>
                                     <th></th>
@@ -139,7 +139,7 @@
         </div>
         <div class="card-body">        
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTableProdukPrintGudang" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
@@ -192,6 +192,70 @@
         </div>
     </div>
 </form>
+<form id="generate-qr-reject">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Produk Reject</h6>
+            <button type="submit" id="print-qr-reject" class="btn btn-primary float-right"><i class="fa fa-qrcode mr-2"></i>Print</button>
+        </div>
+        <div class="card-body">        
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Produk</th>
+                                <th class="text-center">Model</th>
+                                <th class="text-center">Warna</th>
+                                <th class="text-center">Berat (gr)</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-center">Tanggal Masuk</th>
+                                <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all-gudang" /></th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php if ($productReject->getNumRows() > 0) : ?>
+                                <?php foreach ($productReject->getResultObject() as $product) : ?>
+                                    <?php if ($product->status != '3') : ?> 
+                                        <?php if (is_null($product->qr) || empty($product->qr)) :?>
+                                            <tr>
+                                                <td class="text-center"><?= $no++ ?></td>
+                                                <td class=""><?= $product->product_name ?></td>
+                                                <td class=""><?= $product->model_name ?></td>
+                                                <td><?= $product->color ?></td>
+                                                <td><?= $product->weight ?></td>                                    
+                                                <td class="text-center"><?= $product->qty ?></td>
+                                                <td class="text-center"><?= $product->date ?></td>
+                                                <td class="text-center">
+                                                    <input type="checkbox" class="unprinted-gudang" name="print[]" value="<?= $product->id ?>" />
+                                                </td>
+                                            </tr>
+                                        <?php else: ?>
+                                            <tr class="table-secondary">
+                                                <td class="text-center"><?= $no++ ?></td>
+                                                <td class=""><?= $product->product_name ?></td>
+                                                <td class=""><?= $product->model_name ?></td>
+                                                <td><?= $product->color ?></td>
+                                                <td><?= $product->weight ?></td>    
+                                                <td class="text-center"><?= $product->qty ?></td>                                
+                                                <td class="text-center"><?= $product->date ?></td>
+                                                <td class="text-center">
+                                                    <input type="checkbox" class="printed-gudang" name="print[]" value="<?= $product->id ?>" />
+                                                </td>
+                                            </tr>
+                                        <?php endif ?>
+                                    <?php endif ?>
+                                    
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </div>
+</form>
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
 <script>
@@ -199,6 +263,39 @@
         $('form#generate-qr').on('submit', function (e) {
             e.preventDefault();
             $.post('/generate-qr-produk', $('form#generate-qr').serialize(), function(data) {
+                const qr = JSON.parse(data);
+                var id = 1;                                                
+                $('#qr-handler').html("");
+                for (var i = 0; i < qr.length; i++) {                    
+                    $('#qr-handler').append('<tr>');
+                        if (qr.length - i >= 3) {    
+                            const desc1 = qr[i]['key'].split("-");
+                            const desc2 = qr[i+1]['key'].split("-");
+                            const desc3 = qr[i+2]['key'].split("-");     
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'<br>'+desc1[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px; width: 158px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'<br>'+desc2[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i+2]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc3[1]+'<br>'+desc3[2]+'<br>'+desc3[3]+'</small></td>');
+                            i += 2;
+                        } else if (qr.length - i == 2) {
+                            const desc1 = qr[i]['key'].split("-");
+                            const desc2 = qr[i+1]['key'].split("-");                            
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'<br>'+desc1[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px; width: 158px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'<br>'+desc2[3]+'</small></td>');
+                            i += 1;
+                        } else {
+                            const desc1 = qr[i]['key'].split("-");
+                            $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'<br>'+desc1[3]+'</small></td>');
+                        }
+                    $('#qr-handler').append('</tr>');
+                }
+                $('#qr-modal').modal({backdrop: 'static', keyboard: false});
+                $('#qr-modal').modal('show');
+            });
+        });
+
+        $('form#generate-qr-reject').on('submit', function (e) {
+            e.preventDefault();
+            $.post('/generate-qr-produk', $('form#generate-qr-reject').serialize(), function(data) {
                 const qr = JSON.parse(data);
                 var id = 1;                                                
                 $('#qr-handler').html("");

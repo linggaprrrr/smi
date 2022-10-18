@@ -108,6 +108,11 @@
                                 <i class="fas fa-fw fa-chart-area"></i>
                                 <span>Laporan</span></a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/gudang-reject') ?>">
+                                <i class="fas fa-fw fa fa-list"></i>
+                                <span>Gudang Reject</span></a>
+                        </li>
                         <?php
                     break;
                 

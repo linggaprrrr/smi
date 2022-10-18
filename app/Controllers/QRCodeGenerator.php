@@ -87,10 +87,23 @@ class QRCodeGenerator extends BaseController
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $productReject = $this->produkModel->select('products.id, weight, size, reject.qty, reject.date, reject.status, model_name, product_name, color, name, product_barcodes.qrcode as qr')
+            ->join('models', 'models.id = products.model_id')
+            ->join('product_types', 'product_types.id = product_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('users', 'users.id = products.user_id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->join('reject', 'reject.barcode_id = product_barcodes.id')            
+            ->groupBy('products.id')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+            
         $data = array(
             'title' => 'QR Generator - Produk',
             'products' => $products,
-            'productsGudang' => $productsGudang
+            'productsGudang' => $productsGudang,
+            'productReject' => $productReject,
             
         );
         return view('gudang_gesit/qr_generator_produk', $data);    
@@ -220,9 +233,23 @@ class QRCodeGenerator extends BaseController
 
     public function scannerProductSO() {
         $data = array(
-            'title' => 'QR Scanner Produk SO'
+            'title' => 'QR Scanner Produk IN'
         );
         return view('gudang_lovish/qr_scanner_so', $data);    
+    }
+
+    public function scannerProductSOMonth() {
+        $data = array(
+            'title' => 'QR Scanner Produk SO'
+        );
+        return view('gudang_lovish/qr_scanner_so_bulanan', $data);    
+    }
+
+    public function scannerProductSOReplace() {
+        $data = array(
+            'title' => 'QR Scanner Produk SO'
+        );
+        return view('gudang_lovish/qr_scanner_so_replace', $data);    
     }
 
     public function scannerProductOut() {
@@ -387,6 +414,32 @@ class QRCodeGenerator extends BaseController
         if ($getProduct->getNumRows() > 0) {
             $status = '1'; 
             $this->produkModel->setProductSO($qr[0]);
+        }
+        echo json_encode($status);
+    }
+
+    public function scanningProductSOMonth() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $getProduct = $this->produkModel->findProductOut($qr[0]);
+        $status = '0';
+        if ($getProduct->getNumRows() > 0) {
+            $status = '1'; 
+            $this->produkModel->setProductSOMonth($qr[0]);
+        }
+        echo json_encode($status);
+    }
+
+    public function scanningProductSOReplace() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $getProduct = $this->produkModel->findProductOut($qr[0]);
+        $status = '0';
+        if ($getProduct->getNumRows() > 0) {
+            $status = '1'; 
+            $this->produkModel->setProductSOReplace($qr[0]);
         }
         echo json_encode($status);
     }

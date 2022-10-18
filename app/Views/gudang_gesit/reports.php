@@ -41,7 +41,7 @@
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Kain Masuk</h6>
                         <?php if (!is_null($date1)) : ?>
-                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php else : ?>
                             <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php endif ?>
@@ -86,7 +86,7 @@
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Cutting</h6>
                         <?php if (!is_null($date1)) : ?>
-                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-cutting/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-cutting/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
                         <?php else : ?>
                             <a class="btn btn-success float-right" href="<?= base_url('/export-data-cutting') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php endif ?>
@@ -164,7 +164,7 @@
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Pola (Keluar)</h6>
                         <?php if (!is_null($date1)) : ?>
-                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-out/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-out/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
                         <?php else : ?>
                             <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-out') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php endif ?>
@@ -217,7 +217,7 @@
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Pola (Masuk)</h6>
                         <?php if (!is_null($date1)) : ?>
-                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-in/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-in/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php else : ?>
                             <a class="btn btn-success float-right" href="<?= base_url('/export-data-pola-in') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php endif ?>
@@ -317,7 +317,7 @@
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Produk (Gesit)</h6>
                         <?php if (!is_null($date1)) : ?>
-                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-gesit/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-gesit/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php else : ?>
                             <a class="btn btn-success float-right" href="<?= base_url('/export-produk-gesit') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php endif ?>
@@ -363,7 +363,7 @@
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Produk Masuk (Gudang)</h6>
                         <?php if (!is_null($date1)) : ?>                            
-                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-masuk-lovish/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date1))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-masuk-lovish/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php else : ?>
                             <a class="btn btn-success float-right" href="<?= base_url('/export-produk-masuk-lovish') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php endif ?>
@@ -393,6 +393,51 @@
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
                                                 <td><?= $product->weight ?></td>
+                                                <td class="text-center"><?= $product->created_at ?></td>
+                                                
+                                            </tr>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary float-left">Data Produk Reject</h6>
+                        <?php if (!is_null($date1)) : ?>                            
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-reject/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php else : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-reject') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php endif ?>
+                        
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 5%">No</th>
+                                        <th class="text-center">Nama Produk</th>
+                                        <th class="text-center">Model</th>
+                                        <th class="text-center">Warna</th>
+                                        <th class="text-center">Keterangan</th>
+                                        <th class="text-center">Tanggal</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    <?php $no = 1; ?>
+                                    <?php if ($productsOut->getNumRows() > 0) : ?>
+                                        <?php foreach ($productsOut->getResultObject() as $product) : ?>
+                                            <tr>
+                                                <td class="text-center"><?= $no++ ?></td>
+                                                <td><?= $product->product_name ?></td>
+                                                <td class="text-center"><?= $product->model_name ?></td>
+                                                <td><?= $product->color ?></td>
+                                                <td><?= $product->category ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
                                             </tr>

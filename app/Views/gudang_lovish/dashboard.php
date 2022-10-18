@@ -94,6 +94,22 @@
             </div>
         </div>
     </div>
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Nilai Barang Jual <mark>(<?= date('F') ?>)</mark></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rp. <?= (is_null($totalNilaiBarangJual) ? "0" : number_format($totalNilaiBarangJual, 0, ',', '.')) ?></div>
+                    </div>
+                    <div class="col-auto"> 
+                        <i class="fas fa-money-bill fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="row">
     <div class="col-lg-6">
@@ -117,21 +133,21 @@
                         
                         <tbody>
                             <?php $no = 1; ?>
-                            <?php if ($productLovish->getNumRows() > 0) : ?>
-                                <?php foreach ($productLovish->getResultObject() as $product) : ?>
-                                    <?php $sisa =  ($product->stok + $product->stok_masuk - ($product->penjualan - $product->stok_retur)) ?>
+                            <?php if (count($productLovish) > 0) : ?>
+                                <?php foreach ($productLovish as $product) : ?>
+                                    
                                     <tr class="">
                                         <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $product->product_name ?></td>
-                                        <td><?= $product->model_name ?></td>
-                                        <td><?= $product->color ?></td>
-                                        <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
-                                    <?php if ($sisa > 20) : ?>
-                                        <td class="text-center"><?= $sisa ?></td>                                        
-                                    <?php elseif ($sisa > 10 && $sisa < 20): ?>
-                                        <td class="text-center table-warning"><?= $sisa ?></td>                                                                                
+                                        <td><?= $product['product_name'] ?></td>
+                                        <td><?= $product['model_name'] ?></td>
+                                        <td><?= $product['color'] ?></td>
+                                        <td class="text-center"><?= is_null($product['size']) ? '-' : $product['size'] ?></td>
+                                    <?php if ($product['sisa'] > 20) : ?>
+                                        <td class="text-center"><?= $product['sisa'] ?></td>                                        
+                                    <?php elseif ($product['sisa'] > 10 && $product['sisa'] < 20): ?>
+                                        <td class="text-center table-warning"><?= $product['sisa']  ?></td>                                                                                
                                     <?php else : ?>
-                                        <td class="text-center table-danger"><?= $sisa ?></td>                                        
+                                        <td class="text-center table-danger"><?= $product['sisa']  ?></td>                                        
                                     <?php endif ?>
                                     </tr>
                                 <?php endforeach ?>
@@ -257,6 +273,43 @@
                                         <td><?= $product->color ?></td>
                                         <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
                                         <td class="text-center"><?= $product->qty ?></td>
+                                    </tr>
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left">Top 10 Produk/Brand</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable7" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Jenis</th>
+                                <th class="text-center">Model</th>
+                                <th class="text-center">Total Qty</th>
+                                <th class="text-center">Brand</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php if ($top10->getNumRows() > 0) : ?>
+                                <?php foreach ($top10->getResultObject() as $product) : ?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td><?= $product->product_name ?></td>
+                                        <td><?= $product->model_name ?></td>                                                               
+                                        <td class="text-center"><?= $product->total_qty ?></td>
+                                        <td class="text-center"><?= $product->brand ?></td>
                                     </tr>
                                 <?php endforeach ?>
                             <?php endif ?>
