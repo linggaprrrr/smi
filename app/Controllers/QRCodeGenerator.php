@@ -166,6 +166,40 @@ class QRCodeGenerator extends BaseController
         }   
     }
 
+    public function generateQRProductReject() {
+        
+        $products = $this->request->getVar('print');                
+        if (!is_null($products)) {
+            $json = array();
+            $qrs = array(
+                'key' => '',
+                'qr' => ''
+            );
+            for ($i=0; $i < count($products); $i++) {
+                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, product_name, color')
+                    ->join('product_types', 'product_types.id = product_id')
+                    ->join('colors', 'colors.id = products.color_id')
+                    ->join('models', 'products.model_id = models.id')                
+                    ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                    ->join('reject', 'reject.barcode_id = product_barcodes.id')
+                    ->where('products.id', $products[$i])                                        
+                    ->get();
+                
+                foreach ($getProducts->getResultArray() as $row) {
+                    $data = $row['id'].'-'.$row['product_name'].'-'.$row['model_name'].'-'.$row['color'];                
+                    $qr = QrCode::create($data);
+                    $writer = new PngWriter();
+                    $result = $writer->write($qr);    
+                    $this->produkModel->setBarocde($row['id'], $result->getDataUri());
+                    $qrs['key'] = $data;
+                    $qrs['qr'] = $result->getDataUri();
+                    array_push($json, $qrs);
+                }                
+            }
+            echo json_encode($json);         
+        }   
+    }
+
     public function generateQRShipment() {
         $shipments = $this->request->getVar('print');        
         if (!is_null($shipments)) {
@@ -286,6 +320,16 @@ class QRCodeGenerator extends BaseController
         return view('gudang_gesit/qr_scanner_reject', $data);
     }
 
+    public function scannerSellingReject() {
+        $reject = $this->produkModel->rejectedSold();        
+        $data = array(
+            'title' => 'QR Scanner Penjualan Produk Reject',
+            'rejectedProducts' => $reject            
+        );
+
+        return view('gudang_gesit/qr_scanner_penjualan_reject', $data);
+    }
+
     public function scannerShipment() {
         $shippings = $this->shippinglModel
             ->select('shippings.*, shipping_details.product_id')
@@ -348,7 +392,7 @@ class QRCodeGenerator extends BaseController
         $qr = $this->request->getVar('qr');
         $qr = explode("-",$qr);
         
-        // $getProduct = $this->produkModel->findQR($qr[0]);        
+         
         $productStatus = $this->produkModel->productStatus($qr[0]);        
         $status = '0';
         
@@ -385,6 +429,18 @@ class QRCodeGenerator extends BaseController
         $qr = explode("-",$qr);
         
         $getProduct = $this->produkModel->findProductIn($qr[0]);
+        $status = '0';
+        if ($getProduct->getNumRows() > 0) {
+            $status = '1'; 
+        }
+        echo json_encode($status);
+    }
+
+    public function scanningRejectSold() {
+        $qr = $this->request->getVar('qr');
+        $qr = explode("-",$qr);
+        
+        $getProduct = $this->produkModel->findProductRejectSold($qr[0]);
         $status = '0';
         if ($getProduct->getNumRows() > 0) {
             $status = '1'; 
@@ -544,7 +600,17 @@ class QRCodeGenerator extends BaseController
         
     }
 
-    
+    public function kirimQR() {
+        $post = $this->request->getVar();
+
+        $data = [
+            'title' => $post['title'],
+            'body' => $post['text'],
+            'userId' => $post['user_id'],
+            'id' => $post['id']
+        ];
+        echo json_encode($data);
+    }    
 
     
 

@@ -35,10 +35,9 @@ class ProductModel extends Model
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id', 'left')
             ->join('users', 'users.id = products.user_id')
-            ->join('reject', 'reject.barcode_id = product_logs.product_id', 'left')
+            ->join('reject', 'reject.barcode_id = product_barcodes.id', 'left')
             ->where('product_logs.status', '2')
             ->where('products.status', '1')             
-            ->where('reject.status !=', '3')             
             ->groupBy('products.id')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -347,6 +346,16 @@ class ProductModel extends Model
         return $query;    
     }
 
+    public function findProductRejectSold($id) {
+        $query = $this->db->table('products')
+            ->select('product_barcodes.id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')            
+            ->join('reject', 'reject.barcode_id = product_barcodes.id')
+            ->where('reject.barcode_id', $id)
+            ->get();
+        return $query;    
+    }
+
     public function findProductReject($id) {
         $query = $this->db->table('product_barcodes')            
             ->where('id', $id)
@@ -477,8 +486,13 @@ class ProductModel extends Model
         $this->db->query("UPDATE product_barcodes SET status = '0' WHERE id='$id' ");
         $this->db->query("INSERT reject(barcode_id, category, user_id) VALUES('$id', '$reject', '$user') ");
         if ($reject == 'permanent') {
+            $this->db->query("INSERT penjualan_reject(reject_id) VALUES('$id') ");
             $this->db->query("UPDATE product_logs SET qty = '1' WHERE product_id='$id' ");
         }
+    }
+    
+    public function saveJualReject($id) {
+        $this->db->query("UPDATE penjualan_reject SET status = '2' WHERE reject_id='$id' ");
     }
 
     public function rejectedProduct() {
@@ -495,6 +509,18 @@ class ProductModel extends Model
 
     public function rejectIn($id) {
         $this->db->query("UPDATE reject SET status = '2' WHERE id = '$id' ");
+    }
+
+    public function findPola($id) {
+        $query = $this->db->table('pola')
+        ->select('models.id as model_id, product_types.id as product_id, colors.id as color_id, models.harga, ')
+        ->join('models', 'models.id = products.model_id')
+        ->join('product_types', 'product_types.id = product_id')
+        ->join('colors', 'colors.id = products.color_id')
+        ->where('pola.id', $id)
+        ->get();
+
+        return $query->getFirstRow();
     }
 
     public function setProductSO($id) {
@@ -525,6 +551,7 @@ class ProductModel extends Model
             ->join('product_types', 'product_types.id = products.product_id')
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
+            ->orderBy('reject.date', 'DESC')
             ->get();
         return $query;
     }
@@ -538,12 +565,28 @@ class ProductModel extends Model
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('penjualan_reject', 'reject.id = penjualan_reject.reject_id')
+            ->orderBy('tanggal_jual', 'DESC')
             ->get();
         return $query;
     }
 
+    public function updateHargaJual($id, $harga) {
+        $this->db->query("UPDATE penjualan_reject SET hpp='$harga' WHERE reject_id = '$id' ");
+    }
+
     public function rejectPermanent($id) {
         $this->db->query("UPDATE reject SET category=CONCAT(category, ' permanent'), status='3' WHERE id = '$id' ");
+        $this->db->query("INSERT INTO penjualan_reject(reject_id) VALUES('$id')");
+        
+    }
+
+    public function totalNilaiJualReject() {
+        $query = $this->db->table('reject')
+            ->select('IFNULL(SUM(hpp), 0) as total_jual')
+            ->join('penjualan_reject', 'penjualan_reject.reject_id = reject.id')
+            ->where('penjualan_reject.status', '2')
+            ->get();
+        return $query->getFirstRow();
     }
 
     public function getTop10() {
@@ -560,6 +603,7 @@ class ProductModel extends Model
             ->join('product_types', 'product_types.id = products.product_id')
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
+            ->orderBy('reject.date', 'DESC')
             ->get();
         } else {
             $query = $this->db->table('reject')
@@ -570,6 +614,7 @@ class ProductModel extends Model
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
             ->where('reject.date BETWEEN "'.$date1.'" AND "'.$date2.'" ')        
+            ->orderBy('reject.date', 'DESC')
             ->get();
         }
         return $query;

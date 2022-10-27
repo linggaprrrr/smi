@@ -87,6 +87,7 @@ class Reports extends BaseController
             $polaIn = $this->materialModel->getAllPolaIn($date1, $date2);
             $productsIn = $this->productModel->getAllProductIn($date1, $date2);
             $productsOut = $this->productModel->getAllProductOut($date1, $date2);
+            $productReject = $this->productModel->getAllProductReject($date1, $date2);
             $cuttings = $this->materialModel->getAllCuttingData($date1, $date2);
             $data = array(
                 'title' => 'Laporan',
@@ -96,6 +97,7 @@ class Reports extends BaseController
                 'polaIn' => $polaIn,
                 'polaOut' => $polaOut,
                 'cuttings' => $cuttings,
+                'productReject' => $productReject,
                 'models' => $models,
                 'date1' => $date[0],
                 'date2' => $date[1],
@@ -108,6 +110,7 @@ class Reports extends BaseController
             $productsIn = $this->productModel->getAllProductIn();
             $productsOut = $this->productModel->getAllProductOut();
             $cuttings = $this->materialModel->getAllCuttingData();
+            $productReject = $this->productModel->getAllProductReject();
             $data = array(
                 'title' => 'Laporan',
                 'materials' => $materials,
@@ -116,6 +119,7 @@ class Reports extends BaseController
                 'polaIn' => $polaIn,
                 'polaOut' => $polaOut,
                 'cuttings' => $cuttings,
+                'productReject' => $productReject,
                 'models' => $models,
                 'date1' => $date1,
                 'date2' => $date2,

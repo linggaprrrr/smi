@@ -430,15 +430,15 @@
                                 
                                 <tbody>
                                     <?php $no = 1; ?>
-                                    <?php if ($productsOut->getNumRows() > 0) : ?>
-                                        <?php foreach ($productsOut->getResultObject() as $product) : ?>
+                                    <?php if ($productReject->getNumRows() > 0) : ?>
+                                        <?php foreach ($productReject->getResultObject() as $product) : ?>
                                             <tr>
                                                 <td class="text-center"><?= $no++ ?></td>
                                                 <td><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
                                                 <td><?= $product->category ?></td>
-                                                <td class="text-center"><?= $product->created_at ?></td>
+                                                <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td>
                                                 
                                             </tr>
                                         <?php endforeach ?>

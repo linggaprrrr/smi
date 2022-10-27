@@ -79,6 +79,7 @@ $routes->post('/update-cutting', 'Materials::updateCutting');
 
 $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
 $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
+$routes->post('/generate-qr-produk-reject', 'QRCodeGenerator::generateQRProductReject');
 $routes->get('/export-data-kain', 'Materials::exportData');
 $routes->get('/export-data-kain/(:any)/(:any)', 'Materials::exportData/$1/$2');
 $routes->get('/export-produk-reject', 'Products::exportProductReject');
@@ -150,6 +151,7 @@ $routes->get('/gudang-gesit/qr-scanner-retur', 'QRCodeGenerator::scannerMaterial
 $routes->get('/gudang-gesit/qr-scanner-produk-in', 'QRCodeGenerator::scannerProductIn');
 $routes->get('/gudang-gesit/qr-scanner-cutting', 'QRCodeGenerator::scannerCutting');
 $routes->get('/gudang-gesit/qr-scanner-reject', 'QRCodeGenerator::scannerReject');
+$routes->get('/gudang-gesit/qr-scanner-penjualan-reject', 'QRCodeGenerator::scannerSellingReject');
 $routes->get('/gudang-gesit/laporan', 'Reports::reportGesit');
 $routes->get('/gudang-gesit/laporan/(:any)', 'Reports::reportGesit/$1');
 $routes->get('/gudang-gesit/gudang-reject', 'Products::gudangReject');
@@ -176,6 +178,7 @@ $routes->post('on-change-product-hpp', 'Products::onChangeProductHPP');
 $routes->get('get-hpp-product', 'Products::getHPP');
 $routes->get('/get-jenis-kain', 'Materials::getJenisKain');
 $routes->post('/simpan-reject', 'Products::simpanReject');
+$routes->post('/jual-reject', 'Products::jualReject');
 
 $routes->post('/on-change-cutting-product-type', 'Materials::onChangeCuttingProductType');
 $routes->post('/on-change-cutting-product-type-pola', 'Materials::onChangeCuttingProductTypePola');
@@ -213,7 +216,8 @@ $routes->post('on-change-material-pic-gelar1', 'Materials::onChangeMaterialGelar
 $routes->post('on-change-material-pic-gelar2', 'Materials::onChangeMaterialGelar2');
 $routes->post('on-change-material-tgl-cutting', 'Materials::onChangeMaterialTglCutting');
 $routes->post('on-change-material-vendor-pola', 'Materials::onChangeMaterialVendorPola');
-
+$routes->post('/delete-cutting-pola', 'Materials::deleteCuttingPola');
+$routes->post('/create-produk', 'Products::createProduct');
 
 // GUDANG
 $routes->get('/operasional/dashboard', 'Home::gudangLovish');
@@ -251,12 +255,17 @@ $routes->post('/product-retur-scanning', 'QRCodeGenerator::scanningProductRetur'
 $routes->post('/box-check-scanning', 'QRCodeGenerator::scanningBox');
 $routes->post('/cut-in-scanning', 'QRCodeGenerator::scanningCutting');
 $routes->post('/reject-in-scanning', 'QRCodeGenerator::scanningReject');
+$routes->post('/reject-in-sold-scanning', 'QRCodeGenerator::scanningRejectSold');
 $routes->post('/reject-in', 'Products::rejectIn');
 $routes->post('/reject-permanent', 'Products::rejectPermanent');
+$routes->post('/update-harga-jual', 'Products::updateHargaJualReject');
 
 
 // test
 $routes->get('/test', 'QRCodeGenerator::test');
+
+// API 
+$routes->post('/kirim-qr', 'Api::kirimQR');
 
 /*
  * --------------------------------------------------------------------

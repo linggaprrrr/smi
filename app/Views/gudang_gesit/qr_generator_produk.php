@@ -295,7 +295,7 @@
 
         $('form#generate-qr-reject').on('submit', function (e) {
             e.preventDefault();
-            $.post('/generate-qr-produk', $('form#generate-qr-reject').serialize(), function(data) {
+            $.post('/generate-qr-produk-reject', $('form#generate-qr-reject').serialize(), function(data) {
                 const qr = JSON.parse(data);
                 var id = 1;                                                
                 $('#qr-handler').html("");

@@ -230,6 +230,11 @@ class MaterialModel extends Model
         $this->db->query("DELETE FROM tim_cutting WHERE id='$id' ");
     }
 
+    public function deleteCuttingPola($id) {
+        $this->db->query("DELETE FROM cutting WHERE id='$id'");
+        $this->db->query("DELETE FROM pola WHERE cutting_id='$id'");
+    }
+
     public function getVendorSupplier($id) {
         $query = $this->db->table('material_vendors')
             ->where('id', $id)->get();
@@ -438,7 +443,7 @@ class MaterialModel extends Model
     }
 
     public function updateJumlahSetorPolaIn($id, $jum) {
-        $this->db->query("UPDATE pola SET jumlah_setor = '$jum', sisa=jumlah_pola-'$jum' WHERE id='$id' ");
+        $this->db->query("UPDATE pola SET jumlah_setor = '$jum', sisa=jumlah_pola-'$jum'-reject WHERE id='$id' ");
         $query = $this->db->table('pola')
             ->getWhere(['id' => $id])
             ->getRow();
@@ -489,8 +494,8 @@ class MaterialModel extends Model
             ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
             ->join('pola as p', 'p.cutting_id = ct.id')
             ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
-            ->groupBy('ct.id')
-            ->orderBy('COUNT(p.id) ASC, p.id DESC')
+            ->groupBy('p.id')
+            ->orderBy('p.id DESC')
             ->get();
         } else {
             $query = $this->db->table('materials as m')

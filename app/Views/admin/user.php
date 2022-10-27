@@ -48,6 +48,14 @@
                                                 <input type="checkbox" class="custom-control-input" name="gesit[]" value="3"  id="customSwitch3">
                                                 <label class="custom-control-label" for="customSwitch3" style="padding-top: 5px;">QR Scanner Kain Retur</label>
                                             </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="21"  id="customSwitch31">
+                                                <label class="custom-control-label" for="customSwitch3" style="padding-top: 5px;">Cutting</label>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="gesit[]" value="22"  id="customSwitch31">
+                                                <label class="custom-control-label" for="customSwitch3" style="padding-top: 5px;">Pola</label>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>

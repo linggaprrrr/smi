@@ -72,6 +72,11 @@
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Reject</span></a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/gudang-gesit/qr-scanner-penjualan-reject') ?>">
+                                <i class="fas fa-fw fa-qrcode"></i>
+                                <span>QR Scanner Penj. Reject</span></a>
+                        </li>
                         <?php
                     break;
                 case "7": 

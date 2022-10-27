@@ -96,6 +96,20 @@ class Products extends BaseController
         return view('admin/products', $data);    
     }
     
+    public function createProduct() {
+        $id = $this->request->getVar('pola');
+        $data = $this->productModel->findPola($id);
+        // $product = [
+        //     'product_id' => ,
+        //     'color_id'  => ,
+        //     'model_id'  => $post['model'],
+        //     'user_id' => session()->get('user_id'),
+        //     'qty' => $data->jumlah_setor,
+        //     'vendor_id' => $post['vendor'],
+        //     'price' => $post['harga']
+        // ];
+    }
+
     public function getProductDetail() {
         $productId = $this->request->getVar('product_id');
         $product = $this->productModel->find($productId);
@@ -202,6 +216,7 @@ class Products extends BaseController
     // Gesit
     public function gudangGesitProduk() {
         $productsIn = $this->productModel->getAllProductIn();
+        
         $productsOut = $this->productModel->getAllProductOut();
         $productsExp = $this->productModel->getAllProductExp();
         $models = $this->designModel->getAllModel();
@@ -510,6 +525,12 @@ class Products extends BaseController
 		exit;
     }
 
+    public function updateHargaJualReject() {
+        $id = $this->request->getVar('reject_id');
+        $harga = $this->request->getVar('harga');        
+        $this->productModel->updateHargaJual($id, $harga);        
+    }
+
     public function getHPP() {
         $id = $this->request->getVar('id');
         $hpp = $this->designModel->find($id);
@@ -519,10 +540,12 @@ class Products extends BaseController
     public function gudangReject() {
         $rejectedProducts = $this->productModel->listReject();
         $rejectedSold = $this->productModel->rejectedSold();
+        $totalNilaiJual = $this->productModel->totalNilaiJualReject();
         $data = array(
             'title' => 'Produk Reject',
             'rejectedProducts' => $rejectedProducts,
-            'rejectedSold' => $rejectedSold
+            'rejectedSold' => $rejectedSold,
+            'totalNilaiJual' => $totalNilaiJual->total_jual
         );
         return view('gudang_gesit/gudang_reject', $data);    
     }
@@ -709,6 +732,20 @@ class Products extends BaseController
         if ($check->getNumRows() > 0) {
             $status = 1;
             $this->productModel->saveReject($id, $reject);    
+        }
+        
+        echo json_encode($status);
+        
+    }
+
+    public function jualReject() {
+        $id = $this->request->getVar('id');        
+        $check = $this->productModel->findProductReject($id);
+        $status = 0;
+        
+        if ($check->getNumRows() > 0) {
+            $status = 1;
+            $this->productModel->saveJualReject($id);    
         }
         
         echo json_encode($status);

@@ -222,8 +222,10 @@ class Materials extends BaseController
         $getAllTimGelar = $this->materialModel->getAllTimGelar();
         $vendorPola = $this->materialModel->getAllVendorPola();
         $cuttings = $this->materialModel->getAllCuttingData();    
-        $polaOut = $this->materialModel->getAllPolaOut();        
+        $polaOut = $this->materialModel->getAllPolaOut();  
+        
         $polaIn = $this->materialModel->getAllPolaIn();
+        
         $models = $this->designModel->getAllModel();
         $data = array(
             'title' => 'Kain',
@@ -833,5 +835,12 @@ class Materials extends BaseController
         $this->materialModel->updateCOA($id, $ket, $biaya);
         return redirect()->back()->with('create', 'Tim berhasil diinput');
     }
+
+    public function deleteCuttingPola() {
+        $cutting = $this->request->getVar('cutting');
+        $this->materialModel->deleteCuttingPola($cutting);
+    }
+
+
 
 }
