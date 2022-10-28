@@ -18,8 +18,7 @@ class MaterialModel extends Model
             ->join('material_types', 'material_types.id = materials.material_type')
             ->join('colors', 'colors.id = materials.color_id')
             ->join('gudang', 'gudang.id = materials.gudang_id')
-            ->join('tim_cutting', 'tim_cutting.id = materials.pic_cutting')
-            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
+            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')                                
             ->where('status', '1')
             ->where('created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')
             ->orderBy('created_at', 'desc')->get(); 
@@ -29,7 +28,6 @@ class MaterialModel extends Model
             ->join('material_types', 'material_types.id = materials.material_type')
             ->join('colors', 'colors.id = materials.color_id')
             ->join('gudang', 'gudang.id = materials.gudang_id')
-            ->join('tim_cutting', 'tim_cutting.id = materials.pic_cutting')
             ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
             ->where('status', '1')
             ->orderBy('created_at', 'desc')->get();

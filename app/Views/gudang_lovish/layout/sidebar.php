@@ -45,7 +45,7 @@
                     break;
                 case "3": 
                         ?>
-                         <li class="nav-item">
+                         <!-- <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-so') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Produk (IN)</span></a>
@@ -59,7 +59,7 @@
                             <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-so-bulanan') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Produk (SO)</span></a>
-                        </li>                     
+                        </li>                      -->
                         <?php
                     break;
                 case "4": 

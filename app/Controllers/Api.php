@@ -48,43 +48,43 @@ class Api extends BaseController {
                 if ($productStatus[0]->status == '1') {
                     $status = '1';       
                     $this->produkModel->updateQRStatus($qr[0]);     
-                    $this->produkModel->setProductIn($qr[0], session()->get('user_id'));
+                    $this->produkModel->setProductIn($qr[0]);
                 }        
                 break;
             case "reject-noda" : 
-                $check = $this->productModel->findProductReject($qr[0]);
+                $check = $this->produkModel->findProductReject($qr[0]);
                 $status = 0;
                 
                 if ($check->getNumRows() > 0) {
                     $status = 1;
-                    $this->productModel->saveReject($qr[0], 'noda');    
+                    $this->produkModel->saveReject($qr[0], 'noda');    
                 }
                 break;
             case "reject-jahit" : 
-                $check = $this->productModel->findProductReject($qr[0]);
+                $check = $this->produkModel->findProductReject($qr[0]);
                 $status = 0;
                 
                 if ($check->getNumRows() > 0) {
                     $status = 1;
-                    $this->productModel->saveReject($qr[0], 'jahit');    
+                    $this->produkModel->saveReject($qr[0], 'jahit');    
                 }
                 break;
             case "reject-permanent" : 
-                $check = $this->productModel->findProductReject($qr[0]);
+                $check = $this->produkModel->findProductReject($qr[0]);
                 $status = 0;
                 
                 if ($check->getNumRows() > 0) {
                     $status = 1;
-                    $this->productModel->saveReject($qr[0], 'permanent');    
+                    $this->produkModel->saveReject($qr[0], 'permanent');    
                 }
                 break;
             case "penjualan-reject" : 
-                $check = $this->productModel->findProductReject($qr[0]);
+                $check = $this->produkModel->findProductReject($qr[0]);
                 $status = 0;
                 
                 if ($check->getNumRows() > 0) {
                     $status = 1;
-                    $this->productModel->saveJualReject($qr[0]);    
+                    $this->produkModel->saveJualReject($qr[0]);    
                 }
                 break;
             case "retur-kain" : 
@@ -94,6 +94,35 @@ class Api extends BaseController {
                     $status = '1'; 
                     $this->materialModel->updateMaterialStokRetur($qr[0]);
                     
+                }
+                break;
+            case "produk-keluar-gudang" : 
+                $getProduct = $this->produkModel->findProductOut($qr[0]);
+                $status = '0';
+                if ($getProduct->getNumRows() > 0) {
+                    $status = '1'; 
+                    $this->produkModel->setProductOut($qr[0]);
+                }
+                break;
+            case "pengiriman" : 
+                
+                $status = '0';
+                
+                break;
+            case "so" : 
+                $getProduct = $this->produkModel->findProductOut($qr[0]);
+                $status = '0';
+                if ($getProduct->getNumRows() > 0) {
+                    $status = '1'; 
+                    $this->produkModel->setProductSO($qr[0]);
+                }
+                break;
+            case "so" : 
+                $getProduct = $this->produkModel->findProductOut($qr[0]);
+                $status = '0';
+                if ($getProduct->getNumRows() > 0) {
+                    $status = '1'; 
+                    $this->produkModel->setProductSO($qr[0]);
                 }
                 break;
         }

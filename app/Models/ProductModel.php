@@ -397,23 +397,22 @@ class ProductModel extends Model
         $this->db->query("UPDATE product_types SET product_name='$product' WHERE id='$id' ");
     }
 
-    public function setProductIn($id, $user) {
+    public function setProductIn($id) {
         $getProduct = $this->db->query("SELECT * FROM product_barcodes WHERE id = '$id' ");
         $productId = "";
         if ($getProduct->getNumRows() > 0) {
             $productId = $getProduct->getResultArray();
-            
         }
-        $this->db->query("INSERT INTO product_logs(product_id, user_id, status) VALUES('$id', '$user', 2) ");
+        $this->db->query("INSERT INTO product_logs(product_id, status) VALUES('$id', 2) ");
     }
 
     public function updateQRStatus($id) {
         $this->db->query("UPDATE product_barcodes SET status = 2 WHERE id = '$id'");
     }
 
-    public function setProductOut($id, $user) {
+    public function setProductOut($id) {
         $this->db->query("UPDATE product_barcodes SET status = '3' WHERE id = '$id' ");
-        $this->db->query("INSERT product_logs(product_id, qty, status, user_id) VALUES('$id', '1', '3', '$user') ");
+        $this->db->query("INSERT product_logs(product_id, qty, status) VALUES('$id', '1', '3') ");
     }
 
     public function updateStokOut($id, $user) {
@@ -457,7 +456,7 @@ class ProductModel extends Model
     }
     
     public function returProduct($id) {
-        $this->db->query("INSERT product_logs(product_id, status, user_id) VALUES('$id', 4, ".session()->get('user_id').") ");
+        $this->db->query("INSERT product_logs(product_id, status) VALUES('$id', 4) ");
     }
     
     public function deleteProductBarcode($productId) {
@@ -482,9 +481,9 @@ class ProductModel extends Model
     }
 
     public function saveReject($id, $reject) {
-        $user = session()->get('user_id');
+        
         $this->db->query("UPDATE product_barcodes SET status = '0' WHERE id='$id' ");
-        $this->db->query("INSERT reject(barcode_id, category, user_id) VALUES('$id', '$reject', '$user') ");
+        $this->db->query("INSERT reject(barcode_id, category) VALUES('$id', '$reject') ");
         if ($reject == 'permanent') {
             $this->db->query("INSERT penjualan_reject(reject_id) VALUES('$id') ");
             $this->db->query("UPDATE product_logs SET qty = '1' WHERE product_id='$id' ");

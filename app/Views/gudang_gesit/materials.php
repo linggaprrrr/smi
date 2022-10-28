@@ -50,8 +50,7 @@
                                     </div>                                   
                                     <div class="form-group">
                                         <label for="">Vendor Kain*</label>
-                                        <select class="form-control vendor-kain" name="vendor" required>
-                                            <option>-</option>
+                                        <select class="form-control vendor-kain" name="vendor" required>                                            
                                             <?php if ($materialVendors->getNumRows() > 0) : ?>
                                                 <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
                                                     <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
@@ -78,6 +77,7 @@
                                     <div class="form-group">
                                     <label for="">Gelar 1*</label>
                                         <select class="form-control" name="gelar1">
+                                            <option value="">-</option>
                                         <?php if ($timGelars->getNumRows() > 0) : ?>
                                             <?php foreach ($timGelars->getResultObject() as $gelar1) : ?>
                                                 <option value="<?= $gelar1->id ?>"><?= $gelar1->name ?></option>
@@ -89,6 +89,7 @@
                                     <div class="form-group">
                                         <label for="">Gelar 2*</label>
                                         <select class="form-control" name="gelar2">
+                                            <option value="">-</option>
                                         <?php if ($timGelars->getNumRows() > 0) : ?>
                                             <?php foreach ($timGelars->getResultObject() as $gelar2) : ?>
                                                 <option value="<?= $gelar2->id ?>"><?= $gelar2->name ?></option>
@@ -97,8 +98,9 @@
                                         </select>    
                                     </div>
                                     <div class="form-group">
-                                        <label for="">PIC Cutting*</label>
+                                        <label for="">PIC Cutting*</label>                                            
                                         <select class="form-control" name="pic-cutting">
+                                        <option value="">-</option>
                                         <?php if ($picCutting->getNumRows() > 0) : ?>
                                             <?php foreach ($picCutting->getResultObject() as $cut) : ?>
                                                 <option value="<?= $cut->id ?>"><?= $cut->name ?></option>
@@ -108,7 +110,7 @@
                     
                                     </div>
                                     <div class="form-group">
-                                        <label for="">Gudang*</label>
+                                        <label for="">Gudang*</label>                                            
                                         <select class="form-control" name="gudang">
                                         <?php if ($gudangs->getNumRows() > 0) : ?>
                                             <?php foreach ($gudangs->getResultObject() as $gudang) : ?>
@@ -120,7 +122,7 @@
                                     
                                     <div class="form-group">
                                         <label for="">Roll</label>
-                                        <input type="text" class="form-control" name="roll" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah roll" disabled>                                
+                                        <input type="text" class="form-control" name="roll" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah roll">                                
                                     </div>
                                 </div>
                             </div>
@@ -145,8 +147,7 @@
                         <th class="text-center">Jenis</th>
                         <th class="text-center">Warna</th>
                         <th class="text-center">Berat (kg)</th>
-                        <th class="text-center">Tgl Masuk</th>                        
-                        <th class="text-center">Roll</th>
+                        <th class="text-center">Tgl Masuk</th>                                                
                         <th class="text-center">Vendor</th>
                         <th class="text-center">Harga</th>
                         <th class="text-center">Tgl Cutting</th>
@@ -183,8 +184,7 @@
                                 <td>
                                     <input type="text" class="form-control berat" name="weight" data-id='<?= $kain->id ?>' style="width: 90px" value="<?= number_format($kain->weight/1000, 2) ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 </td>
-                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($kain->created_at)) ?></td>
-                                <td class="text-center align-middle"><?= $kain->roll ?></td>
+                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($kain->created_at)) ?></td>                                
                                 <td class="text-center">
                                     <select class="form-control vendor-kain-edit" name="vendor" data-id='<?= $kain->id ?>' style="width: 160px">                                        
                                         <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
@@ -258,8 +258,7 @@
 </div>
 <?php $access = json_decode(session()->get('accessibility')); ?>
 <?php
-    for ($i=0; $i < count($access); $i++) {
-        if ($access[$i] == '21') {
+    if (in_array("3", $access)) {
         ?>
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -483,240 +482,238 @@
                 </div>
             </div>
         <?php
-        }
-    } 
+    }
 ?>
 <?php 
-    for ($i=0; $i < count($access); $i++) {
-        if ($access[$i] == '22') { 
-            ?>
-<div class="card shadow mb-4" id="pola-out-section">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left" >Data Pola (Keluar)</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive" id="tabel-pola-out">
-            <table class="table table-bordered" id="dataTable5" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th class="text-center" style="width: 5%">No</th>
-                        <th class="text-center">Kode Kain</th>
-                        <th class="text-center">Tgl Ambil</th>
-                        <th class="text-center">Tgl Cutting</th>
-                        <th class="text-center">Produk</th>
-                        <th class="text-center">Warna</th>
-                        <th class="text-center" style="width: 10%">Jumlah</th>
-                        <th class="text-center">Bahan</th>
-                        <th class="text-center">Vendor</th>
-                        <th class="text-right" style="width: 7%"><i class="fa fa-ellipsis-v"></i></th>
-                    </tr>
-                </thead>
-                
-                <tbody>
-                    <?php $no = 1; ?>
-                    <?php if ($polaOut->getNumRows() > 0) : ?>
-                        <?php $temp = "" ?>
-                        <?php foreach ($polaOut->getResultObject() as $pola) : ?>
-                            <?php if ($temp == $pola->cutting_id) : ?>                                
-                                <?php continue ?>
-                            <?php else : ?>
-                                <?php $temp = $pola->cutting_id ?>
-                                
+    if (in_array("8", $access)) {
+?>
+        <div class="card shadow mb-4" id="pola-out-section">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left" >Data Pola (Keluar)</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive" id="tabel-pola-out">
+                    <table class="table table-bordered" id="dataTable5" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Kode Kain</th>
+                                <th class="text-center">Tgl Ambil</th>
+                                <th class="text-center">Tgl Cutting</th>
+                                <th class="text-center">Produk</th>
+                                <th class="text-center">Warna</th>
+                                <th class="text-center" style="width: 10%">Jumlah</th>
+                                <th class="text-center">Bahan</th>
+                                <th class="text-center">Vendor</th>
+                                <th class="text-right" style="width: 7%"><i class="fa fa-ellipsis-v"></i></th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php if ($polaOut->getNumRows() > 0) : ?>
+                                <?php $temp = "" ?>
+                                <?php foreach ($polaOut->getResultObject() as $pola) : ?>
+                                    <?php if ($temp == $pola->cutting_id) : ?>                                
+                                        <?php continue ?>
+                                    <?php else : ?>
+                                        <?php $temp = $pola->cutting_id ?>
+                                        
+                                    <?php endif ?>
+                                    <?php if ($pola->status == '1') : ?>
+                                        <tr id="td_pola_<?= $pola->id ?>">                                 
+                                            <td class="text-center align-middle"><?= $no++ ?></td>
+                                            <td class="text-center align-middle font-weight-bold"><?= $pola->material_id ?></td>
+                                            <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>
+                                            <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl)) ?></td>
+                                            <td class="text-center align-middle" id="pola_out_produk_<?= $pola->cutting_id ?>"><?= $pola->model_name ?></td>
+                                            <td class="text-center align-middle"><?= $pola->color ?></td>
+                                            <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->cutting_id ?>" value="<?= $pola->jumlah_pola ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->jumlah_pola ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
+                                            <td class="text-center align-middle"><?= $pola->type ?></td>
+                                            <td class="text-center align-middle">
+                                                <select class="form-control" >
+                                                    <?php foreach($vendorPola->getResultObject() as $vendor) : ?>
+                                                        <option value="<?= $pola->vendor_id ?>" <?= ($vendor->id == $pola->vendor_id) ? 'selected="selected"' : '' ?> > <?= $pola->name ?></option>
+                                                    <?php endforeach ?>
+                                                </select>
+                                            </td>
+                                            <td class="text-center align-middle">                                        
+                                                <a href="" class="pola-in" data-toggle="modal" data-id="<?= $pola->id ?>" data-jumlah="<?= $pola->jumlah_pola ?>"><i class="fa fa-sign-in-alt fa-lg text-secondary"></i></a>                                    
+                                            </td>  
+                                        </tr>
+                                    <?php else : ?>
+                                            <tr class="table-active" id="td_pola_<?= $pola->id ?>">
+                                                <td class="text-center align-middle"><?= $no++ ?></td>
+                                                <td class="text-center align-middle font-weight-bold"><?= $pola->material_id ?></td>
+                                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>
+                                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl)) ?></td>
+                                                <td class="text-center align-middle" id="pola_out_produk_<?= $pola->cutting_id ?>"><?= $pola->model_name ?></td>
+                                                <td class="text-center align-middle"><?= $pola->color ?></td>
+                                                <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->cutting_id ?>" value="<?= $pola->sisa ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->sisa ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
+                                                <td class="text-center align-middle"><?= $pola->type ?></td>
+                                                <td class="text-center align-middle">
+                                                    <select class="form-control pola-out-vendor-edit" data-id="<?= $pola->cutting_id ?> " id="pola_out_vendor_<?= $pola->id ?>" disabled>
+                                                        <?php foreach($vendorPola->getResultObject() as $vendor) : ?>
+                                                            <option value="<?= $vendor->id  ?>" <?= ($vendor->id == $pola->vendor_id) ? 'selected="selected"' : '' ?> > <?= $vendor->name ?></option>
+                                                        <?php endforeach ?>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <a href="" data-toggle="modal" class="editable-polaout" data-id="<?= $pola->id ?>"><i class="fa fa-edit fa-lg text-secondary"></i></a>
+                                                    <a href="" class="pola-in" data-toggle="modal" data-id="<?= $pola->id ?>" data-jumlah="<?= $pola->sisa ?>"><i class="fa fa-sign-in-alt fa-lg text-secondary"></i></a>                                    
+                                                </td>  
+                                            </tr>
+                                    <?php endif ?>
+                                <?php endforeach ?>
                             <?php endif ?>
-                            <?php if ($pola->status == '1') : ?>
-                                <tr id="td_pola_<?= $pola->id ?>">                                 
-                                    <td class="text-center align-middle"><?= $no++ ?></td>
-                                    <td class="text-center align-middle font-weight-bold"><?= $pola->material_id ?></td>
-                                    <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>
-                                    <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl)) ?></td>
-                                    <td class="text-center align-middle" id="pola_out_produk_<?= $pola->cutting_id ?>"><?= $pola->model_name ?></td>
-                                    <td class="text-center align-middle"><?= $pola->color ?></td>
-                                    <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->cutting_id ?>" value="<?= $pola->jumlah_pola ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->jumlah_pola ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
-                                    <td class="text-center align-middle"><?= $pola->type ?></td>
-                                    <td class="text-center align-middle">
-                                        <select class="form-control" >
-                                            <?php foreach($vendorPola->getResultObject() as $vendor) : ?>
-                                                <option value="<?= $pola->vendor_id ?>" <?= ($vendor->id == $pola->vendor_id) ? 'selected="selected"' : '' ?> > <?= $pola->name ?></option>
-                                            <?php endforeach ?>
-                                        </select>
-                                    </td>
-                                    <td class="text-center align-middle">                                        
-                                        <a href="" class="pola-in" data-toggle="modal" data-id="<?= $pola->id ?>" data-jumlah="<?= $pola->jumlah_pola ?>"><i class="fa fa-sign-in-alt fa-lg text-secondary"></i></a>                                    
-                                    </td>  
-                                </tr>
-                            <?php else : ?>
-                                    <tr class="table-active" id="td_pola_<?= $pola->id ?>">
-                                        <td class="text-center align-middle"><?= $no++ ?></td>
-                                        <td class="text-center align-middle font-weight-bold"><?= $pola->material_id ?></td>
-                                        <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>
-                                        <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl)) ?></td>
-                                        <td class="text-center align-middle" id="pola_out_produk_<?= $pola->cutting_id ?>"><?= $pola->model_name ?></td>
-                                        <td class="text-center align-middle"><?= $pola->color ?></td>
-                                        <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->cutting_id ?>" value="<?= $pola->sisa ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->sisa ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
-                                        <td class="text-center align-middle"><?= $pola->type ?></td>
-                                        <td class="text-center align-middle">
-                                            <select class="form-control pola-out-vendor-edit" data-id="<?= $pola->cutting_id ?> " id="pola_out_vendor_<?= $pola->id ?>" disabled>
-                                                <?php foreach($vendorPola->getResultObject() as $vendor) : ?>
-                                                    <option value="<?= $vendor->id  ?>" <?= ($vendor->id == $pola->vendor_id) ? 'selected="selected"' : '' ?> > <?= $vendor->name ?></option>
-                                                <?php endforeach ?>
-                                            </select>
-                                        </td>
-                                        <td class="text-center align-middle">
-                                            <a href="" data-toggle="modal" class="editable-polaout" data-id="<?= $pola->id ?>"><i class="fa fa-edit fa-lg text-secondary"></i></a>
-                                            <a href="" class="pola-in" data-toggle="modal" data-id="<?= $pola->id ?>" data-jumlah="<?= $pola->sisa ?>"><i class="fa fa-sign-in-alt fa-lg text-secondary"></i></a>                                    
-                                        </td>  
-                                    </tr>
-                            <?php endif ?>
-                        <?php endforeach ?>
-                    <?php endif ?>
-                </tbody>
-            </table>
-        </div>
-        <div class="modal fade" id="polaInModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <form action="<?= base_url('/save-pola-masuk') ?>" method="post">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="id" value="" id="pid">
-                    <input type="hidden" name="cutting-id" value="" id="cuttingid">
-                    <input type="hidden" name="vendor-id" value="" id="vendorid">
-                    <input type="hidden" name="model-id" value="" id="modelid">
-                    <input type="hidden" name="hargajahit" value="" id="modelharga">
-                    <input type="hidden" name="tgl-ambil" value="" id="tglambil">
-                    <input type="hidden" name="jumlah" value="" id="jumlah">                    
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">Input Pola Masuk</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="">Tanggal Setor</label>
-                                <input type="text" name="tgl-setor" value="<?= date("m/d/Y") ?>"  class="form-control tgl-pola" readonly>                                    
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal fade" id="polaInModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <form action="<?= base_url('/save-pola-masuk') ?>" method="post">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="id" value="" id="pid">
+                            <input type="hidden" name="cutting-id" value="" id="cuttingid">
+                            <input type="hidden" name="vendor-id" value="" id="vendorid">
+                            <input type="hidden" name="model-id" value="" id="modelid">
+                            <input type="hidden" name="hargajahit" value="" id="modelharga">
+                            <input type="hidden" name="tgl-ambil" value="" id="tglambil">
+                            <input type="hidden" name="jumlah" value="" id="jumlah">                    
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="">Input Pola Masuk</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="">Tanggal Setor</label>
+                                        <input type="text" name="tgl-setor" value="<?= date("m/d/Y") ?>"  class="form-control tgl-pola" readonly>                                    
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Jumlah Setor <small>(Jumlah ambil: <b id="jumlah-ambil">0</b>)</small></label>
+                                        <input type="text" name="jumlah-setor" class="form-control" aria-describedby="" placeholder="Jumlah Pola" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">                                    
+                                        
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Reject</label>
+                                        <input type="text" name="reject" class="form-control" aria-describedby="" placeholder="Jumlah Reject" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">                                    
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="">Jumlah Setor <small>(Jumlah ambil: <b id="jumlah-ambil">0</b>)</small></label>
-                                <input type="text" name="jumlah-setor" class="form-control" aria-describedby="" placeholder="Jumlah Pola" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">                                    
-                                
-                            </div>
-                            <div class="form-group">
-                                <label for="">Reject</label>
-                                <input type="text" name="reject" class="form-control" aria-describedby="" placeholder="Jumlah Reject" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">                                    
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
+                        </form>
                     </div>
-                </form>
+                </div>
+                
             </div>
         </div>
-        
-    </div>
-</div>
-<div class="card shadow mb-4" id="tabel-pola-in">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Data Pola (Masuk)</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered display nowrap"  id="dataTable4" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th class="text-center" style="width: 5%">No</th>
-                        <th class="text-center" style="width: 5%">Kode Kain</th>                        
-                        <th class="text-center">Tgl Ambil</th>                        
-                        <th class="text-center">Produk</th>
-                        <th class="text-center">Warna</th>
-                        <th class="text-center">Jumlah</th>
-                        <th class="text-center">Bahan</th>
-                        <th class="text-center">Vendor</th>
-                        <th class="text-center">Tgl Setor</th>
-                        <th class="text-center">Jumlah Setor</th>
-                        <th class="text-center">Reject</th>
-                        <th class="text-center">Sisa</th>
-                        <th class="text-center">Harga</th>
-                        <th class="text-center">Total Harga</th>
-                        <th class="text-right" style="width: 7%"><i class="fa fa-ellipsis-v"></i></th>
-                    </tr>
-                </thead>                
-                <tbody>
-                    <?php $no = 1; ?>
-                    <?php if ($polaIn->getNumRows() > 0) : ?>
-                        <?php foreach ($polaIn->getResultObject() as $pola) : ?>
-                            <?php if ($pola->status == '2') : ?>
-                                <tr class="table-info" id="td_polain_<?= $pola->id ?>">
-                                    <td class="text-center align-middle"><?= $no++ ?></td>
-                                    <td class="text-center align-middle" font-weight-bold"><?= $pola->material_id ?></td>
-                                    <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>                                
-                                    <td class="text-center align-middle" id="pola_in_produk_<?= $pola->id ?>"><?= $pola->model_name ?></td>
-                                    <td class="text-center align-middle"><?= $pola->color ?></td>
-                                    <td class="text-center align-middle" id="pola_in_jumlah_<?= $pola->cutting_id ?>"><?= $pola->jumlah_pola ?></td>
-                                    <td class="text-center align-middle"><?= $pola->type ?></td>
-                                    <td class="text-center align-middle" id="pola_in_vendor_<?= $pola->cutting_id ?>"><?= $pola->name ?></td>
-                                    <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_setor)) ?></td>                                
-                                    <td class="text-center align-middle">
-                                        <input type="text" class="form-control text-center pola-in-jumlah-setor" id="pola_in_jumlah_setor_<?= $pola->id ?>" data-id="<?= $pola->id ?>" value="<?= $pola->jumlah_setor ?>" disabled>
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <input type="text" class="form-control text-center pola-in-reject" id="pola_in_reject_<?= $pola->id ?>" data-id="<?= $pola->id ?>" value="<?= $pola->reject ?>" disabled>
-                                    </td>
-                                    <td class="text-center align-middle" id="pola_in_sisa_<?= $pola->id ?>"><?= $pola->sisa ?></td>
-                                    <td class="text-center align-middle">Rp <?= number_format($pola->harga, 0) ?></td>
-                                    <td class="text-center align-middle">Rp <?= number_format($pola->total_harga, 0) ?></td>
-                                    <td class="text-center align-middle">
-                                        <a href="" data-toggle="modal" data-target="#infoPolaIn"><i class="fa fa-info-circle fa-lg mr-2"></i></a>                                
-                                        <a href="" data-toggle="modal" class="editable-polain" data-id="<?= $pola->id ?>"><i class="fa fa-edit fa-lg text-secondary mr-2"></i></a>
-                                        <a href="" data-toggle="modal" class="create-produk" data-id="<?= $pola->id ?>"><i class="fa fa-list fa-lg text-primary"></i></a>
-                                        <div class="modal fade" id="infoPolaIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLongTitle">Biaya</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th scope="col">GELAR 1</th>
-                                                                    <th scope="col">GELAR 2</th>
-                                                                    <th scope="col">PIC Cutting</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td><?= $pola->gelar1 ?></td>
-                                                                    <td><?= $pola->gelar2 ?></td>
-                                                                    <td><?= $pola->pic ?></td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <div class="card shadow mb-4" id="tabel-pola-in">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left">Data Pola (Masuk)</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered display nowrap"  id="dataTable4" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center" style="width: 5%">Kode Kain</th>                        
+                                <th class="text-center">Tgl Ambil</th>                        
+                                <th class="text-center">Produk</th>
+                                <th class="text-center">Warna</th>
+                                <th class="text-center">Jumlah</th>
+                                <th class="text-center">Bahan</th>
+                                <th class="text-center">Vendor</th>
+                                <th class="text-center">Tgl Setor</th>
+                                <th class="text-center">Jumlah Setor</th>
+                                <th class="text-center">Reject</th>
+                                <th class="text-center">Sisa</th>
+                                <th class="text-center">Harga</th>
+                                <th class="text-center">Total Harga</th>
+                                <th class="text-right" style="width: 7%"><i class="fa fa-ellipsis-v"></i></th>
+                            </tr>
+                        </thead>                
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php if ($polaIn->getNumRows() > 0) : ?>
+                                <?php foreach ($polaIn->getResultObject() as $pola) : ?>
+                                    <?php if ($pola->status == '2') : ?>
+                                        <tr class="table-info" id="td_polain_<?= $pola->id ?>">
+                                            <td class="text-center align-middle"><?= $no++ ?></td>
+                                            <td class="text-center align-middle" font-weight-bold"><?= $pola->material_id ?></td>
+                                            <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>                                
+                                            <td class="text-center align-middle" id="pola_in_produk_<?= $pola->id ?>"><?= $pola->model_name ?></td>
+                                            <td class="text-center align-middle"><?= $pola->color ?></td>
+                                            <td class="text-center align-middle" id="pola_in_jumlah_<?= $pola->cutting_id ?>"><?= $pola->jumlah_pola ?></td>
+                                            <td class="text-center align-middle"><?= $pola->type ?></td>
+                                            <td class="text-center align-middle" id="pola_in_vendor_<?= $pola->cutting_id ?>"><?= $pola->name ?></td>
+                                            <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_setor)) ?></td>                                
+                                            <td class="text-center align-middle">
+                                                <input type="text" class="form-control text-center pola-in-jumlah-setor" id="pola_in_jumlah_setor_<?= $pola->id ?>" data-id="<?= $pola->id ?>" value="<?= $pola->jumlah_setor ?>" disabled>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <input type="text" class="form-control text-center pola-in-reject" id="pola_in_reject_<?= $pola->id ?>" data-id="<?= $pola->id ?>" value="<?= $pola->reject ?>" disabled>
+                                            </td>
+                                            <td class="text-center align-middle" id="pola_in_sisa_<?= $pola->id ?>"><?= $pola->sisa ?></td>
+                                            <td class="text-center align-middle">Rp <?= number_format($pola->harga, 0) ?></td>
+                                            <td class="text-center align-middle">Rp <?= number_format($pola->total_harga, 0) ?></td>
+                                            <td class="text-center align-middle">
+                                                <a href="" data-toggle="modal" data-target="#infoPolaIn"><i class="fa fa-info-circle fa-lg mr-2"></i></a>                                
+                                                <a href="" data-toggle="modal" class="editable-polain" data-id="<?= $pola->id ?>"><i class="fa fa-edit fa-lg text-secondary mr-2"></i></a>
+                                                <a href="" data-toggle="modal" class="create-produk" data-id="<?= $pola->id ?>"><i class="fa fa-list fa-lg text-primary"></i></a>
+                                                <div class="modal fade" id="infoPolaIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLongTitle">Biaya</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th scope="col">GELAR 1</th>
+                                                                            <th scope="col">GELAR 2</th>
+                                                                            <th scope="col">PIC Cutting</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><?= $pola->gelar1 ?></td>
+                                                                            <td><?= $pola->gelar2 ?></td>
+                                                                            <td><?= $pola->pic ?></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            </td>
+                                        </tr>
+                                    <?php endif ?>
+                                <?php endforeach ?>
                             <?php endif ?>
-                        <?php endforeach ?>
-                    <?php endif ?>
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
+                
+            </div>
         </div>
-        
-    </div>
-</div>
-            <?php
-        }
+<?php
     }
+    
 ?>
 
 

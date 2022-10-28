@@ -71,32 +71,33 @@ class Materials extends BaseController
 
     public function addMaterial() {
         $post = $this->request->getVar();
-        do {
-            $str = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-            $numbers = rand(1000, 9999);
-            $id = 'M-'.substr($str, 0, 3).''.$numbers;      
-            
-            $isExist = $this->materialModel->getWhere(['material_id' => $id]);
-        } while ($isExist->getNumRows() > 0);        
-    
-        $material = [
-            'material_id' => $id,
-            'material_type' => $post['jenis'],            
-            'vendor_id' => $post['vendor'],
-            'color_id'  => $post['warna'],
-            'weight'  => $post['berat'],
-            'price' => $post['harga'],
-            'user_id' => session()->get('user_id'),
-            'gudang_id' => $post['gudang'],
-            'tgl_cutting' => NULL,
-            'gelar1' => $post['gelar1'],
-            'gelar2' => $post['gelar2'],
-            'pic_cutting' => $post['pic-cutting'],
-        ];
-
-        $this->materialModel->save($material);
+        
+        for ($i = 0; $i < $post['roll']; $i++) {
+            do {
+                $str = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                $numbers = rand(1000, 9999);
+                $id = 'M-'.substr($str, 0, 3).''.$numbers;      
+                
+                $isExist = $this->materialModel->getWhere(['material_id' => $id]);
+            } while ($isExist->getNumRows() > 0);        
+            $material = [
+                'material_id' => $id,
+                'material_type' => $post['jenis'],            
+                'vendor_id' => $post['vendor'],
+                'color_id'  => $post['warna'],
+                'weight'  => $post['berat'],
+                'price' => $post['harga'],
+                'user_id' => session()->get('user_id'),
+                'gudang_id' => $post['gudang'],
+                'tgl_cutting' => NULL,
+                'gelar1' => $post['gelar1'],
+                'gelar2' => $post['gelar2'],
+                'pic_cutting' => $post['pic-cutting'],
+            ];
+            $this->materialModel->save($material);
+        }        
         $this->logModel->save([
-            'description' => 'Menambahkan data kain baru ('.$post['jenis'].' '.$post['warna'].')',
+            'description' => 'Menambahkan data kain baru ('.$post['jenis'].' '.$post['warna'].') Sebanyak '.$post['roll'].' roll',
             'user_id' =>  session()->get('user_id'),
         ]);
         return redirect()->back()->with('create', 'Kain berhasil ditambahkan');
