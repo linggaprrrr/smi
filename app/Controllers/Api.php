@@ -28,7 +28,7 @@ class Api extends BaseController {
         $jenis = $post['jenis'];
         $status = 0;
         $qr = explode('-', $post['qr']);
-
+        
         switch($jenis) {
             case "cutting" :                 
                 $getMaterial = $this->materialModel->find($qr[0]);

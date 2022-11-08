@@ -43,7 +43,7 @@ class Home extends BaseController
             foreach ($getStok->getResultObject() as $product) {                
                 if ($penjualan->getNumRows() > 0) {
                     foreach ($penjualan->getResultObject() as $sell) {                
-                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                        if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
                             $selling = $selling + $sell->qty;                         
                         }
                     }        
@@ -115,9 +115,8 @@ class Home extends BaseController
             ->where('YEAR(product_logs.created_at) = YEAR(CURRENT_DATE())')
             ->first();
         $productsIn = $this->productModel
-            ->select('model_name, product_name, color, size, SUM(product_logs.qty) as stok')
+            ->select('model_name, jenis as product_name, color, size, SUM(product_logs.qty) as stok')
             ->join('models', 'models.id = products.model_id')
-            ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_logs', 'product_logs.product_id = products.id')
             ->where('product_logs.status', '2')
@@ -243,9 +242,8 @@ class Home extends BaseController
             ->where('YEAR(product_logs.created_at) = YEAR(CURRENT_DATE())')
             ->first();
         $productsIn = $this->productModel
-            ->select('model_name, product_name, color, size, SUM(product_logs.qty) as stok')
+            ->select('model_name, jenis as product_name, color, size, SUM(product_logs.qty) as stok')
             ->join('models', 'models.id = products.model_id')
-            ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
@@ -273,14 +271,13 @@ class Home extends BaseController
             foreach ($getStok->getResultObject() as $product) {                
                 if ($penjualan->getNumRows() > 0) {
                     foreach ($penjualan->getResultObject() as $sell) {                
-                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                        if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
                             $selling = $selling + $sell->qty;                         
                         }
                     }        
                     $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                                               
                     $selling = 0;
                     array_push($stok, [
-                        'product_id' => $product->product_id,
                         'model_id' => $product->model_id,
                         'product_name' => $product->product_name,
                         'model_name' => $product->model_name,
@@ -298,7 +295,6 @@ class Home extends BaseController
                 } else {
                     $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
                     array_push($stok, [
-                        'product_id' => $product->product_id,
                         'model_id' => $product->model_id,
                         'product_name' => $product->product_name,
                         'model_name' => $product->model_name,

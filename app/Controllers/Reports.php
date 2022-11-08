@@ -165,7 +165,7 @@ class Reports extends BaseController
                         }        
                         $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
                         array_push($stok, [
-                            'product_id' => $product->product_id,
+                            'id' => $product->id,
                             'model_id' => $product->model_id,
                             'product_name' => $product->product_name,
                             'model_name' => $product->model_name,
@@ -184,7 +184,7 @@ class Reports extends BaseController
                     } else {
                         $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
                         array_push($stok, [
-                            'product_id' => $product->product_id,
+                            'id' => $product->id,
                             'model_id' => $product->model_id,
                             'product_name' => $product->product_name,
                             'model_name' => $product->model_name,
@@ -207,6 +207,8 @@ class Reports extends BaseController
                 ->orderBy('qrcode', 'asc')
                 ->orderBy('created_at', 'desc')
                 ->get();
+                $date1 = date('m/d/Y', strtotime($date1));
+                $date2 = date('m/d/Y', strtotime($date2));
             $data = array(
                 'title' => 'Laporan',
                 'materials' => $materials,
@@ -216,7 +218,7 @@ class Reports extends BaseController
                 'polaOut' => $polaOut,
                 'cuttings' => $cuttings,
                 'models' => $models,
-                'stokProduk' => $stokProduk,
+                'stokProduk' => $stok,
                 'shippings' => $shippings,
                 'date1' => $date1,  
                 'date2' => $date2,
@@ -246,7 +248,7 @@ class Reports extends BaseController
                         }        
                         $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
                         array_push($stok, [
-                            'product_id' => $product->product_id,
+                            'id' => $product->id,
                             'model_id' => $product->model_id,
                             'product_name' => $product->product_name,
                             'model_name' => $product->model_name,
@@ -265,7 +267,7 @@ class Reports extends BaseController
                     } else {
                         $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
                         array_push($stok, [
-                            'product_id' => $product->product_id,
+                            'id' => $product->id,
                             'model_id' => $product->model_id,
                             'product_name' => $product->product_name,
                             'model_name' => $product->model_name,
@@ -302,6 +304,7 @@ class Reports extends BaseController
                 'date2' => $date2,
             );
         }
+        // dd($stokProduk->getResultObject());
         return view('gudang_lovish/reports', $data);    
     }
 
@@ -338,11 +341,13 @@ class Reports extends BaseController
         $spreadsheet = $render->load($file);
         $data = $spreadsheet->getActiveSheet()->toArray();
         foreach ($data as $idx => $row) {
-            if ($idx > 0) {                
-                $data = $row[1];
-                $jahit = $row[2];
-                $hpp = $row[3];
-                $this->materialModel->importModel($data, $jahit, $hpp);
+            if ($idx > 0) {       
+                $brand = $row[1];
+                $jenis = $row[2];         
+                $data = $row[3];
+                $jahit = $row[4];
+                $hpp = $row[5];
+                $this->materialModel->importModel($brand, $jenis, $data, $jahit, $hpp);
             }
         } 
         return redirect()->back()->with('create', 'Model berhasil diimport');

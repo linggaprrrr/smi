@@ -213,7 +213,7 @@
                                             </div>
                                             <div class="col">
                                                 <select class="form-control gelar2" data-id="<?= $kain->id ?>" name="gelar" style="width: 90px">
-                                                <option value="0">-</option>
+                                                <option value="">-</option>
                                                     <?php foreach ($timGelars->getResultObject() as $gelar) : ?>
                                                         <option value="<?= $gelar->id ?>" <?= $gelar->id == $kain->gelar2 ? 'selected="selected"' : ''; ?> ><?= $gelar->name ?></option>
                                                     <?php endforeach ?>
@@ -232,6 +232,7 @@
                                 </td>                                
                                 <td class="text-center">
                                     <select class="form-control cutting" data-id="<?= $kain->id ?>" name="pic_cutting" style="width: 90px">
+                                        <option value="">-</option>
                                         <?php foreach ($picCutting->getResultObject() as $pic) : ?>
                                             <option value="<?= $pic->id ?>" <?= $pic->id == $kain->pic_cutting ? 'selected="selected"' : ''; ?> ><?= $pic->name ?></option>
                                         <?php endforeach ?>
@@ -294,7 +295,7 @@
                                                 <td class="text-center align-middle"><?= date('m/d/Y', strtotime($cutting->tgl)) ?></td>
                                                 <td class="text-center align-middle">
                                                     <select class="form-control jenis-produk" name="nama_produk" data-id='<?= $cutting->id ?>'>
-                                                        <option value='0'>-</option>
+                                                        <option value=''>-</option>
                                                         <?php foreach ($models->getResultObject() as $model) : ?>
                                                             <option value="<?= $model->id ?>" <?= ($model->id == $cutting->model_id) ? 'selected="selected"': '' ?>><?= $model->model_name ?></option>
                                                         <?php endforeach ?>
@@ -400,7 +401,7 @@
                                                     <a href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-info-circle fa-lg mr-2"></i></a>
                                                     <!-- <a href="" data-toggle="modal" class="editable-cutting" data-id="<?= $cutting->id ?>"><i class="fa fa-edit fa-lg text-secondary"></i></a> -->
                                                     <a href="" data-toggle="modal"  class="pola-out" data-id="<?= $cutting->id ?>" ><i class="fa fa-sign-out-alt fa-lg text-success"></i></a>
-                                                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="diaxlog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
@@ -533,7 +534,7 @@
                                             <td class="text-center align-middle">
                                                 <select class="form-control" >
                                                     <?php foreach($vendorPola->getResultObject() as $vendor) : ?>
-                                                        <option value="<?= $pola->vendor_id ?>" <?= ($vendor->id == $pola->vendor_id) ? 'selected="selected"' : '' ?> > <?= $pola->name ?></option>
+                                                        <option value="<?= $vendor->id ?>" <?= ($vendor->id == $pola->vendor_id) ? 'selected="selected"' : '' ?> > <?= $vendor->name ?></option>
                                                     <?php endforeach ?>
                                                 </select>
                                             </td>
@@ -798,10 +799,8 @@
 
     $(document).on('click', '.create-produk', function() {
         const id = $(this).data('id');
-        swal({
-            title: "Apakah anda yakin?",
-            text: "Data yang anda hapus tidak akan kembali lagi",
-            icon: "warning",
+        swal({            
+            text: "Buat data produk?",
             buttons: true,
             dangerMode: true,
         })

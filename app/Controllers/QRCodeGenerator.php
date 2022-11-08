@@ -39,9 +39,8 @@ class QRCodeGenerator extends BaseController
     }
 
     public function QRGeneratorProductIn() {
-        $products = $this->produkModel->select('products.product_name, models.model_name, color, weight, qty, products.created_at, product_barcodes.qrcode')
+        $products = $this->produkModel->select('jenis as product_name, models.model_name, color, weight, qty, products.created_at, product_barcodes.qrcode')
             ->join('models', 'models.id = products.model_id')
-            ->join('product_types', 'product_types.id = products.product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')            
             ->orderBy('products.created_at', 'desc')
@@ -65,9 +64,8 @@ class QRCodeGenerator extends BaseController
     }
 
     public function QRGeneratorProductInGesit() {
-        $products = $this->produkModel->select('products.*, model_name, product_name, color, name, product_barcodes.qrcode as qr')
+        $products = $this->produkModel->select('products.*, model_name, jenis as product_name, color, name, product_barcodes.qrcode as qr')
             ->join('models', 'models.id = products.model_id')
-            ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
@@ -76,9 +74,8 @@ class QRCodeGenerator extends BaseController
             ->orderBy('created_at', 'desc')
             ->get();
         
-        $productsGudang = $this->produkModel->select('products.*, model_name, product_name, color, name, product_barcodes.qrcode as qr')
+        $productsGudang = $this->produkModel->select('products.*, model_name, jenis as product_name, color, name, product_barcodes.qrcode as qr')
             ->join('models', 'models.id = products.model_id')
-            ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
@@ -87,9 +84,8 @@ class QRCodeGenerator extends BaseController
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $productReject = $this->produkModel->select('products.id, weight, size, reject.qty, reject.date, reject.status, model_name, product_name, color, name, product_barcodes.qrcode as qr')
+        $productReject = $this->produkModel->select('products.id, weight, size, reject.qty, reject.date, reject.status, reject.category, model_name, jenis as product_name, color, name, product_barcodes.qrcode as qr')
             ->join('models', 'models.id = products.model_id')
-            ->join('product_types', 'product_types.id = product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
@@ -143,8 +139,7 @@ class QRCodeGenerator extends BaseController
                 'qr' => ''
             );
             for ($i=0; $i < count($products); $i++) {
-                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, product_name, color')
-                    ->join('product_types', 'product_types.id = product_id')
+                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, jenis as product_name, color')                    
                     ->join('colors', 'colors.id = products.color_id')
                     ->join('models', 'products.model_id = models.id')                
                     ->join('product_barcodes', 'product_barcodes.product_id = products.id')
@@ -176,8 +171,7 @@ class QRCodeGenerator extends BaseController
                 'qr' => ''
             );
             for ($i=0; $i < count($products); $i++) {
-                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, product_name, color')
-                    ->join('product_types', 'product_types.id = product_id')
+                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, jenis as product_name, color')                    
                     ->join('colors', 'colors.id = products.color_id')
                     ->join('models', 'products.model_id = models.id')                
                     ->join('product_barcodes', 'product_barcodes.product_id = products.id')

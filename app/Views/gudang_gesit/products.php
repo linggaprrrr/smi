@@ -8,7 +8,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Produk (Gesit)</h6>
-        <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-produk"><i class="fa fa-plus mr-2"></i>Tambah Produk</button>
+        <!-- <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-produk"><i class="fa fa-plus mr-2"></i>Tambah Produk</button> -->
         <div class="modal fade bd-example-modal-lg-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -96,7 +96,6 @@
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
-                        <th class="text-center">Berat (gr)</th>
                         <th class="text-center">Qty</th>
                         <th class="text-center">HPP</th>
                         <th class="text-center">Tanggal Masuk</th>
@@ -111,30 +110,12 @@
                         <?php foreach ($productsIn->getResultObject() as $product) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td>
-                                <select class="form-control jenis-produk" name="nama_produk" data-id='<?= $product->id ?>'>
-                                    <?php foreach ($products->getResultObject() as $pr) : ?>
-                                        <option value="<?= $pr->id ?>" <?= $pr->id == $product->product_id ? 'selected="selected"' : ''; ?> ><?= $pr->product_name ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                                </td>
-                                <td class="text-center">
-                                    <select class="form-control model" name="model" data-id='<?= $product->id ?>'>
-                                        <?php foreach ($models->getResultObject() as $model) : ?>
-                                                <option value="<?= $model->id ?>" <?= $model->id == $product->model_id ? 'selected="selected"' : ''; ?> ><?= $model->model_name ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control warna" name="warna" data-id='<?= $product->id ?>'>
-                                        <?php foreach ($colors->getResultObject() as $color) : ?>
-                                            <option value="<?= $color->id ?>" <?= $color->id == $product->color_id ? 'selected="selected"' : ''; ?> ><?= $color->color ?></option>
-                                        <?php endforeach ?>
-                                    </select>      
-                                </td>
-                                <td><input type="text" class="form-control berat" name="weight" data-id='<?= $product->id ?>' value="<?= $product->weight ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                                <td><?= $product->product_name ?></td>
+                                <td><?= $product->model_name ?></td>
+                                <td><?= $product->color ?></td>
+                                
                                 <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->stok ?>" readonly></td>        
-                                <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->price ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
+                                <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->hpp_jual ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
                                 <td class="text-center align-middle"><?= $product->created_at ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>
                                 <td class="text-center">                                    
@@ -168,7 +149,6 @@
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
-                        <th class="text-center">Berat (gr)</th>
                         <th class="text-center">Qty</th>
                         <th class="text-center">Tanggal Keluar</th>
                         <th class="text-center">PIC</th>
@@ -184,7 +164,6 @@
                                 <td><div><?= $product->product_name ?></div></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
-                                <td><?= $product->weight ?></td>
                                 <td class="text-center">1</td>
                                 <td class="text-center"><?= date('j F Y, H:m:s', strtotime($product->created_at)) ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
@@ -224,7 +203,7 @@
                             <?php if ($product->status == '1') : ?>
                                 <tr>
                                     <td class="text-center"><?= $no++ ?></td>
-                                    <td><div><?= $product->product_name ?></div></td>
+                                    <td class="text-center"><div><?= $product->product_name ?></div></td>
                                     <td class="text-center"><?= $product->model_name ?></td>                                
                                     <td class="text-center"><?= $product->color ?></td>                         
                                     <td class="text-center"><?= strtoupper($product->category) ?></td>       

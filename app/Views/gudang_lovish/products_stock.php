@@ -19,8 +19,7 @@
                         <th class="text-center" style="width: 5%">No</th>
                         <th class="text-center">Produk</th>                        
                         <th class="text-center">Stok Awal</th>
-                        <th class="text-center">Stok Masuk (Gesit)</th>
-                        <th class="text-center">Scan In</th>
+                        <th class="text-center">Stok Masuk (Gesit)</th>                        
                         <th class="text-center">Stok Retur</th>
                         <th class="text-center">Penjualan</th>
                         <th class="text-center">Sisa Stok</th>
@@ -28,32 +27,48 @@
                         <th class="text-center">HPP Jual</th>
                         <th class="text-center">Nilai Barang</th>
                         <th class="text-center">Nilai Jual</th>
+                        <th class="text-center">Margin Tetap</th>
                     </tr>
                 </thead>
                 
                 <tbody>
                     <?php $no = 1; ?>
                     <?php if (count($products) > 0) : ?>
-                        <?php foreach ($products as $product) : ?>                                                    
+                        <?php foreach ($products as $product) : ?>     
+                            <?php 
+                                    $stok = $product['stok'] + $product['stok_masuk'] + $product['stok_retur'];
+                                    $keluar = $product['penjualan'];
+                                    if ($stok > 0 && $keluar > 0) {                                        
+                                        $alert = 100 - (($keluar / $stok) * 100);
+                                    } else if ($stok == 0){
+                                        $alert = 100;
+                                    } else if ($keluar == 0) {
+                                        $alert = 100;
+                                    }
+                                    
+                                    
+                                ?>                                               
                             <tr>
                                 <td class="text-center align-middle"><?= $no++ ?></td>
                                 <td><?= $product['product_name'] ?> <?= $product['model_name'] ?> <?= $product['color'] ?></td>
                                 <td class="text-center align-middle"><?= $product['stok'] > 0 ? $product['stok'] : '-' ?></td>
-                                <td class="text-center align-middle"><?= $product['stok_masuk'] > 0 ? $product['stok_masuk'] : '-' ?></td>
-                                <td class="text-center align-middle"><?= $product['scan_in'] > 0 ? $product['scan_in'] : '-' ?></td>
+                                <td class="text-center align-middle"><?= $product['stok_masuk'] > 0 ? $product['stok_masuk'] : '-' ?></td>                                
                                 <td class="text-center align-middle"><?= $product['stok_retur'] > 0 ? $product['stok_retur'] : '-' ?></td>
                                 <td class="text-center align-middle"><?= $product['penjualan'] > 0 ? $product['penjualan'] : '-' ?></td>
-                                <?php if ($product['sisa'] > 20) : ?>
+                                <?php if ($alert >= 70) : ?>
                                     <td class="text-center align-middle"><?= $product['sisa'] ?></td>                                        
-                                <?php elseif ($product['sisa'] > 10 && $product['sisa'] < 20): ?>
+                                <?php elseif ($alert >= 50 && $alert < 69): ?>
                                     <td class="text-center align-middle table-warning"><?= $product['sisa'] ?></td>                                                                                
-                                <?php else : ?>
+                                <?php elseif ($alert >= 21 && $alert < 49): ?>
+                                    <td class="text-center align-middle" style="background-color: #ffcf77;"><?= $product['sisa'] ?></td>                                                                                
+                                <?php elseif ($alert >= 0 && $alert < 20) : ?>
                                     <td class="text-center align-middle table-danger"><?= $product['sisa'] ?></td>                                        
                                 <?php endif ?>
                                 <td class="text-center align-middle">Rp <?= number_format($product['hpp'], 0) ?></td>
-                                <td class="text-center align-middle"><input type="text" name="hpp-jual" data-id="<?= $product['product_id'] ?>" data-model="<?= $product['model_id'] ?>" data-size="<?= $product['size'] ?>" class="form-control hpp-jual" value="<?= $product['hpp_jual'] ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                                <td class="text-center align-middle"><input type="text" name="hpp-jual" data-id="<?= $product['id'] ?>" data-model="<?= $product['model_id'] ?>" data-size="<?= $product['size'] ?>" class="form-control hpp-jual" value="<?= $product['hpp_jual'] ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 <td class="text-center align-middle">Rp <?= number_format(($product['hpp'] * $product['sisa']), 0) ?></td>                            
                                 <td class="text-center align-middle">Rp <?= number_format(($product['hpp_jual'] * $product['sisa']), 0) ?></td>
+                                <td class="text-center align-middle"><mark>Rp <?= number_format(($product['hpp_jual'] * $product['sisa']) - ($product['hpp'] * $product['sisa']), 0) ?></mark></td>
                             </tr>
                         <?php endforeach ?>
                     <?php endif ?>

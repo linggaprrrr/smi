@@ -42,13 +42,13 @@ class Products extends BaseController
             foreach ($getStok->getResultObject() as $product) {                
                 if ($penjualan->getNumRows() > 0) {
                     foreach ($penjualan->getResultObject() as $sell) {                
-                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                        if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
                             $selling = $selling + $sell->qty;                         
                         }
                     }        
-                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    $sisa = ($product->stok + $product->stok_masuk  + $product->stok_retur - ($selling)) ;                                                            
                     array_push($stok, [
-                        'product_id' => $product->product_id,
+                        'id' => $product->id,
                         'model_id' => $product->model_id,
                         'product_name' => $product->product_name,
                         'model_name' => $product->model_name,
@@ -57,7 +57,6 @@ class Products extends BaseController
                         'stok' => $product->stok,
                         'stok_masuk' => $product->stok_masuk,
                         'penjualan' => $selling,
-                        'scan_in' => $product->scan_in,
                         'stok_retur' => $product->stok_retur,
                         'sisa' => $sisa,
                         'hpp' => $product->hpp,
@@ -65,9 +64,9 @@ class Products extends BaseController
                     ]);
                     $selling = 0;
                 } else {
-                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($selling)) ;                                                            
                     array_push($stok, [
-                        'product_id' => $product->product_id,
+                        'id' => $product->id,
                         'model_id' => $product->model_id,
                         'product_name' => $product->product_name,
                         'model_name' => $product->model_name,
@@ -76,7 +75,6 @@ class Products extends BaseController
                         'stok' => $product->stok,
                         'stok_masuk' => $product->stok_masuk,
                         'penjualan' => $selling,
-                        'scan_in' => $product->scan_in,
                         'stok_retur' => $product->stok_retur,
                         'sisa' => $sisa,
                         'hpp' => $product->hpp,
@@ -99,15 +97,31 @@ class Products extends BaseController
     public function createProduct() {
         $id = $this->request->getVar('pola');
         $data = $this->productModel->findPola($id);
-        // $product = [
-        //     'product_id' => ,
-        //     'color_id'  => ,
-        //     'model_id'  => $post['model'],
-        //     'user_id' => session()->get('user_id'),
-        //     'qty' => $data->jumlah_setor,
-        //     'vendor_id' => $post['vendor'],
-        //     'price' => $post['harga']
-        // ];
+        $product = [
+            'model_id'  => $data->id,            
+            'color_id' => $data->color,
+            'user_id' => session()->get('user_id'),
+            'hpp_jual' => $data->hpp,
+            'qty' => $data->jumlah_setor,                
+        ];
+        $this->productModel->save($product);
+        $productId = $this->productModel->insertID();        
+        for ($i=0; $i < $data->jumlah_setor; $i++) {
+            $temp = $this->productModel->createBarcode($productId);
+            $this->productModel->createLog($temp, '0', '2');
+        }
+
+        $getProduct = $this->productModel
+            ->select('jenis, model_name, color')
+            ->join('models', 'models.id = products.model_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->orderBy('products.id', 'desc')
+            ->first();
+        
+        $this->logModel->save([
+            'description' => 'Menambahkan produk baru ('.$getProduct['jenis'].' '.$getProduct['model_name'].' '.$getProduct['color'].') sebanyak '.$data->jumlah_setor.'. ',
+            'user_id' =>  session()->get('user_id'),
+        ]);
     }
 
     public function getProductDetail() {
@@ -218,7 +232,6 @@ class Products extends BaseController
         $productsIn = $this->productModel->getAllProductIn();
         
         $productsOut = $this->productModel->getAllProductOut();
-        $productsExp = $this->productModel->getAllProductExp();
         $models = $this->designModel->getAllModel();
         $colors = $this->materialModel->getAllColors();
         $products = $this->productModel->getAllProduct();
@@ -228,7 +241,6 @@ class Products extends BaseController
             'title' => 'Produk',
             'productsIn' => $productsIn,
             'productsOut' => $productsOut,
-            'productsExp' => $productsExp,
             'models' => $models,
             'products' => $products,
             'colors' => $colors,
@@ -593,13 +605,7 @@ class Products extends BaseController
                 $colorID = "";
                 $size = NULL;
                 $hpp = 0;
-
-                $getProductType = $this->productModel->getProductType($temp[0]);
-                if (is_null($getProductType)) {
-                    $productTypeID = $this->productModel->saveProductType($temp[0]);                    
-                }  else {
-                    $productTypeID = $getProductType->id;
-                }                       
+      
 
                 $getModel = $this->designModel->where(['model_name' => $temp[1]])->first();                                
                 if (is_null($getModel)) {
@@ -635,7 +641,6 @@ class Products extends BaseController
 
 
                 $this->productModel->save([
-                    'product_id' => $productTypeID,
                     'model_id' => $modelID,
                     'color_id' => $colorID,
                     'user_id' => session()->get('user_id'),
@@ -667,13 +672,13 @@ class Products extends BaseController
             foreach ($products->getResultObject() as $product) {                
                 if ($penjualan->getNumRows() > 0) {
                     foreach ($penjualan->getResultObject() as $sell) {                
-                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                        if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
                             $selling = $selling + $sell->qty;                         
                         }
                     }        
-                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($selling)) ;                                                            
                     array_push($stok, [
-                        'product_id' => $product->product_id,
+                        'id' => $product->id,
                         'model_id' => $product->model_id,
                         'product_name' => $product->product_name,
                         'model_name' => $product->model_name,
@@ -682,7 +687,6 @@ class Products extends BaseController
                         'stok' => $product->stok,
                         'stok_masuk' => $product->stok_masuk,
                         'penjualan' => $selling,
-                        'scan_in' => $product->scan_in,
                         'stok_retur' => $product->stok_retur,
                         'sisa' => $sisa,
                         'hpp' => $product->hpp,
@@ -690,9 +694,9 @@ class Products extends BaseController
                     ]);
                     $selling = 0;
                 } else {
-                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($selling)) ;                                                            
                     array_push($stok, [
-                        'product_id' => $product->product_id,
+                        'id' => $product->id,
                         'model_id' => $product->model_id,
                         'product_name' => $product->product_name,
                         'model_name' => $product->model_name,
@@ -701,7 +705,6 @@ class Products extends BaseController
                         'stok' => $product->stok,
                         'stok_masuk' => $product->stok_masuk,
                         'penjualan' => $selling,
-                        'scan_in' => $product->scan_in,
                         'stok_retur' => $product->stok_retur,
                         'sisa' => $sisa,
                         'hpp' => $product->hpp,
@@ -774,22 +777,22 @@ class Products extends BaseController
             foreach ($products->getResultObject() as $product) {                
                 if ($penjualan->getNumRows() > 0) {
                     foreach ($penjualan->getResultObject() as $sell) {                
-                        if (($sell->product_id == $product->product_id) && ($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                        if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
                             $selling = $selling + $sell->qty;                         
                         }
                     }        
-                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($selling)) ;                                                            
                     array_push($stok, [
-                        'product_id' => $product->product_id,
+                        'id' => $product->id,
                         'model_id' => $product->model_id,
                         'product_name' => $product->product_name,
                         'model_name' => $product->model_name,
                         'color' => $product->color,
                         'size' => $product->size,
                         'stok' => $product->stok,
+                        'scan_in' => $product->scan_in,
                         'stok_masuk' => $product->stok_masuk,
                         'penjualan' => $selling,
-                        'scan_in' => $product->scan_in,
                         'stok_retur' => $product->stok_retur,
                         'sisa' => $sisa,
                         'hpp' => $product->hpp,
@@ -797,18 +800,18 @@ class Products extends BaseController
                     ]);
                     $selling = 0;
                 } else {
-                    $sisa = ($product->stok + $product->stok_masuk - ($selling - $product->stok_retur)) ;                                                            
+                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($selling)) ;                                                            
                     array_push($stok, [
-                        'product_id' => $product->product_id,
+                        'id' => $product->id,
                         'model_id' => $product->model_id,
                         'product_name' => $product->product_name,
                         'model_name' => $product->model_name,
+                        'scan_in' => $product->scan_in,
                         'color' => $product->color,
                         'size' => $product->size,
                         'stok' => $product->stok,
                         'stok_masuk' => $product->stok_masuk,
                         'penjualan' => $selling,
-                        'scan_in' => $product->scan_in,
                         'stok_retur' => $product->stok_retur,
                         'sisa' => $sisa,
                         'hpp' => $product->hpp,

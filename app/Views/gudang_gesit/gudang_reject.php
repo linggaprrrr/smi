@@ -120,7 +120,7 @@
                                     <?php $no = 1; ?>
                                     <?php if ($rejectedProducts->getNumRows() > 0) : ?>
                                         <?php foreach ($rejectedProducts->getResultObject() as $product) : ?>
-                                            <?php if ($product->status == '3') : ?>
+                                            <?php if (strpos($product->category, 'permanent') !== false) : ?>
                                                 <tr>
                                                     <td class="text-center"><?= $no++ ?></td>
                                                     <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td> 

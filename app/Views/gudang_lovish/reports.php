@@ -76,7 +76,7 @@
                                                 <td class="text-center align-middle table-danger"><?= $product['sisa'] ?></td>                                        
                                             <?php endif ?>
                                             <td class="text-center align-middle">Rp <?= number_format($product['hpp'], 0) ?></td>
-                                            <td class="text-center align-middle"><input type="text" name="hpp-jual" data-id="<?= $product['product_id'] ?>" data-model="<?= $product['model_id'] ?>" data-size="<?= $product['size'] ?>" class="form-control hpp-jual" value="<?= $product['hpp_jual'] ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled></td>
+                                            <td class="text-center align-middle"><input type="text" name="hpp-jual" data-model="<?= $product['model_id'] ?>" data-size="<?= $product['size'] ?>" class="form-control hpp-jual" value="<?= $product['hpp_jual'] ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled></td>
                                             <td class="text-center align-middle">Rp <?= number_format(($product['hpp'] * $product['sisa']), 0) ?></td>                            
                                             <td class="text-center align-middle">Rp <?= number_format(($product['hpp_jual'] * $product['sisa']), 0) ?></td>
                                         </tr>

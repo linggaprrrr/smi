@@ -64,20 +64,20 @@
                     break;
                 case "4": 
                         ?>                        
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-shipment') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Pengiriman</span></a>
-                        </li>
+                        </li> -->
                         <?php
                     break;
                 case "5": 
                         ?>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-retur') ?>">
                                 <i class="fas fa-fw fa-qrcode"></i>
                                 <span>QR Scanner Retur</span></a>
-                        </li>
+                        </li> -->
                         <?php
                     break;
                 case "6": 

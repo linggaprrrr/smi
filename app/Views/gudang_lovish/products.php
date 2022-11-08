@@ -21,7 +21,6 @@
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
-                        <th class="text-center">Berat (gr)</th>
                         <th class="text-center">Qty</th>
                         <th class="text-center">Tanggal Masuk</th>
                         <th class="text-center">PIC</th>
@@ -34,10 +33,9 @@
                         <?php foreach ($productsOut->getResultObject() as $product) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td><div><?= $product->product_name ?></div></td>
+                                <td class="text-center"><div><?= $product->product_name ?></div></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
-                                <td><?= $product->weight ?></td>
                                 <td class="text-center">1</td>
                                 <td class="text-center"><?= $product->created_at ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
@@ -170,7 +168,6 @@
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
-                        <th class="text-center">Berat (gr)</th>
                         <th class="text-center">Qty</th>
                         <th class="text-center">HPP</th>
                         <th class="text-center">Tanggal Masuk</th>
@@ -185,13 +182,7 @@
                         <?php foreach ($productsIn->getResultObject() as $product) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td>
-                                <select class="form-control jenis-produk" name="nama_produk" data-id='<?= $product->id ?>'>
-                                    <?php foreach ($products->getResultObject() as $pr) : ?>
-                                        <option value="<?= $pr->id ?>" <?= $pr->id == $product->product_id ? 'selected="selected"' : ''; ?> ><?= $pr->product_name ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                                </td>
+                                <td class="text-center"><div><?= $product->product_name ?></div></td>
                                 <td class="text-center">
                                     <select class="form-control model" name="model" data-id='<?= $product->id ?>'>
                                         <?php foreach ($models->getResultObject() as $model) : ?>
@@ -205,8 +196,7 @@
                                             <option value="<?= $color->id ?>" <?= $color->id == $product->color_id ? 'selected="selected"' : ''; ?> ><?= $color->color ?></option>
                                         <?php endforeach ?>
                                     </select>      
-                                </td>
-                                <td><input type="text" class="form-control berat" name="weight" data-id='<?= $product->id ?>' value="<?= $product->weight ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                                </td>                                
                                 <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>        
                                 <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->price ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
                                 <td class="text-center align-middle"><?= $product->created_at ?></td>

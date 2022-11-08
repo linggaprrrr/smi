@@ -146,7 +146,6 @@
                                 <th class="text-center">Produk</th>
                                 <th class="text-center">Model</th>
                                 <th class="text-center">Warna</th>
-                                <th class="text-center">Berat (gr)</th>
                                 <th class="text-center">Qty</th>
                                 <th class="text-center">Tanggal Masuk</th>
                                 <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all-gudang" /></th>
@@ -162,8 +161,7 @@
                                             <td class="text-center"><?= $no++ ?></td>
                                             <td class=""><?= $product->product_name ?></td>
                                             <td class=""><?= $product->model_name ?></td>
-                                            <td><?= $product->color ?></td>
-                                            <td><?= $product->weight ?></td>                                    
+                                            <td><?= $product->color ?></td>                         
                                             <td class="text-center"><?= $product->qty ?></td>
                                             <td class="text-center"><?= $product->created_at ?></td>
                                             <td class="text-center">
@@ -176,7 +174,6 @@
                                             <td class=""><?= $product->product_name ?></td>
                                             <td class=""><?= $product->model_name ?></td>
                                             <td><?= $product->color ?></td>
-                                            <td><?= $product->weight ?></td>    
                                             <td class="text-center"><?= $product->qty ?></td>                                
                                             <td class="text-center"><?= $product->created_at ?></td>
                                             <td class="text-center">
@@ -207,8 +204,8 @@
                                 <th class="text-center">Produk</th>
                                 <th class="text-center">Model</th>
                                 <th class="text-center">Warna</th>
-                                <th class="text-center">Berat (gr)</th>
                                 <th class="text-center">Qty</th>
+                                <th class="text-center">Reject</th>
                                 <th class="text-center">Tanggal Masuk</th>
                                 <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all-gudang" /></th>
                             </tr>
@@ -224,9 +221,9 @@
                                                 <td class="text-center"><?= $no++ ?></td>
                                                 <td class=""><?= $product->product_name ?></td>
                                                 <td class=""><?= $product->model_name ?></td>
-                                                <td><?= $product->color ?></td>
-                                                <td><?= $product->weight ?></td>                                    
+                                                <td><?= $product->color ?></td>                      
                                                 <td class="text-center"><?= $product->qty ?></td>
+                                                <td class="text-center"><?= $product->cateogry ?></td>
                                                 <td class="text-center"><?= $product->date ?></td>
                                                 <td class="text-center">
                                                     <input type="checkbox" class="unprinted-gudang" name="print[]" value="<?= $product->id ?>" />
@@ -237,9 +234,9 @@
                                                 <td class="text-center"><?= $no++ ?></td>
                                                 <td class=""><?= $product->product_name ?></td>
                                                 <td class=""><?= $product->model_name ?></td>
-                                                <td><?= $product->color ?></td>
-                                                <td><?= $product->weight ?></td>    
-                                                <td class="text-center"><?= $product->qty ?></td>                                
+                                                <td><?= $product->color ?></td>    
+                                                <td class="text-center"><?= $product->qty ?></td>   
+                                                <td class="text-center"><?= $product->cateogry ?></td>                             
                                                 <td class="text-center"><?= $product->date ?></td>
                                                 <td class="text-center">
                                                     <input type="checkbox" class="printed-gudang" name="print[]" value="<?= $product->id ?>" />
@@ -273,7 +270,7 @@
                             const desc2 = qr[i+1]['key'].split("-");
                             const desc3 = qr[i+2]['key'].split("-");     
                             $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'<br>'+desc1[3]+'</small></td>');
-                            $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px; width: 158px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'<br>'+desc2[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 15px 5px 20px; width: 158px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'<br>'+desc2[3]+'</small></td>');
                             $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i+2]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc3[1]+'<br>'+desc3[2]+'<br>'+desc3[3]+'</small></td>');
                             i += 2;
                         } else if (qr.length - i == 2) {
@@ -339,7 +336,7 @@
                             const desc2 = qr[i+1]['key'].split("-");
                             const desc3 = qr[i+2]['key'].split("-");     
                             $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i]['qr']+'" style="width: 1.3cm;float:left" /><small style="float:center;font-size:11px">'+desc1[1]+'<br>'+desc1[2]+'<br>'+desc1[3]+'</small></td>');
-                            $('#qr-handler').append('<td style="padding: 0px 20px 5px 20px; width: 158px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'<br>'+desc2[3]+'</small></td>');
+                            $('#qr-handler').append('<td style="padding: 0px 15px 5px 20px; width: 158px"><img src="'+qr[i+1]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc2[1]+'<br>'+desc2[2]+'<br>'+desc2[3]+'</small></td>');
                             $('#qr-handler').append('<td style="padding: 0px 0px 5px 0px; width: 118px"><img src="'+qr[i+2]['qr']+'" style="width: 1.3cm; float:left" /><small style="float:center; font-size:11px">'+desc3[1]+'<br>'+desc3[2]+'<br>'+desc3[3]+'</small></td>');
                             i += 2;
                         } else if (qr.length - i == 2) {

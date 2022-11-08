@@ -228,9 +228,11 @@
                         <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Jenis</th>
                                 <th class="text-center">Nama Model</th>
                                 <th class="text-center">Harga Jahit</th>
                                 <th class="text-center">HPP</th>
+                                <th class="text-center">Brand</th>
                                 <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
                             </tr>
                         </thead>
@@ -241,9 +243,11 @@
                                 <?php foreach ($models->getResultObject() as $model) : ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
+                                        <td class=""><?= $model->jenis ?></td>
                                         <td class=""><?= $model->model_name ?></td>
                                         <td class=""><?= $model->harga_jahit ?></td>
                                         <td class=""><?= $model->hpp ?></td>
+                                        <td class=""><?= $model->brand ?></td>
                                         <td class="text-center">
                                             <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-model" data-id="<?= $model->id ?>">
                                                 <span class="icon text-white-25">
@@ -303,138 +307,7 @@
             </div>
         </div>                   
     </div>
-    <div class="col-lg-6">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Produk</h6>
-                <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-produk"><i class="fa fa-plus mr-2"></i>Tambah Produk</button>
-                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importproduk"><i class="fa fa-file-excel mr-2"></i>
-                    Import
-                </button>
-
-                <!-- Modal -->
-                <div class="modal fade" id="importproduk" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <form action="<?= base_url('/upload-jenis-produk') ?>" method="post" enctype="multipart/form-data">
-                    <?= csrf_field() ?>
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Upload Jenis Produk</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label>File:</label>
-                                    <label class="custom-file">
-
-                                        <input type="file" name="file" class="custom-file-input" id="file-upload3" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-                                        <span class="custom-file-label" id="file-upload-filename3">Choose file</span>
-                                    </label>
-                                    <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Import</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                </div>
-                <div class="modal fade bd-example-modal-lg-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">                
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <form id="form-produk">
-                            <?php csrf_field() ?>
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Produk Baru</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="">Jenis Produk*</label>
-                                        <input type="text" class="form-control" name="nama_produk" placeholder="Masukkan Nama Produk" required>                                
-                                    </div>
-                                    
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" id="submit-form-produk" class="btn btn-primary">Simpan</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive" id="tabel-produk">
-                    <table class="table table-bordered" id="dataTable13" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th class="text-center" style="width: 5%">No</th>
-                                <th class="text-center">Jenis Produk</th>
-                                <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody>
-                            <?php $no = 1; ?>
-                            <?php if ($products->getNumRows() > 0) : ?>
-                                <?php foreach ($products->getResultObject() as $product) : ?>
-                                    <tr>
-                                        <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $product->product_name ?></td>
-                                        <td class="text-center">
-                                            <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-produk" data-id='<?= $product->id ?>'>
-                                                <span class="icon text-white-25">
-                                                    <i class="fas fa-pen"></i>
-                                                </span>
-                                            </a>
-                                            <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus-produk" data-id='<?= $product->id ?>'>
-                                                <span class="icon text-white-25">
-                                                    <i class="fas fas fa-trash"></i>
-                                                </span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach ?>
-                            <?php endif ?>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal fade bd-example-modal-lg-produk-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <form action="<?= base_url('/update-produk') ?>" method="post">
-                                <?= csrf_field() ?>
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Edit Produk</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="">Jenis Produk*</label>
-                                        <input type="hidden" name="id" id="id-produk">
-                                        <input type="text" class="form-control" id="nama-produk" name="nama_produk" placeholder="Masukkan Nama Model" required>                                
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>             
-    </div>
+    
     <div class="col-lg-6">
         <div class="card shadow mb-4">
             <div class="card-header py-3">

@@ -313,8 +313,8 @@ class MaterialModel extends Model
     public function importMaterial($type, $harga) {
         $this->db->query("INSERT IGNORE INTO material_types(type, harga) VALUES('$type', '$harga') ");
     }
-    public function importModel($type, $jahit, $hpp) {
-        $this->db->query("INSERT IGNORE INTO models(model_name, harga_jahit, hpp) VALUES('$type', '$jahit', '$hpp') ");
+    public function importModel($brand, $jenis, $type, $jahit, $hpp) {
+        $this->db->query("INSERT IGNORE INTO models(brand, jenis, model_name, harga_jahit, hpp) VALUES('$brand', '$jenis', '$type', '$jahit', '$hpp') ");
     }
     public function importProduk($type) {
         $this->db->query("INSERT IGNORE INTO product_types(product_name) VALUES('$type') ");
@@ -338,9 +338,9 @@ class MaterialModel extends Model
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
             ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
-            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
-            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('tim_gelar as g1', 'g1.id = m.gelar1', 'left')
+            ->join('tim_gelar as g2', 'g2.id = m.gelar2', 'left')
+            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting', 'left')
             ->join('pola as p', 'p.cutting_id = ct.id', 'left')
             ->groupBy('ct.id')
             ->orderBy('ct.id', 'desc')
@@ -472,7 +472,7 @@ class MaterialModel extends Model
     } 
 
     public function updateStatusCutting($id, $remain, $status) {
-        $this->db->query("UPDATE cutting SET status='$status', jumlah_pola='$remain' WHERE id='$id' ");
+        $this->db->query("UPDATE cutting SET status='$status', qty='$remain' WHERE id='$id' ");
     }
 
     public function updateStatusPola($id, $status) {
