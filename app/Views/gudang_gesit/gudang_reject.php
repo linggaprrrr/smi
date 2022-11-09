@@ -30,7 +30,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
                                                 Total Nilai Jual</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalNilaiJual) ? "0" : $totalNilaiJual) ?></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp <?= (is_null($totalNilaiJual) ? "0" : number_format($totalNilaiJual, 0)) ?></div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-cubes fa-2x text-gray-300"></i>
@@ -65,27 +65,27 @@
                                     <?php $no = 1; ?>
                                     <?php if ($rejectedSold->getNumRows() > 0) : ?>
                                         <?php foreach ($rejectedSold->getResultObject() as $product) : ?>
-                                            <?php if ($product->status == '2') : ?>
-                                                <tr class="table-secondary">
-                                                    <td class="text-center"><?= $no++ ?></td>
-                                                    <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td> 
-                                                    <td class="text-center"><?= date('m/d/Y', strtotime($product->tanggal_jual)) ?></td> 
-                                                    <td><div><?= $product->product_name ?></div></td>
-                                                    <td class="text-center"><?= $product->model_name ?></td>                                
-                                                    <td class="text-center"><?= $product->color ?></td>                         
-                                                    <td class="text-center"><?= strtoupper($product->category) ?></td>                                       
-                                                    <td class="text-center">Rp <?= number_format($product->hpp, 0) ?></td>
-                                                </tr>
-                                            <?php else : ?>
+                                            <?php if ($product->status == '1') : ?>
                                                 <tr class="">
                                                     <td class="text-center"><?= $no++ ?></td>
-                                                    <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td> 
-                                                    <td class="text-center">-</td> 
+                                                    <td class="text-center"><?= $product->date ?></td> 
+                                                    <td class="text-center"><?= $product->tanggal_jual ?></td> 
                                                     <td><div><?= $product->product_name ?></div></td>
                                                     <td class="text-center"><?= $product->model_name ?></td>                                
                                                     <td class="text-center"><?= $product->color ?></td>                         
                                                     <td class="text-center"><?= strtoupper($product->category) ?></td>                                                                                       
-                                                    <td><input type="text" name="hpp[]" class="form-control harga-jual" data-id='<?= $product->id ?>' value="<?= $product->hpp ?>" placeholder="Rp ..."></td>
+                                                    <td><input type="text" name="hpp[]" class="form-control harga-jual" data-id='<?= $product->barcode_id ?>' value="<?= $product->hpp ?>" placeholder="Rp ..."></td>
+                                                </tr>
+                                            <?php else : ?>
+                                                <tr class="table-secondary">
+                                                    <td class="text-center"><?= $no++ ?></td>
+                                                    <td class="text-center"><?= $product->date ?></td> 
+                                                    <td class="text-center"><?= $product->tanggal_jual ?></td> 
+                                                    <td><div><?= $product->product_name ?></div></td>
+                                                    <td class="text-center"><?= $product->model_name ?></td>                                
+                                                    <td class="text-center"><?= $product->color ?></td>                         
+                                                    <td class="text-center"><?= strtoupper($product->category) ?></td>                                                                                       
+                                                    <td>Rp <?= number_format($product->hpp, 0) ?></td>
                                                 </tr>
                                             <?php endif ?>
                                         <?php endforeach ?>

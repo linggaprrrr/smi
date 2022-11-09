@@ -84,13 +84,13 @@ class QRCodeGenerator extends BaseController
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $productReject = $this->produkModel->select('products.id, weight, size, reject.qty, reject.date, reject.status, reject.category, model_name, jenis as product_name, color, name, product_barcodes.qrcode as qr')
+         $productReject = $this->produkModel->select('reject.id, weight, size, reject.qty, reject.date, reject.status, reject.category, model_name, jenis as product_name, color, name, product_barcodes.qrcode as qr')
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('reject', 'reject.barcode_id = product_barcodes.id')            
-            ->groupBy('products.id')
+            
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -176,7 +176,7 @@ class QRCodeGenerator extends BaseController
                     ->join('models', 'products.model_id = models.id')                
                     ->join('product_barcodes', 'product_barcodes.product_id = products.id')
                     ->join('reject', 'reject.barcode_id = product_barcodes.id')
-                    ->where('products.id', $products[$i])                                        
+                    ->where('reject.id', $products[$i])                                        
                     ->get();
                 
                 foreach ($getProducts->getResultArray() as $row) {

@@ -157,7 +157,6 @@ class Products extends BaseController
         $productId = $this->request->getVar('product_id');
         $getProduct = $this->productModel
             ->join('models', 'models.id = products.model_id')
-            ->join('product_types', 'product_types.id = products.product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->first();
         $this->productModel->deleteProductBarcode($productId);

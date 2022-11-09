@@ -247,7 +247,7 @@ class Home extends BaseController
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
-            ->where('product_logs.status', '2')
+            ->where('product_barcodes.status', '2')
             ->where('product_logs.qty > ', '0')
             ->where('MONTH(product_logs.created_at) = MONTH(CURRENT_DATE())')
             ->where('YEAR(product_logs.created_at) = YEAR(CURRENT_DATE())')

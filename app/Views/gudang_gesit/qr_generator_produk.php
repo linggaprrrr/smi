@@ -215,34 +215,19 @@
                             <?php $no = 1; ?>
                             <?php if ($productReject->getNumRows() > 0) : ?>
                                 <?php foreach ($productReject->getResultObject() as $product) : ?>
-                                    <?php if ($product->status != '3') : ?> 
-                                        <?php if (is_null($product->qr) || empty($product->qr)) :?>
-                                            <tr>
-                                                <td class="text-center"><?= $no++ ?></td>
-                                                <td class=""><?= $product->product_name ?></td>
-                                                <td class=""><?= $product->model_name ?></td>
-                                                <td><?= $product->color ?></td>                      
-                                                <td class="text-center"><?= $product->qty ?></td>
-                                                <td class="text-center"><?= $product->cateogry ?></td>
-                                                <td class="text-center"><?= $product->date ?></td>
-                                                <td class="text-center">
-                                                    <input type="checkbox" class="unprinted-gudang" name="print[]" value="<?= $product->id ?>" />
-                                                </td>
-                                            </tr>
-                                        <?php else: ?>
-                                            <tr class="table-secondary">
-                                                <td class="text-center"><?= $no++ ?></td>
-                                                <td class=""><?= $product->product_name ?></td>
-                                                <td class=""><?= $product->model_name ?></td>
-                                                <td><?= $product->color ?></td>    
-                                                <td class="text-center"><?= $product->qty ?></td>   
-                                                <td class="text-center"><?= $product->cateogry ?></td>                             
-                                                <td class="text-center"><?= $product->date ?></td>
-                                                <td class="text-center">
-                                                    <input type="checkbox" class="printed-gudang" name="print[]" value="<?= $product->id ?>" />
-                                                </td>
-                                            </tr>
-                                        <?php endif ?>
+                                    <?php if ($product->category != 'permanent') : ?> 
+                                        <tr class="table-secondary">
+                                            <td class="text-center"><?= $no++ ?></td>
+                                            <td class=""><?= $product->product_name ?></td>
+                                            <td class=""><?= $product->model_name ?></td>
+                                            <td><?= $product->color ?></td>    
+                                            <td class="text-center"><?= $product->qty ?></td>   
+                                            <td class="text-center"><?= strtoupper($product->category) ?></td>                             
+                                            <td class="text-center"><?= $product->date ?></td>
+                                            <td class="text-center">
+                                                <input type="checkbox" class="printed-gudang" name="print[]" value="<?= $product->id ?>" />
+                                            </td>
+                                        </tr>
                                     <?php endif ?>
                                     
                                 <?php endforeach ?>

@@ -758,7 +758,7 @@ class Materials extends BaseController
             'tglSetor'=> date('Y-m-d', strtotime($post['tgl-setor'])),
             'jumlahSetor' => $post['jumlah-setor'],
             'reject' => $post['reject'],
-            'sisa' => $post['jumlah'] - $post['jumlah-setor'],
+            'sisa' => $post['jumlah'] - $post['jumlah-setor'] - $post['reject'],
             'harga' => $harga,
             'total' => $harga * $post['jumlah-setor']          
         ];

@@ -156,6 +156,7 @@
                 </thead>
                 
                 <tbody>
+                    
                     <?php $no = 1; ?>
                     <?php if ($productsOut->getNumRows() > 0) : ?>
                         <?php foreach ($productsOut->getResultObject() as $product) : ?>
@@ -165,7 +166,7 @@
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
                                 <td class="text-center">1</td>
-                                <td class="text-center"><?= date('j F Y, H:m:s', strtotime($product->created_at)) ?></td>
+                                <td class="text-center"><?= $product->created_at ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
                             </tr>
                         <?php endforeach ?>
@@ -200,25 +201,23 @@
                     <?php $no = 1; ?>
                     <?php if ($rejectedProducts->getNumRows() > 0) : ?>
                         <?php foreach ($rejectedProducts->getResultObject() as $product) : ?>
-                            <?php if ($product->status == '1') : ?>
-                                <tr>
-                                    <td class="text-center"><?= $no++ ?></td>
-                                    <td class="text-center"><div><?= $product->product_name ?></div></td>
-                                    <td class="text-center"><?= $product->model_name ?></td>                                
-                                    <td class="text-center"><?= $product->color ?></td>                         
-                                    <td class="text-center"><?= strtoupper($product->category) ?></td>       
-                                    <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td>
-                                    <?php if ($product->category != 'permananent') :?>
-                                        <td class="text-center">
-                                            <a href="" data-toggle="modal"  class="reject-in" data-id="<?= $product->id ?>" ><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a>
-                                            <a href="" data-toggle="modal"  class="reject-permanent" data-id="<?= $product->id ?>" ><i class="fa fa-trash fa-lg text-danger"></i></a>
-                                        </td>                                        
-                                    <?php else : ?>
-                                        <td></td>
-                                    <?php endif ?>
+                            <tr>
+                                <td class="text-center"><?= $no++ ?></td>
+                                <td class="text-center"><div><?= $product->product_name ?></div></td>
+                                <td class="text-center"><?= $product->model_name ?></td>                                
+                                <td class="text-center"><?= $product->color ?></td>                         
+                                <td class="text-center"><?= strtoupper($product->category) ?></td>       
+                                <td class="text-center"><?= $product->date ?></td>
+                                <?php if ($product->category == 'noda' || $product->category == 'jahit') :?>
+                                    <td class="text-center">
+                                        <a href="" data-toggle="modal"  class="reject-in" data-id="<?= $product->barcode_id ?>" ><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a>
+                                        <a href="" data-toggle="modal"  class="reject-permanent" data-id="<?= $product->barcode_id ?>" ><i class="fa fa-trash fa-lg text-danger"></i></a>
+                                    </td>                                        
+                                <?php else : ?>
+                                    <td></td>
+                                <?php endif ?>
 
-                                </tr>
-                            <?php endif ?>                            
+                            </tr>
                         <?php endforeach ?>
                     <?php endif ?>
                 </tbody>

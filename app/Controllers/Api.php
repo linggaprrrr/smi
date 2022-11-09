@@ -51,7 +51,7 @@ class Api extends BaseController {
                     $this->produkModel->setProductIn($qr[0]);
                 }        
                 break;
-            case "reject-noda" : 
+            case "reject" : 
                 $check = $this->produkModel->findProductReject($qr[0]);
                 $status = 0;
                 
@@ -79,7 +79,7 @@ class Api extends BaseController {
                 }
                 break;
             case "penjualan-reject" : 
-                $check = $this->produkModel->findProductReject($qr[0]);
+                $check = $this->produkModel->findProductRejectSold($qr[0]);
                 $status = 0;
                 
                 if ($check->getNumRows() > 0) {
@@ -130,6 +130,5 @@ class Api extends BaseController {
         $data = [            
             'status' => $status
         ];
-        echo json_encode($data);
     }    
 }

@@ -190,7 +190,7 @@
                                     <?php $no = 1; ?>
                                     <?php if ($polaOut->getNumRows() > 0) : ?>
                                         <?php foreach ($polaOut->getResultObject() as $pola) : ?>
-                                            <?php if ($pola->jum == '1') : ?>
+                                            <?php if ($pola->status == '1') : ?>
                                                 <tr>                                    
                                                     <td class="text-center"><?= $no++ ?></td>
                                                     <td class="text-center font-weight-bold"><?= $pola->material_id ?></td>
@@ -333,6 +333,7 @@
                                         <th class="text-center">Model</th>
                                         <th class="text-center">Warna</th>
                                         <th class="text-center">Berat (gr)</th>
+                                        <th class="text-center">Stok</th>
                                         <th class="text-center">Tanggal</th>
                                         
                                     </tr>
@@ -348,6 +349,7 @@
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
                                                 <td><?= $product->weight ?></td>
+                                                <td class="text-center"><?= $product->stok ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
                                             </tr>

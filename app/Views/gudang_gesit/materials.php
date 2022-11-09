@@ -667,7 +667,7 @@
                                             <td class="text-center align-middle">
                                                 <a href="" data-toggle="modal" data-target="#infoPolaIn"><i class="fa fa-info-circle fa-lg mr-2"></i></a>                                
                                                 <a href="" data-toggle="modal" class="editable-polain" data-id="<?= $pola->id ?>"><i class="fa fa-edit fa-lg text-secondary mr-2"></i></a>
-                                                <a href="" data-toggle="modal" class="create-produk" data-id="<?= $pola->id ?>"><i class="fa fa-list fa-lg text-primary"></i></a>
+                                                <a href="" data-toggle="modal" class="create-produk" data-id="<?= $pola->id ?>"><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a>
                                                 <div class="modal fade" id="infoPolaIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                     <div class="modal-dialog" role="document">
                                                         <div class="modal-content">
