@@ -207,7 +207,7 @@
                                 <th class="text-center">Qty</th>
                                 <th class="text-center">Reject</th>
                                 <th class="text-center">Tanggal Masuk</th>
-                                <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all-gudang" /></th>
+                                <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all-reject" /></th>
                             </tr>
                         </thead>
                         
@@ -225,7 +225,7 @@
                                             <td class="text-center"><?= strtoupper($product->category) ?></td>                             
                                             <td class="text-center"><?= $product->date ?></td>
                                             <td class="text-center">
-                                                <input type="checkbox" class="printed-gudang" name="print[]" value="<?= $product->id ?>" />
+                                                <input type="checkbox" class="unprinted-reject" name="print[]" value="<?= $product->id ?>" />
                                             </td>
                                         </tr>
                                     <?php endif ?>
@@ -347,6 +347,10 @@
 
         $('#select-all-gudang').click(function() {
             $('.unprinted-gudang').prop('checked', this.checked);
+        });
+
+        $('#select-all-reject').click(function() {
+            $('.unprinted-reject').prop('checked', this.checked);
         });
 
     });

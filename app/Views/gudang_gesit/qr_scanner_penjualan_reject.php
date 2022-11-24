@@ -104,8 +104,7 @@
             ++countResults;
             lastResult = decodedText;
             $.post('/reject-in-sold-scanning', {qr: qr}, function(data) {            
-                const stat = JSON.parse(data);               
-                
+                const stat = JSON.parse(data);          
                 audio.play();   
                 if (stat == '1') {
                     $.notify(kode[1] +' '+ kode[2] +' berhasil di-scan!', "success");  
@@ -131,7 +130,7 @@
     });
 
     $('.button-reject').click(function() {
-        $.post( '<?= base_url('/simpan-reject') ?>', $('form#simpan-reject').serialize(), function(data) {
+        $.post( '<?= base_url('/jual-reject') ?>', $('form#jual-reject').serialize(), function(data) {
             const res = JSON.parse(data);
             if (res == '1') {
                 $.notify('Produk reject berhasil disimpan!', "success");                     

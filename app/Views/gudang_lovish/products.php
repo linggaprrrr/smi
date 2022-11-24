@@ -169,7 +169,6 @@
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
                         <th class="text-center">Qty</th>
-                        <th class="text-center">HPP</th>
                         <th class="text-center">Tanggal Masuk</th>
                         <th class="text-center">PIC</th>
                         <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
@@ -198,7 +197,7 @@
                                     </select>      
                                 </td>                                
                                 <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>        
-                                <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->price ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
+                                
                                 <td class="text-center align-middle"><?= $product->created_at ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>
                                 <td class="text-center">                                    

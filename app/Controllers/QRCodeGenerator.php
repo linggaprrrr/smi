@@ -91,7 +91,7 @@ class QRCodeGenerator extends BaseController
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('reject', 'reject.barcode_id = product_barcodes.id')            
             
-            ->orderBy('created_at', 'desc')
+            ->orderBy('reject.date', 'desc')
             ->get();
 
             

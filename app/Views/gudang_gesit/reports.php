@@ -32,6 +32,9 @@
             <li class="nav-item">
                 <a class="nav-link font-weight-bold" data-toggle="tab" href="#menu3">Produk</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" data-toggle="tab" href="#menu4">Penjualan Reject</a>
+            </li>
         </ul>
 
         <!-- Tab panes -->
@@ -39,9 +42,9 @@
             <div id="home" class="tab-pane active"><br>                
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary float-left">Data Kain Masuk</h6>
+                        <h6 class="m-0 font-weight-bold text-primary float-left">Data Kain</h6>
                         <?php if (!is_null($date1)) : ?>
-                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain/'. date('Y-m-d H:i:s', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php else : ?>
                             <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php endif ?>
@@ -55,7 +58,7 @@
                                         <th class="text-center" style="width: 5%">No</th>
                                         <th class="text-center">Jenis</th>
                                         <th class="text-center">Warna</th>
-                                        <th class="text-center">Berat (kg)</th>
+                                        <th class="text-center">Berat (kg)/Yard</th>
                                         <th class="text-center">Tanggal Masuk</th>
                                     </tr>
                                 </thead>
@@ -68,7 +71,7 @@
                                                 <td class="text-center"><?= $no++ ?></td>
                                                 <td class=""><?= $kain->type ?></td>
                                                 <td><?= $kain->color ?></td>
-                                                <td><?= number_format($kain->weight/1000, 2) ?></td>
+                                                <td><?= $kain->weight ?></td>
                                                 <td class="text-center"><?= $kain->created_at ?></td>
                                             
                                             </tr>
@@ -117,7 +120,7 @@
                                             <tr>
                                                 <td class="text-center align-middle"><?= $no++ ?></td>
                                                 <td class="text-center font-weight-bold align-middle"><?= $cutting->mid ?></td>
-                                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($cutting->tgl)) ?></td>
+                                                <td class="text-center align-middle"><?= $cutting->tgl?></td>
                                                 <td class="text-center align-middle">
                                                     <select class="form-control jenis-produk" name="nama_produk" data-id='<?= $cutting->id ?>' disabled> 
                                                         <option value='0'>-</option>
@@ -194,8 +197,8 @@
                                                 <tr>                                    
                                                     <td class="text-center"><?= $no++ ?></td>
                                                     <td class="text-center font-weight-bold"><?= $pola->material_id ?></td>
-                                                    <td class="text-center"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>
-                                                    <td class="text-center"><?= date('m/d/Y', strtotime($pola->tgl)) ?></td>
+                                                    <td class="text-center"><?= $pola->tgl_ambil?></td>
+                                                    <td class="text-center"><?= $pola->tgl ?></td>
                                                     <td class="text-center"><?= $pola->model_name ?></td>
                                                     <td class="text-center"><?= $pola->color ?></td>
                                                     <td class="text-center"><?= $pola->jumlah_pola ?></td>
@@ -240,7 +243,8 @@
                                         <th class="text-center">Jumlah Setor</th>
                                         <th class="text-center">Reject</th>
                                         <th class="text-center">Sisa</th>
-                                        <th class="text-center">Harga</th>
+                                        <th class="text-center">Harga Jahit</th>
+                                        <th class="text-center">Harga HPP</th>
                                         <th class="text-center">Total Harga</th>
                                         <th class="text-right" style="width: 7%"><i class="fa fa-ellipsis-v"></i></th>
                                     </tr>
@@ -254,18 +258,19 @@
                                 <tr class="">
                                     <td class="text-center"><?= $no++ ?></td>
                                     <td class="text-center font-weight-bold"><?= $pola->material_id ?></td>
-                                    <td class="text-center"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>                                
+                                    <td class="text-center"><?= $pola->tgl_ambil ?></td>                                
                                     <td class="text-center"><?= $pola->model_name ?></td>
                                     <td class="text-center"><?= $pola->color ?></td>
                                     <td class="text-center"><?= $pola->jumlah_pola ?></td>
                                     <td class="text-center"><?= $pola->type ?></td>
                                     <td class="text-center"><?= $pola->name ?></td>
-                                    <td class="text-center"><?= date('m/d/Y', strtotime($pola->tgl_setor)) ?></td>                                
+                                    <td class="text-center"><?= $pola->tgl_setor ?></td>                                
                                     <td class="text-center"><?= $pola->jumlah_setor ?></td>
                                     <td class="text-center"><?= $pola->reject ?></td>
                                     <td class="text-center"><?= $pola->sisa ?></td>
-                                    <td class="text-center"><?= $pola->harga ?></td>
-                                    <td class="text-center"><?= $pola->total_harga ?></td>
+                                    <td class="text-center"><?= $pola->harga_jahit ?></td>
+                                    <td class="text-center"><?= $pola->hpp ?></td>
+                                    <td class="text-center"><?= $pola->hpp * $pola->jumlah_setor ?></td>
                                     <td class="text-center align-middle">
                                         <a href="#" data-toggle="modal" data-target="#infoPolaIn"><i class="fa fa-info-circle fa-lg mr-2"></i></a>                                
                                         <div class="modal fade" id="infoPolaIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -332,9 +337,8 @@
                                         <th class="text-center">Nama Produk</th>
                                         <th class="text-center">Model</th>
                                         <th class="text-center">Warna</th>
-                                        <th class="text-center">Berat (gr)</th>
-                                        <th class="text-center">Stok</th>
-                                        <th class="text-center">Tanggal</th>
+                                        <th class="text-center">Qty</th>
+                                        <th class="text-center">Tanggal Masuk</th>
                                         
                                     </tr>
                                 </thead>
@@ -345,11 +349,10 @@
                                         <?php foreach ($productsIn->getResultObject() as $product) : ?>
                                             <tr>
                                                 <td class="text-center"><?= $no++ ?></td>
-                                                <td><?= $product->product_name ?></td>
+                                                <td class="text-center"><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
-                                                <td><?= $product->color ?></td>
-                                                <td><?= $product->weight ?></td>
-                                                <td class="text-center"><?= $product->stok ?></td>
+                                                <td class="text-center"><?= $product->color ?></td>
+                                                <td class="text-center"><?= $product->qty ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
                                             </tr>
@@ -380,7 +383,7 @@
                                         <th class="text-center">Nama Produk</th>
                                         <th class="text-center">Model</th>
                                         <th class="text-center">Warna</th>
-                                        <th class="text-center">Berat (gr)</th>
+                                        <th class="text-center">Harga</th>
                                         <th class="text-center">Tanggal</th>
                                     </tr>
                                 </thead>
@@ -394,7 +397,7 @@
                                                 <td><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
-                                                <td><?= $product->weight ?></td>
+                                                <td>Rp <?= number_format($product->price, 0) ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
                                             </tr>
@@ -439,14 +442,66 @@
                                                 <td><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
-                                                <td><?= $product->category ?></td>
-                                                <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td>
+                                                <td><?= strtoupper($product->category)?></td>
+                                                <td class="text-center"><?= $product->date ?></td>
                                                 
                                             </tr>
                                         <?php endforeach ?>
                                     <?php endif ?>
                                 </tbody>
                             </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div id="menu4" class="tab-pane fade"><br>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary float-left">Data Penjualan Reject</h6>
+                        <?php if (!is_null($date1)) : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-penjualan-reject/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                        <?php else : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-penjualan-reject') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php endif ?>
+                        
+                    </div>
+                    <div class="card-body">
+                        
+                        <div class="table-responsive" id="tabel-penjualan-reject">
+                            <table class="table table-bordered" id="dataTable6" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 5%">No</th>
+                                        <th class="text-center">Tanggal Reject</th>   
+                                        <th class="text-center">Tanggal Jual</th>   
+                                        <th class="text-center">Produk</th>   
+                                        <th class="text-center">Model</th>   
+                                        <th class="text-center">Warna</th>   
+                                        <th class="text-center">Jenis Reject</th>   
+                                        <th class="text-center">Harga Jual</th>   
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php $no = 1; ?>
+                                    <?php if ($rejectedSold->getNumRows() > 0) : ?>
+                                        <?php foreach ($rejectedSold->getResultObject() as $product) : ?>
+                                            <tr class="">
+                                                <td class="text-center"><?= $no++ ?></td>
+                                                <td class="text-center"><?= $product->date ?></td> 
+                                                <td class="text-center"><?= $product->tanggal_jual ?></td> 
+                                                <td><div><?= $product->product_name ?></div></td>
+                                                <td class="text-center"><?= $product->model_name ?></td>                                
+                                                <td class="text-center"><?= $product->color ?></td>                         
+                                                <td class="text-center"><?= strtoupper($product->category) ?></td>                                                                                       
+                                                <td>Rp <?= number_format($product->hpp, 0) ?></td>
+                                            </tr>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
+                                </tbody>
+                                
+                            </table>
+                        
                         </div>
                         
                     </div>
@@ -465,7 +520,15 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
-    $('.daterange').daterangepicker();    
+    $('.daterange').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        startDate: moment().startOf('hour'),
+        endDate: moment().startOf('hour').add(128, 'hour'),
+        locale: {
+            format: 'M/D/YYYY HH:MM'
+        }
+    });    
     $('.daterange').change(function() {
         $('#date').submit();
     })

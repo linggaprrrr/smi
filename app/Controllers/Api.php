@@ -27,6 +27,7 @@ class Api extends BaseController {
         $post = $this->request->getVar();
         $jenis = $post['jenis'];
         $status = 0;
+        $resi = $post['qr'];
         $qr = explode('-', $post['qr']);
         
         switch($jenis) {
@@ -104,25 +105,63 @@ class Api extends BaseController {
                     $this->produkModel->setProductOut($qr[0]);
                 }
                 break;
-            case "pengiriman" : 
-                
+            case "pengiriman" :                 
                 $status = '0';
-                
-                break;
-            case "so" : 
-                $getProduct = $this->produkModel->findProductOut($qr[0]);
-                $status = '0';
-                if ($getProduct->getNumRows() > 0) {
-                    $status = '1'; 
-                    $this->produkModel->setProductSO($qr[0]);
+                $getShipment = $this->shippinglModel->where('resi', $resi)->first();
+                if (is_null($getShipment) || empty($getShipment)) {
+                    $str = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                    $numbers = rand(1000, 9999);
+                    $info = 'BOX-'.substr($str, 0, 3).''.$numbers;
+                    $this->shippinglModel->insertShippingDetail($info, $qr);
+                    $status = 1;
                 }
                 break;
+            case "pengiriman-produk" :
+                    $resi = $post['qr'];
+                    $prod = explode('-', $post['prod']);
+                    $getProduct = $this->produkModel
+                        ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                        ->where('product_barcodes.id', $prod[0])
+                        ->get();
+                    if ($getProduct->getNumRows() > 0) {                         
+                        $getShipment = $this->shippinglModel->where('resi', $resi)->first();            
+                        if (!is_null($getShipment) || !empty($getShipment)) {
+                            $status = '1';                 
+                            $this->shippinglModel->insertProductShipment($prod[0], $getShipment['id']);   
+                            $this->produkModel->setProductOutShipment($prod[0], '0');
+                        } 
+                    }    
+                break;
             case "so" : 
-                $getProduct = $this->produkModel->findProductOut($qr[0]);
+                $getProduct = $this->produkModel->findProductSo($qr[0]);
                 $status = '0';
+                $check = $this->produkModel
+                    ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                    ->join('scan_so', 'scan_so.product_id = product_barcodes.id')
+                    ->where('scan_so.product_id', $qr[0])
+                    ->get();
+
                 if ($getProduct->getNumRows() > 0) {
                     $status = '1'; 
-                    $this->produkModel->setProductSO($qr[0]);
+                    if ($check->getNumRows() == 0) {
+                        $this->produkModel->setProductSO($qr[0]);
+                    }
+                }
+                break;
+            case "retur-produk" : 
+                $getProduct = $this->produkModel
+                ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
+                ->where('product_logs.product_id', $qr[0])
+                ->get();
+                $status = '0';
+                if ($getProduct->getNumRows() > 0) {
+                    $status = '1';           
+                    $this->produkModel->returProduct($qr[0]);
+                    $this->logModel->save([
+                        'description' => 'Meretur data Produk ('.$qr[1].' '.$qr[2].' '.$qr[3].')',
+                        'user_id' =>  session()->get('user_id'),
+                    ]);
                 }
                 break;
         }
@@ -130,5 +169,6 @@ class Api extends BaseController {
         $data = [            
             'status' => $status
         ];
+        echo json_encode($data);
     }    
 }

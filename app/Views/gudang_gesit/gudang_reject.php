@@ -56,8 +56,7 @@
                                         <th class="text-center">Model</th>   
                                         <th class="text-center">Warna</th>   
                                         <th class="text-center">Jenis Reject</th>   
-                                        <th class="text-center">Harga Jual</th>   
-                                    
+                                        <th class="text-center">Harga Jual</th>                                       
                                     </tr>
                                 </thead>
                                 

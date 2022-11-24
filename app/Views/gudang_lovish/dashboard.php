@@ -112,7 +112,17 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-12">
+        <div class="float-right">
+            <form method="GET" action="<?= base_url('/operasional/dashboard') ?>" id="date" >
+                <div class="form-group" style="width: 250px;">
+                    <label for="">Date Range: </label>    
+                    <input type="text" name="dates" class="form-control text-center daterange" value="<?= date('m/d/Y H:i') ?> - <?= date('m/d/Y H:i') ?>" readonly />                                                    
+                </div>    
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-6">        
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Stok Gudang</h6>
@@ -133,8 +143,8 @@
                         
                         <tbody>
                             <?php $no = 1; ?>
-                            <?php if (count($productLovish) > 0) : ?>
-                                <?php foreach ($productLovish as $product) : ?>
+                            <?php if ($productLovish->getNumRows() > 0) : ?>
+                                <?php foreach ($productLovish->getResultArray() as $product) : ?>
                                     
                                     <tr class="">
                                         <td class="text-center"><?= $no++ ?></td>
@@ -190,7 +200,7 @@
                                             <td class="text-center"><?= $product->model_name ?></td>
                                             <td class="text-center"><?= $product->color ?></td>
                                             <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
-                                            <td class="text-center"><?= date('d/m/Y', strtotime($product->created_at)) ?></td>
+                                            <td class="text-center"><?= date('d/m/Y', strtotime($product->updated_at)) ?></td>
                                             <td>1</td>
                                         </tr>
                                     <?php endif ?>                                    
@@ -219,6 +229,7 @@
                                 <th class="text-center">Model</th>
                                 <th class="text-center">Warna</th>
                                 <th class="text-center">Size</th>
+                                <th class="text-center">Tanggal Masuk</th>
                                 <th class="text-center">Stok</th>
                             </tr>
                         </thead>
@@ -233,6 +244,7 @@
                                         <td class="text-center"><?= $product->model_name ?></td>
                                         <td class="text-center"><?= $product->color ?></td>
                                         <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
+                                        <td class="text-center"><?= $product->updated_at ?></td>
                                         <td class="text-center"><?= $product->stok ?></td>
                                     </tr>
                                 <?php endforeach ?>
@@ -254,6 +266,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Tanggal</th>
                                 <th class="text-center">Jenis</th>
                                 <th class="text-center">Model</th>
                                 <th class="text-center">Warna</th>
@@ -268,6 +281,7 @@
                                 <?php foreach ($productsRetur->getResultObject() as $product) : ?>
                                     <tr class="table-danger">
                                         <td class="text-center"><?= $no++ ?></td>
+                                        <td class="text-center"><?= $product->created_at ?></td>
                                         <td><?= $product->product_name ?></td>
                                         <td><?= $product->model_name ?></td>
                                         <td><?= $product->color ?></td>
@@ -288,34 +302,110 @@
                 <h6 class="m-0 font-weight-bold text-primary float-left">Top 10 Produk/Brand</h6>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable7" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th class="text-center" style="width: 5%">No</th>
-                                <th class="text-center">Jenis</th>
-                                <th class="text-center">Model</th>
-                                <th class="text-center">Total Qty</th>
-                                <th class="text-center">Brand</th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody>
-                            <?php $no = 1; ?>
-                            <?php if ($top10->getNumRows() > 0) : ?>
-                                <?php foreach ($top10->getResultObject() as $product) : ?>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold active" data-toggle="tab" href="#lovish">LOVISH</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold" data-toggle="tab" href="#odelia">ODELIA</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold" data-toggle="tab" href="#basundari">BASUNDARI</a>
+                    </li>
+                </ul>
+                <div class="tab-content m-0">
+                    <div id="lovish" class="tab-pane active"><br>  
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable7" width="100%" cellspacing="0">
+                                <thead>
                                     <tr>
-                                        <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $product->product_name ?></td>
-                                        <td><?= $product->model_name ?></td>                                                               
-                                        <td class="text-center"><?= $product->total_qty ?></td>
-                                        <td class="text-center"><?= $product->brand ?></td>
+                                        <th class="text-center" style="width: 5%">No</th>
+                                        <th class="text-center">Jenis</th>
+                                        <th class="text-center">Model</th>
+                                        <th class="text-center">Total Qty</th>
+                                        <th class="text-center">Brand</th>
                                     </tr>
-                                <?php endforeach ?>
-                            <?php endif ?>
-                        </tbody>
-                    </table>
+                                </thead>
+                                
+                                <tbody>
+                                    <?php $no = 1; ?>
+                                    <?php if ($top10Lovish->getNumRows() > 0) : ?>
+                                        <?php foreach ($top10Lovish->getResultObject() as $product) : ?>
+                                            <tr>
+                                                <td class="text-center"><?= $no++ ?></td>
+                                                <td><?= $product->product_name ?></td>
+                                                <td><?= $product->model_name ?></td>                                                               
+                                                <td class="text-center"><?= $product->total_qty ?></td>
+                                                <td class="text-center"><?= $product->brand ?></td>
+                                            </tr>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="odelia" class="tab-pane"><br>  
+                        <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable7" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="width: 5%">No</th>
+                                            <th class="text-center">Jenis</th>
+                                            <th class="text-center">Model</th>
+                                            <th class="text-center">Total Qty</th>
+                                            <th class="text-center">Brand</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        <?php $no = 1; ?>
+                                        <?php if ($top10Odelia->getNumRows() > 0) : ?>
+                                            <?php foreach ($top10Odelia->getResultObject() as $product) : ?>
+                                                <tr>
+                                                    <td class="text-center"><?= $no++ ?></td>
+                                                    <td><?= $product->product_name ?></td>
+                                                    <td><?= $product->model_name ?></td>                                                               
+                                                    <td class="text-center"><?= $product->total_qty ?></td>
+                                                    <td class="text-center"><?= $product->brand ?></td>
+                                                </tr>
+                                            <?php endforeach ?>
+                                        <?php endif ?>
+                                    </tbody>
+                                </table>
+                            </div>                        
+                    </div>
+                    <div id="basundari" class="tab-pane"><br>  
+                        <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable7" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="width: 5%">No</th>
+                                            <th class="text-center">Jenis</th>
+                                            <th class="text-center">Model</th>
+                                            <th class="text-center">Total Qty</th>
+                                            <th class="text-center">Brand</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        <?php $no = 1; ?>
+                                        <?php if ($top10Basundari->getNumRows() > 0) : ?>
+                                            <?php foreach ($top10Basundari->getResultObject() as $product) : ?>
+                                                <tr>
+                                                    <td class="text-center"><?= $no++ ?></td>
+                                                    <td><?= $product->product_name ?></td>
+                                                    <td><?= $product->model_name ?></td>                                                               
+                                                    <td class="text-center"><?= $product->total_qty ?></td>
+                                                    <td class="text-center"><?= $product->brand ?></td>
+                                                </tr>
+                                            <?php endforeach ?>
+                                        <?php endif ?>
+                                    </tbody>
+                                </table>
+                            </div>                        
+                    </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -347,7 +437,7 @@
                                         <tr>
                                             <td class="text-center align-middle"><?= $no++ ?></td>
                                             <td class="align-middle"><?= $ship->box_name ?></td>                       
-                                            <td class="text-center align-middle"><?= date('j F Y, H:m', strtotime($ship->created_at)) ?></td>
+                                            <td class="text-center align-middle"><?= $ship->created_at ?></td>
                                             <td class="text-center align-middle">
                                                 <?php if (empty($ship->resi) || is_null($ship->resi)) : ?>
                                                     -
@@ -367,7 +457,7 @@
                                         <tr class="table-info">
                                             <td class="text-center align-middle"><?= $no++ ?></td>
                                             <td class="align-middle"><?= $ship->box_name ?></td>                       
-                                            <td class="text-center align-middle"><?= date('j F Y, H:m', strtotime($ship->created_at)) ?></td>
+                                            <td class="text-center align-middle"><?= $ship->created_at ?></td>
                                             <td class="text-center align-middle"><?= $ship->resi ?></td>
                                             <td class="text-center align-middle">                                            
                                                 <a href="#" class="btn btn-info btn-icon-split btn-sm btn-detail-produk" data-id='<?= $ship->id ?>'>
@@ -418,6 +508,9 @@
 </div>
 <?= $this->endSection() ?>
 <?= $this->section('js') ?>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
     $('.btn-detail-produk').click(function(){
             const id = $(this).data('id');
@@ -437,5 +530,18 @@
             });
             $('.bd-example-modal-lg-produk-detail').modal('show');
         });
+        $('.daterange').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,
+            startDate: moment().startOf('hour'),
+            endDate: moment().startOf('hour').add(32, 'hour'),
+            locale: {
+                format: 'M/D/YYYY HH:MM'
+            }
+        });      
+
+        $('.daterange').change(function() {
+            $('#date').submit();
+        })
 </script>
 <?= $this->endSection() ?>

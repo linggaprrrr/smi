@@ -64,12 +64,15 @@
                                         <input type="text" class="form-control harga-kain" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." required>                                
                                     </div> 
                                     <div class="form-group">
-                                        <label for="">Berat (gr)</label>
-                                        <input type="text" class="form-control" name="berat" id="tambah-berat" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="...">
-                                        <small id="modelName" class="form-text text-muted">Contoh 1,5 kg menjadi <b>1500</b> </small>
-                                    </div>                                                                  
+                                        <label for="">Berat (Kg)/Yard</label>
+                                        <input type="text" class="form-control" name="berat" id="tambah-berat" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="...">                                        
+                                    </div>  
+                                    <div class="form-group">
+                                        <label for="">Roll</label>
+                                        <input type="text" class="form-control" name="roll" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah roll">                                
+                                    </div>                                                                
                                 </div>
-                                <div class="col">
+                                <!-- <div class="col">
                                     <div class="form-group">
                                         <label for="">Tgl Cutting</label>
                                         <input type="text" class="form-control" name="tgl-cutting-old" value="-" disabled>                                
@@ -120,11 +123,8 @@
                                         </select>                
                                     </div>
                                     
-                                    <div class="form-group">
-                                        <label for="">Roll</label>
-                                        <input type="text" class="form-control" name="roll" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah roll">                                
-                                    </div>
-                                </div>
+                                    
+                                </div> -->
                             </div>
                             
                         </div>
@@ -146,14 +146,11 @@
                         <th class="text-center" style="width: 5%">Kode Kain</th>
                         <th class="text-center">Jenis</th>
                         <th class="text-center">Warna</th>
-                        <th class="text-center">Berat (kg)</th>
+                        <th class="text-center">Berat (Kg)/Yard</th>
                         <th class="text-center">Tgl Masuk</th>                                                
                         <th class="text-center">Vendor</th>
                         <th class="text-center">Harga</th>
-                        <th class="text-center">Tgl Cutting</th>
-                        <th class="text-center">Tim Gelar</th>
                         <th class="text-center">Posisi Gd.</th>
-                        <th class="text-center">PIC Cutting</th>
                         <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
                     </tr>
                 </thead>
@@ -168,76 +165,41 @@
                                 <td class="text-center align-middle"><?= $no++ ?></td>    
                                 <td class="text-center font-weight-bold align-middle"><?= $kain->material_id ?></td>                            
                                 <td class="">
-                                    <select class="form-control jenis" data-id="<?= $kain->id ?>" name="jenis" style="width: 140px">                                         
+                                    <select class="form-control jenis" data-id="<?= $kain->id ?>" name="jenis">                                         
                                         <?php foreach ($materials->getResultObject() as $material) : ?>
                                             <option value="<?= $material->id ?>" <?= $material->id == $kain->material_type ? 'selected="selected" ' : ''; ?> ><?= $material->type ?></option>
                                         <?php endforeach ?>                                        
                                     </select>    
                                 </td>
                                 <td>
-                                    <select class="form-control warna" name="warna" data-id='<?= $kain->id ?>' style="width: 90px">
+                                    <select class="form-control warna" name="warna" data-id='<?= $kain->id ?>'>
                                         <?php foreach ($colors->getResultObject() as $color) : ?>
                                             <option value="<?= $color->id ?>" <?= $color->id == $kain->color_id ? 'selected="selected"' : ''; ?> ><?= $color->color ?></option>
                                         <?php endforeach ?>
                                     </select>   
                                 </td>                                
                                 <td>
-                                    <input type="text" class="form-control berat" name="weight" data-id='<?= $kain->id ?>' style="width: 90px" value="<?= number_format($kain->weight/1000, 2) ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                                    <input type="text" class="form-control berat" name="weight" data-id='<?= $kain->id ?>' value="<?= $kain->total_berat ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 </td>
                                 <td class="text-center align-middle"><?= date('m/d/Y', strtotime($kain->created_at)) ?></td>                                
                                 <td class="text-center">
-                                    <select class="form-control vendor-kain-edit" name="vendor" data-id='<?= $kain->id ?>' style="width: 160px">                                        
+                                    <select class="form-control vendor-kain-edit" name="vendor" data-id='<?= $kain->id ?>'>                                        
                                         <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
                                             <option value="<?= $vendor->id ?>" <?= $vendor->id == $kain->vendor_id ? 'selected="selected"' : '' ?> ><?= $vendor->vendor ?></option>
                                         <?php endforeach ?>
                                     </select>    
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control harga" name="price" data-id='<?= $kain->id ?>' value="<?= $kain->price ?>"  style="width: 90px" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
-                                </td>
-                                <?php if (is_null($kain->tgl_cutting)) : ?>
-                                    <td class="text-center"><input type="text" class="form-control tgl-cutting-edit" name="tgl-cutting" data-id='<?= $kain->id ?>' value="-" disabled>  </td>
-                                <?php else : ?>
-                                    <td class="text-center"><input type="text" class="form-control tgl-cutting-edit" name="tgl-cutting" data-id='<?= $kain->id ?>' value="<?= date("m/d/Y", strtotime($kain->tgl_cutting)) ?>" disabled>  </td>
-                                <?php endif ?>
+                                    <input type="text" class="form-control harga" name="price" data-id='<?= $kain->id ?>' value="<?= $kain->price ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                                </td>                                
                                 <td class="text-center">
-                                    <form>
-                                        <div class="form-row">
-                                            <div class="col">
-                                                <select class="form-control gelar1" data-id="<?= $kain->id ?>" name="gelar" style="width: 90px">
-                                                    <option value="0">-</option>
-                                                    <?php foreach ($timGelars->getResultObject() as $gelar) : ?>
-                                                        <option value="<?= $gelar->id ?>" <?= $gelar->id == $kain->gelar1 ? 'selected="selected"' : ''; ?> ><?= $gelar->name ?></option>
-                                                    <?php endforeach ?>
-                                                </select> 
-                                            </div>
-                                            <div class="col">
-                                                <select class="form-control gelar2" data-id="<?= $kain->id ?>" name="gelar" style="width: 90px">
-                                                <option value="">-</option>
-                                                    <?php foreach ($timGelars->getResultObject() as $gelar) : ?>
-                                                        <option value="<?= $gelar->id ?>" <?= $gelar->id == $kain->gelar2 ? 'selected="selected"' : ''; ?> ><?= $gelar->name ?></option>
-                                                    <?php endforeach ?>
-                                                </select> 
-                                            </div>
-                                        </div>
-                                    </form>
-                                </td>
-                                <td class="text-center">
-                                    <select class="form-control gudang" data-id="<?= $kain->id ?>" name="gudang" style="width: 90px">
+                                    <select class="form-control gudang" data-id="<?= $kain->id ?>" name="gudang" >
                                         <?php foreach ($gudangs->getResultObject() as $gudang) : ?>
                                             <option value="<?= $gudang->id ?>" <?= $gudang->id == $kain->gudang_id ? 'selected="selected"' : ''; ?> ><?= $gudang->gudang ?></option>
                                         <?php endforeach ?>
                                     </select> 
                                     
-                                </td>                                
-                                <td class="text-center">
-                                    <select class="form-control cutting" data-id="<?= $kain->id ?>" name="pic_cutting" style="width: 90px">
-                                        <option value="">-</option>
-                                        <?php foreach ($picCutting->getResultObject() as $pic) : ?>
-                                            <option value="<?= $pic->id ?>" <?= $pic->id == $kain->pic_cutting ? 'selected="selected"' : ''; ?> ><?= $pic->name ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </td>
+                                </td>                                                                
                                 <td class="text-center">
                                     <div class="action">                                    
                                         <a href="" data-toggle="modal" class="btn btn-danger btn-icon-split btn-sm btn-hapus" data-id='<?= $kain->id ?>'>
@@ -275,7 +237,8 @@
                                     <th class="text-center">Tanggal</th>
                                     <th class="text-center">Produk</th>
                                     <th class="text-center">Warna</th>
-                                    <th class="text-center" style="width: 10%;">Qty</th>
+                                    <th class="text-center" style="width: 5%;">Qty</th>
+                                    <th class="text-center">Berat (Kg)/Yard</th>
                                     <th class="text-center">Gelar 1</th>
                                     <th class="text-center">Gelar 2</th>                        
                                     <th class="text-center">PIC</th>
@@ -305,22 +268,37 @@
                                                 <td class="text-center align-middle">
                                                     <input type="text" class="form-control text-center qty-cutting" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                 </td>
+                                                <td class="text-center align-middle">
+                                                    <input type="text" class="form-control text-center berat-cutting" name="berat" data-id='<?= $cutting->id ?>' data-material='<?= $cutting->material_id ?>'  value="<?= $cutting->berat ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                </td>
                                                 <td class="text-center align-middle">                                
-                                                    <?= $cutting->gelar1 ?>
-                                                    <br>
+                                                    <select name="gelar1" data-id="<?= $cutting->id ?>" class="form-control gelar1">
+                                                        <option value="">-</option>
+                                                       <?php foreach($timGelars->getResultObject() as $gelar) : ?>
+                                                            <option value="<?= $gelar->id ?>" <?= ($gelar->id == $cutting->gelar1) ? 'selected' : '' ?>><?= $gelar->name ?></option>
+                                                        <?php endforeach ?>
+                                                    </select>                                                      
                                                     <small><mark id="gelar1_<?= $cutting->id ?>">Rp <?= number_format($cutting->biaya_gelar1, 0) ?></mark></small>
                                                 </td>  
                                                 <td class="text-center align-middle">   
-                                                    <?= $cutting->gelar2 ?>                             
-                                                    <br>
+                                                    <select name="gelar2" data-id="<?= $cutting->id ?>" class="form-control gelar2">
+                                                        <option value="">-</option>
+                                                       <?php foreach($timGelars->getResultObject() as $gelar) : ?>
+                                                            <option value="<?= $gelar->id ?>" <?= ($gelar->id == $cutting->gelar2) ? 'selected' : '' ?>><?= $gelar->name ?></option>
+                                                        <?php endforeach ?>
+                                                    </select>                                                      
                                                     <small><mark id="gelar2_<?= $cutting->id ?>">Rp <?= number_format($cutting->biaya_gelar2, 0) ?></mark></small>
                                                 </td>  
                                                 <td class="text-center align-middle">                                
-                                                    <?= $cutting->pic ?>
-                                                    <br>
+                                                    <select name="pic_cutting" data-id="<?= $cutting->id ?>" class="form-control pic">
+                                                        <option value="">-</option>
+                                                       <?php foreach ($picCutting->getResultObject() as $pic) : ?>
+                                                            <option value="<?= $pic->id ?>" <?= ($pic->id == $cutting->pic) ? 'selected' : '' ?>><?= $pic->name ?></option>
+                                                        <?php endforeach ?>
+                                                    </select>                                                    
                                                     <small><mark id="pic_<?= $cutting->id ?>">Rp <?= number_format($cutting->biaya_cutting, 0) ?></mark></small>
                                                 </td>  
-                                                <td class="text-center font-weight- bold align-middle" id="total_<?= $cutting->id ?>">Rp <?= number_format($cutting->total) ?></td>  
+                                                <td class="text-center font-weight-bold align-middle" id="total_<?= $cutting->id ?>">Rp <?= number_format($cutting->total) ?></td>  
                                                 <td class="text-center align-middle">                                        
                                                     <a href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-info-circle fa-lg mr-2"></i></a>
                                                     <a href="" data-toggle="modal"  class="pola-out" data-id="<?= $cutting->id ?>" ><i class="fa fa-sign-out-alt fa-lg text-success mr-2"></i></a>
@@ -379,21 +357,35 @@
                                                 </td>
                                                 <td class="text-center align-middle"><?= $cutting->color ?></td>
                                                 <td class="text-center align-middle">
-                                                <input type="text" class="form-control text-center qty-cutting-pola" id="qty_edit_<?= $cutting->id ?>" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled>
+                                                    <input type="text" class="form-control text-center qty-cutting-pola" id="qty_edit_<?= $cutting->id ?>" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled>
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <input type="text" class="form-control text-center berat-cutting" name="berat" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->berat ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled>
                                                 </td>
                                                 <td class="text-center align-middle">                                
-                                                    <?= $cutting->gelar1 ?>
-                                                    <br>
+                                                    <select name="gelar1" id="" class="form-control" disabled>
+                                                        <option value="">-</option>
+                                                       <?php foreach($timGelars->getResultObject() as $gelar) : ?>
+                                                            <option value="<?= $gelar->id ?>" <?= ($gelar->id == $cutting->gelar1) ? 'selected' : '' ?>><?= $gelar->name ?></option>
+                                                        <?php endforeach ?>
+                                                    </select>  
                                                     <small><mark id="gelar1_<?= $cutting->id ?>">Rp <?= number_format($cutting->biaya_gelar1, 0) ?></mark></small>
                                                 </td>  
                                                 <td class="text-center align-middle">   
-                                                    <?= $cutting->gelar2 ?>                             
-                                                    <br>
+                                                    <select name="gelar2" id="" class="form-control" disabled>
+                                                        <option value="">-</option>
+                                                       <?php foreach($timGelars->getResultObject() as $gelar) : ?>
+                                                            <option value="<?= $gelar->id ?>" <?= ($gelar->id == $cutting->gelar2) ? 'selected' : '' ?>><?= $gelar->name ?></option>
+                                                        <?php endforeach ?>
+                                                    </select>  
                                                     <small><mark id="gelar2_<?= $cutting->id ?>">Rp <?= number_format($cutting->biaya_gelar2, 0) ?></mark></small>
                                                 </td>  
                                                 <td class="text-center align-middle">                                
-                                                    <?= $cutting->pic ?>
-                                                    <br>
+                                                    <select name="pic_cutting" id="" class="form-control" disabled>
+                                                       <?php foreach ($picCutting->getResultObject() as $pic) : ?>
+                                                            <option value="<?= $pic->id ?>" <?= ($pic->id == $cutting->pic) ? 'selected' : '' ?>><?= $pic->name ?></option>
+                                                        <?php endforeach ?>
+                                                    </select>   
                                                     <small><mark id="pic_<?= $cutting->id ?>">Rp <?= number_format($cutting->biaya_cutting, 0) ?></mark></small>
                                                 </td>  
                                                 <td class="text-center font-weight-bold align-middle" id="total_<?= $cutting->id ?>">Rp <?= number_format($cutting->total) ?></td>  
@@ -444,6 +436,8 @@
                                 <form class="pola-out" action="<?= base_url('/save-pola-keluar') ?>" method="post">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="id" value="" id="cutting">
+                                    <input type="hidden" name="berat" value="" id="berat-pola-out">
+                                    <input type="hidden" name="material" value="" id="material-pola-out">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="">Input Pola</h5>
@@ -635,7 +629,8 @@
                                 <th class="text-center">Jumlah Setor</th>
                                 <th class="text-center">Reject</th>
                                 <th class="text-center">Sisa</th>
-                                <th class="text-center">Harga</th>
+                                <th class="text-center">Harga Jahit</th>
+                                <th class="text-center">Harga HPP</th>
                                 <th class="text-center">Total Harga</th>
                                 <th class="text-right" style="width: 7%"><i class="fa fa-ellipsis-v"></i></th>
                             </tr>
@@ -645,7 +640,11 @@
                             <?php if ($polaIn->getNumRows() > 0) : ?>
                                 <?php foreach ($polaIn->getResultObject() as $pola) : ?>
                                     <?php if ($pola->status == '2') : ?>
-                                        <tr class="table-info" id="td_polain_<?= $pola->id ?>">
+                                        <?php if (is_null($pola->pola_id)) : ?>
+                                            <tr class="table-info" id="td_polain_<?= $pola->id ?>">
+                                        <?php else : ?>
+                                            <tr class="table-success" id="td_polain_<?= $pola->id ?>">
+                                        <?php endif ?>
                                             <td class="text-center align-middle"><?= $no++ ?></td>
                                             <td class="text-center align-middle" font-weight-bold"><?= $pola->material_id ?></td>
                                             <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>                                
@@ -662,45 +661,48 @@
                                                 <input type="text" class="form-control text-center pola-in-reject" id="pola_in_reject_<?= $pola->id ?>" data-id="<?= $pola->id ?>" value="<?= $pola->reject ?>" disabled>
                                             </td>
                                             <td class="text-center align-middle" id="pola_in_sisa_<?= $pola->id ?>"><?= $pola->sisa ?></td>
-                                            <td class="text-center align-middle">Rp <?= number_format($pola->harga, 0) ?></td>
-                                            <td class="text-center align-middle">Rp <?= number_format($pola->total_harga, 0) ?></td>
+                                            <td class="text-center align-middle" id="pola_in_sisa_<?= $pola->id ?>"><?= $pola->harga_jahit ?></td>
+                                            <td class="text-center align-middle">Rp <?= number_format($pola->hpp, 0) ?></td>
+                                            <td class="text-center align-middle">Rp <?= number_format($pola->hpp * $pola->jumlah_setor, 0) ?></td>
                                             <td class="text-center align-middle">
                                                 <a href="" data-toggle="modal" data-target="#infoPolaIn"><i class="fa fa-info-circle fa-lg mr-2"></i></a>                                
-                                                <a href="" data-toggle="modal" class="editable-polain" data-id="<?= $pola->id ?>"><i class="fa fa-edit fa-lg text-secondary mr-2"></i></a>
-                                                <a href="" data-toggle="modal" class="create-produk" data-id="<?= $pola->id ?>"><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a>
-                                                <div class="modal fade" id="infoPolaIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLongTitle">Biaya</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <table class="table">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th scope="col">GELAR 1</th>
-                                                                            <th scope="col">GELAR 2</th>
-                                                                            <th scope="col">PIC Cutting</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td><?= $pola->gelar1 ?></td>
-                                                                            <td><?= $pola->gelar2 ?></td>
-                                                                            <td><?= $pola->pic ?></td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <?php if (is_null($pola->pola_id)) : ?>
+                                                    <a href="" data-toggle="modal" class="editable-polain" data-id="<?= $pola->id ?>"><i class="fa fa-edit fa-lg text-secondary mr-2"></i></a>
+                                                    <a href="" data-toggle="modal" class="create-produk" data-id="<?= $pola->id ?>"><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a>
+                                                    <div class="modal fade" id="infoPolaIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLongTitle">Biaya</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <table class="table">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th scope="col">GELAR 1</th>
+                                                                                <th scope="col">GELAR 2</th>
+                                                                                <th scope="col">PIC Cutting</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td><?= $pola->gelar1 ?></td>
+                                                                                <td><?= $pola->gelar2 ?></td>
+                                                                                <td><?= $pola->pic ?></td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                <?php endif ?>
                                             </td>
                                         </tr>
                                     <?php endif ?>
@@ -823,9 +825,12 @@
         const id = $(this).data('id');
         $.get('/get-cutting', {id: id}, function(data) {
             const cutting = JSON.parse(data);   
-            $('#jumlahPola').val(cutting);
-            $('#jumlahPolaHide').val(cutting);
+            console.log(cutting);
+            $('#jumlahPola').val(cutting['qty']);
+            $('#jumlahPolaHide').val(cutting['qty']);
             $('#cutting').val(id);
+            $('#berat-pola-out').val(cutting['berat']);
+            $('#material-pola-out').val(cutting['material_id']);
             $('#polaOutModal').modal('show');
         });
     });
@@ -931,7 +936,7 @@
     $('.gelar1').on('change', function() {
         const id = $(this).data('id');
         const gelar = $(this).val();
-        $.post('/on-change-material-pic-gelar1', {id: id, gelar: gelar})
+        $.post('/on-change-cutting-gelar1', {id: id, gelar: gelar})
             .done(function(data) {
                 $.notify('Tim Gelar kain berhasil diubah', "success");
             });   
@@ -940,9 +945,18 @@
     $('.gelar2').on('change', function() {
         const id = $(this).data('id');
         const gelar = $(this).val();
-        $.post('/on-change-material-pic-gelar2', {id: id, gelar: gelar})
+        $.post('/on-change-cutting-gelar2', {id: id, gelar: gelar})
             .done(function(data) {
                 $.notify('Tim Gelar kain berhasil diubah', "success");
+            });   
+    });
+
+    $('.pic').on('change', function() {
+        const id = $(this).data('id');
+        const pic = $(this).val();
+        $.post('/on-change-cutting-pic', {id: id, pic: pic})
+            .done(function(data) {
+                $.notify('PIC Cutting kain berhasil diubah', "success");
             });   
     });
     
@@ -1001,6 +1015,17 @@
                 $('#pic_'+id).html('Rp. '+ numberForm(res['cutting']));
                 $('#total_'+id).html('Rp. '+ numberForm(res['total']));                
                 $.notify('Qty berhasil diubah', "success"); 
+            });
+    });
+
+    $('.berat-cutting').on('change', function() {
+        const id = $(this).data('id');
+        const material = $(this).data('material');
+        const berat = $(this).val();
+        $.post('/on-change-cutting-berat', {id: id, berat: berat, material: material})
+            .done(function(data) {
+                $.notify('Berat berhasil diubah', "success"); 
+                setTimeout(location.reload.bind(location), 1000);  
             });
     });
 

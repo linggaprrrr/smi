@@ -190,9 +190,52 @@ class Materials extends BaseController
             $sheet->setCellValue('A' . $i, $no++);
             $sheet->setCellValue('B' . $i, $row->type);
             $sheet->setCellValue('C' . $i, $row->color);
-            $sheet->setCellValue('D' . $i, number_format($row->weight/1000, 2));
+            $sheet->setCellValue('D' . $i, $row->weight);
             $sheet->setCellValue('E' . $i, $row->created_at);
             $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save("file/". $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize("file/". $fileName));
+		flush();
+		readfile("file/". $fileName);
+		exit;
+    }
+
+
+    public function exportDataStok() {       
+        $materials = $this->materialModel->getStokMaterialIn(); 
+        $date = time();
+        $fileName = "Data Stok Kain {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Tanggal Masuk');
+		$sheet->setCellValue('C1', 'Jenis');
+		$sheet->setCellValue('D1', 'Warna');
+		$sheet->setCellValue('E1', 'Stok');
+        $i = 2;
+        $no = 1;
+        foreach($materials->getResultObject() as $row) {
+            if ($row->stok_masuk > 0) {
+                $sheet->setCellValue('A' . $i, $no++);
+                $sheet->setCellValue('B' . $i, $row->created_at);            
+                $sheet->setCellValue('C' . $i, $row->type);
+                $sheet->setCellValue('D' . $i, $row->color);
+                $sheet->setCellValue('E' . $i, $row->stok_masuk);            
+                
+                
+                $i++;
+            }
+            
         }
         
         $writer = new Xlsx($spreadsheet);
@@ -215,14 +258,15 @@ class Materials extends BaseController
         $materials = $this->materialModel->getAllMaterialType();
         $colors = $this->materialModel->getAllColors();
         $materialVendors = $this->materialModel->getMaterialVendors();
-        $materialsIn = $this->materialModel->getAllMaterial();        
+        $materialsIn = $this->materialModel->getAllMaterial(); 
+        
         
         $materialsOut = $this->materialModel->getAllMaterialOut();        
         $gudangs = $this->materialModel->getAllGudang();
         $picCutting = $this->materialModel->getAllPICCutting();
         $getAllTimGelar = $this->materialModel->getAllTimGelar();
         $vendorPola = $this->materialModel->getAllVendorPola();
-        $cuttings = $this->materialModel->getAllCuttingData();    
+        $cuttings = $this->materialModel->getAllCuttingData2();    
         $polaOut = $this->materialModel->getAllPolaOut();  
         
         $polaIn = $this->materialModel->getAllPolaIn();
@@ -243,6 +287,7 @@ class Materials extends BaseController
             'polaOut' => $polaOut,
             'polaIn' => $polaIn
         );
+     
         return view('gudang_gesit/materials', $data);    
     }
     
@@ -273,6 +318,36 @@ class Materials extends BaseController
         $this->materialModel->save([
             'id' => $id,
             'gelar1' => $gelar
+        ]);
+    }
+
+    public function onChangeCuttingGelar1() {
+        $id = $this->request->getVar('id');
+        $gelar = $this->request->getVar('gelar');
+
+        $this->materialModel->changeGelar1([
+            'id' => $id,
+            'gelar1' => $gelar
+        ]);
+    }
+
+    public function onChangeCuttingGelar2() {
+        $id = $this->request->getVar('id');
+        $gelar = $this->request->getVar('gelar');
+
+        $this->materialModel->changeGelar2([
+            'id' => $id,
+            'gelar2' => $gelar
+        ]);
+    }
+
+    public function onChangeCuttingPIC() {
+        $id = $this->request->getVar('id');
+        $pic = $this->request->getVar('pic');
+
+        $this->materialModel->changeCuttingPIC([
+            'id' => $id,
+            'pic' => $pic
         ]);
     }
 
@@ -325,7 +400,7 @@ class Materials extends BaseController
 
         $this->materialModel->save([
             'id' => $id,
-            'weight' => $weight * 1000
+            'weight' => $weight
         ]);
     }
 
@@ -384,6 +459,13 @@ class Materials extends BaseController
         $cutting = $this->request->getVar('cutting');
         $res = $this->materialModel->updateCuttingQty($id, $qty, $gelar, $cutting);
         echo json_encode($res);
+    }
+
+    public function onChangeCuttingBerat() {
+        $id = $this->request->getVar('id');
+        $berat = $this->request->getVar('berat');
+        $material = $this->request->getVar('material');
+        $this->materialModel->updateBeratCutting($id, $berat, $material);
     }
 
     public function onChangeCuttingQtyPola() {
@@ -449,28 +531,32 @@ class Materials extends BaseController
         $sheet->setCellValue('L1', 'Gelar 1');
         $sheet->setCellValue('M1', 'Gelar 2');
         $sheet->setCellValue('N1', 'PIC');
-        $sheet->setCellValue('O1', 'Harga');
-        $sheet->setCellValue('P1', 'Total');
+        $sheet->setCellValue('O1', 'Harga Jahit');
+        $sheet->setCellValue('P1', 'Harga HPP');
+        $sheet->setCellValue('Q1', 'Total');
         $i = 2;
         $no = 1;
         foreach($materials->getResultObject() as $row) {
-            $sheet->setCellValue('A' . $i, $no++);
-            $sheet->setCellValue('B' . $i, $row->tgl_ambil);
-            $sheet->setCellValue('C' . $i, $row->model_name);
-            $sheet->setCellValue('D' . $i, $row->color);
-            $sheet->setCellValue('E' . $i, $row->jumlah_pola);
-            $sheet->setCellValue('F' . $i, $row->type);
-            $sheet->setCellValue('G' . $i, $row->name);
-            $sheet->setCellValue('H' . $i, $row->tgl_setor);
-            $sheet->setCellValue('I' . $i, $row->jumlah_setor);
-            $sheet->setCellValue('J' . $i, $row->reject);
-            $sheet->setCellValue('K' . $i, $row->sisa);
-            $sheet->setCellValue('L' . $i, $row->gelar1);
-            $sheet->setCellValue('M' . $i, $row->gelar2);
-            $sheet->setCellValue('N' . $i, $row->pic);
-            $sheet->setCellValue('O' . $i, $row->harga);
-            $sheet->setCellValue('P' . $i, $row->total_harga);
-            $i++;
+            if ($row->status == '2') {
+                $sheet->setCellValue('A' . $i, $no++);
+                $sheet->setCellValue('B' . $i, $row->tgl_ambil);
+                $sheet->setCellValue('C' . $i, $row->model_name);
+                $sheet->setCellValue('D' . $i, $row->color);
+                $sheet->setCellValue('E' . $i, $row->jumlah_pola);
+                $sheet->setCellValue('F' . $i, $row->type);
+                $sheet->setCellValue('G' . $i, $row->name);
+                $sheet->setCellValue('H' . $i, $row->tgl_setor);
+                $sheet->setCellValue('I' . $i, $row->jumlah_setor);
+                $sheet->setCellValue('J' . $i, $row->reject);
+                $sheet->setCellValue('K' . $i, $row->sisa);
+                $sheet->setCellValue('L' . $i, $row->gelar1);
+                $sheet->setCellValue('M' . $i, $row->gelar2);
+                $sheet->setCellValue('N' . $i, $row->pic);
+                $sheet->setCellValue('O' . $i, $row->harga_jahit);
+                $sheet->setCellValue('P' . $i, $row->hpp);
+                $sheet->setCellValue('Q' . $i, $row->hpp * $row->jumlah_setor);
+                $i++;
+            }
         }
         
         $writer = new Xlsx($spreadsheet);
@@ -519,23 +605,25 @@ class Materials extends BaseController
         $i = 2;
         $no = 1;
         foreach($materials->getResultObject() as $row) {
-            $sheet->setCellValue('A' . $i, $no++);
-            $sheet->setCellValue('B' . $i, $row->tgl_ambil);
-            $sheet->setCellValue('C' . $i, $row->model_name);
-            $sheet->setCellValue('D' . $i, $row->color);
-            $sheet->setCellValue('E' . $i, $row->jumlah_pola);
-            $sheet->setCellValue('F' . $i, $row->type);
-            $sheet->setCellValue('G' . $i, $row->name);
-            $sheet->setCellValue('H' . $i, $row->tgl_setor);
-            $sheet->setCellValue('I' . $i, $row->jumlah_setor);
-            $sheet->setCellValue('J' . $i, $row->reject);
-            $sheet->setCellValue('K' . $i, $row->sisa);
-            $sheet->setCellValue('L' . $i, $row->gelar1);
-            $sheet->setCellValue('M' . $i, $row->gelar2);
-            $sheet->setCellValue('N' . $i, $row->pic);
-            $sheet->setCellValue('O' . $i, $row->harga);
-            $sheet->setCellValue('P' . $i, $row->total_harga);
-            $i++;
+            if ($row->status == '1') {
+                $sheet->setCellValue('A' . $i, $no++);
+                $sheet->setCellValue('B' . $i, $row->tgl_ambil);
+                $sheet->setCellValue('C' . $i, $row->model_name);
+                $sheet->setCellValue('D' . $i, $row->color);
+                $sheet->setCellValue('E' . $i, $row->jumlah_pola);
+                $sheet->setCellValue('F' . $i, $row->type);
+                $sheet->setCellValue('G' . $i, $row->name);
+                $sheet->setCellValue('H' . $i, $row->tgl_setor);
+                $sheet->setCellValue('I' . $i, $row->jumlah_setor);
+                $sheet->setCellValue('J' . $i, $row->reject);
+                $sheet->setCellValue('K' . $i, $row->sisa);
+                $sheet->setCellValue('L' . $i, $row->gelar1);
+                $sheet->setCellValue('M' . $i, $row->gelar2);
+                $sheet->setCellValue('N' . $i, $row->pic);
+                $sheet->setCellValue('O' . $i, $row->harga);
+                $sheet->setCellValue('P' . $i, $row->total_harga);
+                $i++;
+            }
         }
         
         $writer = new Xlsx($spreadsheet);
@@ -723,11 +811,13 @@ class Materials extends BaseController
     public function getCutting() {
         $id = $this->request->getVar('id');
         $cutting = $this->materialModel->getCutting($id);
-        echo json_encode($cutting[0]->qty);
+        echo json_encode($cutting[0]);
     }
 
     public function savePolaKeluar() {
         $id = $this->request->getVar('id');
+        $berat = $this->request->getVar('berat');
+        $material = $this->request->getVar('material');
         $tgl = $this->request->getVar('tgl-pola');
         $jumlah = $this->request->getVar('jumlah-pola');
         $total = $this->request->getVar('total-pola');
@@ -742,7 +832,7 @@ class Materials extends BaseController
         }
 
         $tgl = date('Y-m-d', strtotime($tgl));
-        $this->materialModel->savePolaOut($id, $tgl, $jumlah, $vendor);
+        $this->materialModel->savePolaOut($id, $tgl, $jumlah, $vendor, $berat, $material);
         return redirect()->back()->with('input', 'Pola berhasil diinput');
     }
 

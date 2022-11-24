@@ -82,7 +82,6 @@ $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
 $routes->post('/generate-qr-produk-reject', 'QRCodeGenerator::generateQRProductReject');
 $routes->get('/export-data-kain', 'Materials::exportData');
 $routes->get('/export-data-kain/(:any)/(:any)', 'Materials::exportData/$1/$2');
-$routes->get('/export-data-stok-kain', 'Materials::exportDataStok');
 $routes->get('/export-produk-reject', 'Products::exportProductReject');
 $routes->get('/export-produk-reject/(:any)/(:any)', 'Products::exportProductReject/$1/$2');
 $routes->post('/simpan-user', 'Users::saveUser');
@@ -161,7 +160,6 @@ $routes->get('export-data-pola-in/(:any)/(:any)', 'Materials::exportDataPolaIn/$
 $routes->get('export-data-pola-out', 'Materials::exportDataPolaOut');
 $routes->get('export-data-pola-out/(:any)/(:any)', 'Materials::exportDataPolaOut/$1/$2');
 $routes->get('export-produk-gesit', 'Products::exportDataGesit');
-$routes->get('export-produk-penjualan-reject', 'Products::exportDataPenjualanReject');
 $routes->get('export-produk-gesit/(:any)/(:any)', 'Products::exportDataGesit/$1/$2');
 $routes->get('export-produk-masuk-lovish', 'Products::exportDataLovishIn');
 $routes->get('export-produk-masuk-lovish/(:any)/(:any)', 'Products::exportDataLovishIn/$1/$2');
@@ -185,7 +183,6 @@ $routes->post('/jual-reject', 'Products::jualReject');
 $routes->post('/on-change-cutting-product-type', 'Materials::onChangeCuttingProductType');
 $routes->post('/on-change-cutting-product-type-pola', 'Materials::onChangeCuttingProductTypePola');
 $routes->post('/on-change-cutting-qty', 'Materials::onChangeCuttingQty');
-$routes->post('/on-change-cutting-berat', 'Materials::onChangeCuttingBerat');
 $routes->post('/on-change-cutting-qty-pola', 'Materials::onChangeCuttingQtyPola');
 $routes->post('/on-change-jumlah-pola-out', 'Materials::onChangeJumlahPola');
 $routes->post('/on-change-vendor-pola-out', 'Materials::onChangeVendorPola');
@@ -219,15 +216,11 @@ $routes->post('on-change-material-pic-gelar1', 'Materials::onChangeMaterialGelar
 $routes->post('on-change-material-pic-gelar2', 'Materials::onChangeMaterialGelar2');
 $routes->post('on-change-material-tgl-cutting', 'Materials::onChangeMaterialTglCutting');
 $routes->post('on-change-material-vendor-pola', 'Materials::onChangeMaterialVendorPola');
-$routes->post('/on-change-cutting-gelar1', 'Materials::onChangeCuttingGelar1');
-$routes->post('/on-change-cutting-gelar2', 'Materials::onChangeCuttingGelar2');
-$routes->post('/on-change-cutting-pic', 'Materials::onChangeCuttingPIC');
 $routes->post('/delete-cutting-pola', 'Materials::deleteCuttingPola');
 $routes->post('/create-produk', 'Products::createProduct');
 
 // GUDANG
 $routes->get('/operasional/dashboard', 'Home::gudangLovish');
-$routes->get('/operasional/dashboard/(:any)', 'Home::gudangLovish');
 $routes->get('/operasional/produk', 'Products::gudangProduk');
 $routes->get('/operasional/stok-produk', 'Products::gudangLovishStokProduk');
 $routes->get('/operasional/qr-scanner-product-out', 'QRCodeGenerator::scannerProductOut');
