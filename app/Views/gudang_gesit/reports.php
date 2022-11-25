@@ -134,17 +134,29 @@
                                                     <input type="text" class="form-control text-center qty-cutting" name="qty" disabled data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                 </td>
                                                 <td class="text-center align-middle">                                
-                                                    <?= $cutting->gelar1 ?>
+                                                    <?php foreach($timGelars->getResultObject() as $gelar) : ?>
+                                                        <?php if ($gelar->id == $cutting->gelar1) : ?>
+                                                            <?= $gelar->name ?>
+                                                        <?php endif ?>
+                                                    <?php endforeach ?>
                                                     <br>
                                                     <small><mark id="gelar1_<?= $cutting->id ?>">Rp <?= number_format($cutting->biaya_gelar1, 0) ?></mark></small>
                                                 </td>  
                                                 <td class="text-center align-middle">   
-                                                    <?= $cutting->gelar2 ?>                             
+                                                    <?php foreach($timGelars->getResultObject() as $gelar) : ?>
+                                                        <?php if ($gelar->id == $cutting->gelar2) : ?>
+                                                            <?= $gelar->name ?>
+                                                        <?php endif ?>
+                                                    <?php endforeach ?>
                                                     <br>
                                                     <small><mark id="gelar2_<?= $cutting->id ?>">Rp <?= number_format($cutting->biaya_gelar2, 0) ?></mark></small>
                                                 </td>  
                                                 <td class="text-center align-middle">                                
-                                                    <?= $cutting->pic ?>
+                                                    <?php foreach($picCutting->getResultObject() as $pic) : ?>
+                                                        <?php if ($pic->id == $cutting->pic) : ?>
+                                                            <?= $pic->name ?>
+                                                        <?php endif ?>
+                                                    <?php endforeach ?>
                                                     <br>
                                                     <small><mark id="pic_<?= $cutting->id ?>">Rp <?= number_format($cutting->biaya_cutting, 0) ?></mark></small>
                                                 </td>  

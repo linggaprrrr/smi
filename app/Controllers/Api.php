@@ -89,9 +89,9 @@ class Api extends BaseController {
                 }
                 break;
             case "retur-kain" : 
-                $getProduct = $this->materialModel->find($qr[0]);
+                $getMaterial = $this->materialModel->find($qr[0]);
                 $status = '0';
-                if (!is_null($getProduct) && $getProduct['status'] == '3') {
+                if (!is_null($getMaterial) && $getMaterial['status'] == '1') {
                     $status = '1'; 
                     $this->materialModel->updateMaterialStokRetur($qr[0]);
                     

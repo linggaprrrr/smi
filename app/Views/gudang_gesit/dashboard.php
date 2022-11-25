@@ -212,7 +212,7 @@
                             <?php if ($materials->getNumRows() > 0) : ?>
                                 <?php foreach ($materials->getResultObject() as $kain) : ?>
                                     <?php 
-                                        $total = $kain->stok + $kain->stok_masuk + $kain->stok_retur - $kain->stok_habis;                                    
+                                        $total = $kain->stok + $kain->stok_masuk - ($kain->stok_retur + $kain->stok_habis);                                    
                                     ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
@@ -275,5 +275,41 @@
             </div>
         </div>
     </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary float-left">Kain Retur</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center">Tanggal Keluar</th>
+                                <th class="text-center">Jenis</th>
+                                <th class="text-center">Warna</th>                                
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php foreach($materialRetur->getResultObject() as $retur) : ?>
+                                <tr>
+                                    <td class="text-center"><?= $no++ ?></td>
+                                    <td class="text-center"><?= $retur->updated_at ?></td>
+                                    <td class="text-center"><?= $retur->type ?></td>
+                                    <td class="text-center"><?= $retur->color ?></td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
 <?= $this->endSection() ?>

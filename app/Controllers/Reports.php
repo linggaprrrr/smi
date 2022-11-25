@@ -77,6 +77,8 @@ class Reports extends BaseController
         $date = $this->request->getVar('dates');
         $date1 = null;
         $date2 = null;
+        $picCutting = $this->materialModel->getAllPICCutting();
+        $getAllTimGelar = $this->materialModel->getAllTimGelar();
         if (!is_null($date)) {
             $date = explode("-",$date);            
             $date1 = date('Y-m-d 00:00:00', strtotime($date[0]));
@@ -88,7 +90,7 @@ class Reports extends BaseController
             $productsIn = $this->productModel->getAllProductInHistory($date1, $date2);
             $productsOut = $this->productModel->getAllProductOut($date1, $date2);
             $productReject = $this->productModel->getAllProductReject($date1, $date2);
-            $cuttings = $this->materialModel->getAllCuttingData($date1, $date2);
+            $cuttings = $this->materialModel->getAllCuttingData2($date1, $date2);
             $rejectedSold = $this->productModel->rejectedSold($date1. $date2);
             $data = array(
                 'title' => 'Laporan',
@@ -103,6 +105,8 @@ class Reports extends BaseController
                 'rejectedSold' => $rejectedSold,
                 'date1' => $date[0],
                 'date2' => $date[1],
+                'picCutting' => $picCutting,
+                'timGelars' => $getAllTimGelar,
             );
         } else {
             $materials = $this->materialModel->getAllMaterial();
@@ -111,7 +115,7 @@ class Reports extends BaseController
             $polaIn = $this->materialModel->getAllPolaIn();
             $productsIn = $this->productModel->getAllProductInHistory();
             $productsOut = $this->productModel->getAllProductOut();
-            $cuttings = $this->materialModel->getAllCuttingData();
+            $cuttings = $this->materialModel->getAllCuttingData2();
             $productReject = $this->productModel->getAllProductReject();
             $rejectedSold = $this->productModel->rejectedSold();
             $data = array(
@@ -127,6 +131,8 @@ class Reports extends BaseController
                 'rejectedSold' => $rejectedSold,
                 'date1' => $date1,
                 'date2' => $date2,
+                'picCutting' => $picCutting,
+                'timGelars' => $getAllTimGelar,
             );
         }
        

@@ -44,12 +44,10 @@ class MaterialModel extends Model
         ->join('material_types', 'material_types.id = materials.material_type')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
-        ->join('(SELECT materials.id, COUNT(*) as stok_masuk FROM materials WHERE weight > 0 AND MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as s', 's.id = materials.id', 'left')
-        ->join('(SELECT materials.id, COUNT(*) as stok FROM materials WHERE MONTH(materials.created_at) <= MONTH(CURRENT_DATE())-1 AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as st', 'st.id = materials.id', 'left')
-        ->join('(SELECT materials.id, COUNT(*) as stok_retur FROM materials WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) AND status = "2" GROUP BY material_type, color_id) as sr', 'sr.id = materials.id', 'left')
-        ->join('(SELECT materials.id, COUNT(*) as stok_habis FROM materials JOIN cutting ON cutting.material_id = materials.id WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) AND (materials.weight - cutting.berat) <= 0 GROUP BY material_type, color_id) as ct', 'ct.id = materials.id', 'left')
-        ->where('status', '1')        
-        ->where('weight > ', '0')        
+        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_masuk FROM materials WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as s', 's.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok FROM materials WHERE MONTH(materials.created_at) <= MONTH(CURRENT_DATE())-1 AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as st', 'st.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_retur FROM materials WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) AND status = 0 GROUP BY material_type, color_id) as sr', 'sr.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_habis FROM materials JOIN cutting ON cutting.material_id = materials.id WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) AND (materials.weight - cutting.berat) <= 0 GROUP BY material_type, color_id) as ct', 'ct.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')           
         ->groupBy('materials.material_type, materials.color_id')
         ->orderBy('materials.created_at', 'desc')->get();
         return $query;
@@ -116,6 +114,17 @@ class MaterialModel extends Model
             ->join('colors', 'colors.id = materials.color_id')
             ->groupBy('material_types.type')
             ->groupBy('colors.color')
+            ->get();
+        return $query;
+    }
+
+    public function getMaterialRetur() {
+        $query = $this->db->table('materials')
+            ->select('material_types.type, colors.color, materials.updated_at')
+            ->join('material_types', 'material_types.id = materials.material_type')
+            ->join('colors', 'colors.id = materials.color_id')
+            ->where('materials.status', '0')
+            ->orderBy('materials.updated_at', 'DESC')
             ->get();
         return $query;
     }
@@ -299,8 +308,8 @@ class MaterialModel extends Model
     }
 
     public function updateMaterialStokRetur($id) {
-        $this->db->query("UPDATE materials SET qty = qty - 1, status = 0 WHERE id = $id ");
-    }
+        $this->db->query("UPDATE materials SET status = 0, updated_at = NOW() WHERE id = $id ");
+    } 
 
     public function getAllVendorPola() {
         $query = $this->db->table('vendor_pola')->get();
@@ -351,9 +360,9 @@ class MaterialModel extends Model
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
             ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = m.gelar1', 'left')
-            ->join('tim_gelar as g2', 'g2.id = m.gelar2', 'left')
-            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting', 'left')
+            ->join('tim_gelar as g1', 'g1.id = ct.gelar1', 'left')
+            ->join('tim_gelar as g2', 'g2.id = ct.gelar2', 'left')
+            ->join('tim_cutting as tc', 'tc.id = ct.pic', 'left')
             ->join('pola as p', 'p.cutting_id = ct.id', 'left')
             ->groupBy('ct.id')
             ->orderBy('ct.id', 'desc')

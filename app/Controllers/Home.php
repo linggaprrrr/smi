@@ -554,7 +554,7 @@ class Home extends BaseController
         $totalKainRetur = $this->materialModel->select('COUNT(*) as total_kain')
             ->where('MONTH(created_at) = MONTH(CURRENT_DATE())')
             ->where('YEAR(created_at) = YEAR(CURRENT_DATE())')
-            ->where('status','2')
+            ->where('status','0')
             ->first();
         $polaReject = $this->materialModel->select("SUM(reject) as total_pola")
             ->join('cutting', 'cutting.material_id = materials.id')
@@ -574,6 +574,7 @@ class Home extends BaseController
         $productsIn = $this->productModel->getStokProductIn(); 
         $productsOut = $this->productModel->getStokProductOut();           
         $models = $this->designModel->getAllModel();
+        $materialRetur = $this->materialModel->getMaterialRetur();
         $data = array(
             'title' => 'Dashboard',
             'totalGesit' => $totalGesit,
@@ -588,8 +589,10 @@ class Home extends BaseController
             'productsOut' => $productsOut,
             'materials' => $materials,
             'materialsIn' => $materialsIn,
+            'materialRetur' => $materialRetur,
             'models' => $models
         );
+        
         return view('gudang_gesit/dashboard', $data);
     }
 
