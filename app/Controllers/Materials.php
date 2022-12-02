@@ -88,11 +88,6 @@ class Materials extends BaseController
                 'weight'  => $post['berat'],
                 'price' => $post['harga'],
                 'user_id' => session()->get('user_id'),
-                'gudang_id' => $post['gudang'],
-                'tgl_cutting' => NULL,
-                'gelar1' => $post['gelar1'],
-                'gelar2' => $post['gelar2'],
-                'pic_cutting' => $post['pic-cutting'],
             ];
             $this->materialModel->save($material);
         }        
@@ -184,6 +179,7 @@ class Materials extends BaseController
 		$sheet->setCellValue('C1', 'Warna');
 		$sheet->setCellValue('D1', 'Berat (Kg)');
 		$sheet->setCellValue('E1', 'Tanggal Masuk');
+		$sheet->setCellValue('F1', 'Vendor');
         $i = 2;
         $no = 1;
         foreach($materials->getResultObject() as $row) {
@@ -192,6 +188,7 @@ class Materials extends BaseController
             $sheet->setCellValue('C' . $i, $row->color);
             $sheet->setCellValue('D' . $i, $row->weight);
             $sheet->setCellValue('E' . $i, $row->created_at);
+            $sheet->setCellValue('F' . $i, $row->vendor);
             $i++;
         }
         
@@ -210,6 +207,48 @@ class Materials extends BaseController
 		exit;
     }
 
+    public function exportDataRetur($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $materials = $this->materialModel->getAllMaterialRetur();
+        } else {
+            $materials = $this->materialModel->getAllMaterialRetur($date1, $date2);
+        }
+        $date = time();
+        $fileName = "Data Kain Retur {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Jenis');
+		$sheet->setCellValue('C1', 'Warna');
+		$sheet->setCellValue('D1', 'Berat (Kg)');
+		$sheet->setCellValue('E1', 'Tanggal Retur');
+		$sheet->setCellValue('F1', 'Vendor');
+        $i = 2;
+        $no = 1;
+        foreach($materials->getResultObject() as $row) {
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $row->type);
+            $sheet->setCellValue('C' . $i, $row->color);
+            $sheet->setCellValue('D' . $i, $row->weight);
+            $sheet->setCellValue('E' . $i, $row->updated_at);
+            $sheet->setCellValue('F' . $i, $row->vendor);
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save("file/". $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize("file/". $fileName));
+		flush();
+		readfile("file/". $fileName);
+		exit;
+    }
 
     public function exportDataStok() {       
         $materials = $this->materialModel->getStokMaterialIn(); 

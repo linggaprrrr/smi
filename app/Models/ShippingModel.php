@@ -37,23 +37,38 @@ class ShippingModel extends Model
         return $query;
     }
 
-    public function getAllShippingDetail() {
-        $query = $this->db->table('shipping_details')
-            ->select('shipping_details.*, product_name, model_name, color, SUM(product_logs.qty) as qty, resi, box_name, shippings.created_at')
+    public function getAllShippingDetail($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $query = $this->db->table('shipping_details')
+            ->select('shipping_details.*, models.jenis as product_name, model_name, color, COUNT(product_barcodes.id) as qty, size, resi, box_name, shippings.created_at')
             ->join('shippings', 'shippings.id = shipping_details.shipping_id')
             ->join('product_barcodes', 'product_barcodes.id = shipping_details.product_id')
-            ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
             ->join('products', 'products.id = product_barcodes.product_id')
             ->join('models', 'models.id = products.model_id')
-            ->join('product_types', 'product_types.id = products.product_id')
             ->join('colors', 'colors.id = products.color_id')
             ->groupBy('shipping_details.shipping_id')
-            // ->groupBy('products.product_id')
-            // ->groupBy('models.id')
-            // ->groupBy('colors.id')
-            ->where('product_logs.status', '3')
-            ->orWhere('product_logs.status', '4')
+            ->where('product_barcodes.status', '5')
+            ->groupBy('models.id')
+            ->groupBy('colors.id')
+            ->groupBy('size')
+            
             ->get();
+        } else {
+            $query = $this->db->table('shipping_details')
+            ->select('shipping_details.*, models.jenis as product_name, model_name, color, COUNT(product_barcodes.id) as qty, size, resi, box_name, shippings.created_at')
+            ->join('shippings', 'shippings.id = shipping_details.shipping_id')
+            ->join('product_barcodes', 'product_barcodes.id = shipping_details.product_id')
+            ->join('products', 'products.id = product_barcodes.product_id')
+            ->join('models', 'models.id = products.model_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->where('product_barcodes.status', '5')
+            ->where('shippings.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+            ->groupBy('shipping_details.shipping_id')
+            ->groupBy('models.id')
+            ->groupBy('colors.id')
+            ->groupBy('size')
+            ->get();
+        }
         return $query;
     }
 

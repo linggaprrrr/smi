@@ -56,8 +56,8 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Total Pola Keluar / Masuk <mark>(<?= date('F') ?>)</mark></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalPolaKeluar) ? "0" : $totalPolaKeluar) ?> / <?= (is_null($totalPolaMasuk) ? "0" : $totalPolaMasuk) ?></div>
+                            Total Pola Keluar / Masuk / Reject<mark>(<?= date('F') ?>)</mark></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalPolaKeluar) ? "0" : $totalPolaKeluar) ?> / <?= (is_null($totalPolaMasuk) ? "0" : $totalPolaMasuk) ?> / <?= (is_null($polaReject) ? "0" : $polaReject) ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-shekel-sign fa-2x text-gray-300"></i>
@@ -88,8 +88,8 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Kain Retur / Pola Reject <mark>(<?= date('F') ?>)</mark></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalKainRetur) ? "0" : $totalKainRetur) ?> / <?= (is_null($polaReject) ? "0" : $polaReject) ?> </div>
+                            Kain Retur <mark>(<?= date('F') ?>)</mark></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalKainRetur) ? "0" : $totalKainRetur) ?>  </div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-sign-out-alt fa-2x text-gray-300"></i>
@@ -280,17 +280,19 @@
     <div class="col-lg-6">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary float-left">Kain Retur</h6>
+                <h6 class="m-0 font-weight-bold text-primary float-left">History Kain Retur</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataTable8" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
                                 <th class="text-center">Tanggal Keluar</th>
+                                <th class="text-center">Kode Kain</th>
                                 <th class="text-center">Jenis</th>
-                                <th class="text-center">Warna</th>                                
+                                <th class="text-center">Warna</th>
+                                <th class="text-center">Vendor</th>
                             </tr>
                         </thead>
                         
@@ -300,8 +302,10 @@
                                 <tr>
                                     <td class="text-center"><?= $no++ ?></td>
                                     <td class="text-center"><?= $retur->updated_at ?></td>
+                                    <td class="text-center"><?= $retur->material_id ?></td>
                                     <td class="text-center"><?= $retur->type ?></td>
                                     <td class="text-center"><?= $retur->color ?></td>
+                                    <td class="text-center"><?= $retur->vendor ?></td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>

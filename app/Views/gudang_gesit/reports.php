@@ -24,6 +24,9 @@
                 <a class="nav-link font-weight-bold active" data-toggle="tab" href="#home">Kain</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link font-weight-bold" data-toggle="tab" href="#retur">Kain Retur</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link font-weight-bold" data-toggle="tab" href="#menu1">Cutting</a>
             </li>
             <li class="nav-item">
@@ -60,6 +63,7 @@
                                         <th class="text-center">Warna</th>
                                         <th class="text-center">Berat (kg)/Yard</th>
                                         <th class="text-center">Tanggal Masuk</th>
+                                        <th class="text-center">Vendor</th>
                                     </tr>
                                 </thead>
                                 
@@ -73,7 +77,53 @@
                                                 <td><?= $kain->color ?></td>
                                                 <td><?= $kain->weight ?></td>
                                                 <td class="text-center"><?= $kain->created_at ?></td>
-                                            
+                                                <td class="text-center"><?= $kain->vendor ?></td>
+                                            </tr>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div id="retur" class="tab-pane fade"><br>                
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary float-left">Data Kain Retur</h6>
+                        <?php if (!is_null($date1)) : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain-retur/'. date('Y-m-d H:i:s', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php else : ?>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-data-kain-retur') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                        <?php endif ?>
+                        
+                    </div>
+                    <div class="card-body">        
+                        <div class="table-responsive">            
+                            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 5%">No</th>
+                                        <th class="text-center">Jenis</th>
+                                        <th class="text-center">Warna</th>
+                                        <th class="text-center">Berat (kg)/Yard</th>
+                                        <th class="text-center">Tanggal Retur</th>
+                                        <th class="text-center">Vendor</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    <?php $no = 1; ?>
+                                    <?php if ($kainRetur->getNumRows() > 0) : ?>
+                                        <?php foreach ($kainRetur->getResultObject() as $kain) : ?>
+                                            <tr>
+                                                <td class="text-center"><?= $no++ ?></td>
+                                                <td class=""><?= $kain->type ?></td>
+                                                <td><?= $kain->color ?></td>
+                                                <td><?= $kain->weight ?></td>
+                                                <td class="text-center"><?= $kain->updated_at ?></td>
+                                                <td class="text-center"><?= $kain->vendor ?></td>
                                             </tr>
                                         <?php endforeach ?>
                                     <?php endif ?>
@@ -135,7 +185,7 @@
                                                 </td>
                                                 <td class="text-center align-middle">                                
                                                     <?php foreach($timGelars->getResultObject() as $gelar) : ?>
-                                                        <?php if ($gelar->id == $cutting->gelar1) : ?>
+                                                        <?php if ($gelar->id == $cutting->gelar1) :  ?>
                                                             <?= $gelar->name ?>
                                                         <?php endif ?>
                                                     <?php endforeach ?>
@@ -144,7 +194,7 @@
                                                 </td>  
                                                 <td class="text-center align-middle">   
                                                     <?php foreach($timGelars->getResultObject() as $gelar) : ?>
-                                                        <?php if ($gelar->id == $cutting->gelar2) : ?>
+                                                        <?php if ($gelar->id == $cutting->gelar2) :  ?>
                                                             <?= $gelar->name ?>
                                                         <?php endif ?>
                                                     <?php endforeach ?>
@@ -153,7 +203,7 @@
                                                 </td>  
                                                 <td class="text-center align-middle">                                
                                                     <?php foreach($picCutting->getResultObject() as $pic) : ?>
-                                                        <?php if ($pic->id == $cutting->pic) : ?>
+                                                        <?php if ($pic->id == $cutting->pic) :  ?>
                                                             <?= $pic->name ?>
                                                         <?php endif ?>
                                                     <?php endforeach ?>

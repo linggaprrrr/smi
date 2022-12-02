@@ -122,6 +122,7 @@ class Api extends BaseController {
                     $getProduct = $this->produkModel
                         ->join('product_barcodes', 'product_barcodes.product_id = products.id')
                         ->where('product_barcodes.id', $prod[0])
+                        ->where('product_barcodes.status !=', '5')
                         ->get();
                     if ($getProduct->getNumRows() > 0) {                         
                         $getShipment = $this->shippinglModel->where('resi', $resi)->first();            
@@ -151,8 +152,8 @@ class Api extends BaseController {
             case "retur-produk" : 
                 $getProduct = $this->produkModel
                 ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
-                ->where('product_logs.product_id', $qr[0])
+                ->where('product_barcodes.id', $qr[0])
+                ->where('product_barcodes.status != ', '1')
                 ->get();
                 $status = '0';
                 if ($getProduct->getNumRows() > 0) {

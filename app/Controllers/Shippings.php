@@ -81,8 +81,13 @@ class Shippings extends BaseController
 
     }
 
-    public function exportShipments() {
-        $shippings = $this->shippinglModel->getAllShippingDetail();
+    public function exportShipments($date1= null, $date2 = null) {
+         if (is_null($date1)) {
+            $shippings = $this->shippinglModel->getAllShippingDetail();     
+        } else {
+            $shippings = $this->shippinglModel->getAllShippingDetail($date1, $date2);
+        }
+        
         $date = time();
         $fileName = "Data Pengiriman {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
@@ -91,13 +96,22 @@ class Shippings extends BaseController
 		$sheet->setCellValue('B1', 'Resi');
 		$sheet->setCellValue('C1', 'Tanggal');
 		$sheet->setCellValue('D1', 'Produk');
+		$sheet->setCellValue('E1', 'Jumlah');
         $i = 2;
         $no = 1;
+        $resi = "";
         foreach($shippings->getResultObject() as $row) {
-            $sheet->setCellValue('A' . $i, $no++);
-            $sheet->setCellValue('B' . $i, $row->resi);
-            $sheet->setCellValue('C' . $i, $row->created_at);            
-            $sheet->setCellValue('D' . $i, $row->product_name.' '.$row->model_name.' '.$row->color);
+            if ($resi != $row->resi) {
+                $sheet->setCellValue('A' . $i, $no++);
+                $sheet->setCellValue('B' . $i, $row->resi);
+                $sheet->setCellValue('C' . $i, $row->created_at);
+                $sheet->setCellValue('D' . $i, $row->product_name.' '.$row->model_name.' '.$row->color.' '.$row->size);
+                $sheet->setCellValue('E' . $i, $row->qty);
+                $resi = $row->resi;
+            } else {
+                $sheet->setCellValue('D' . $i, $row->product_name.' '.$row->model_name.' '.$row->color.' '.$row->size);
+                $sheet->setCellValue('E' . $i, $row->qty);
+            }
             $i++;
         }
         

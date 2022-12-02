@@ -9,12 +9,12 @@ use function PHPUnit\Framework\returnSelf;
 class MaterialModel extends Model
 {
     protected $table = 'materials';
-    protected $allowedFields = ['material_id', 'material_type', 'vendor_id', 'color_id', 'weight', 'roll', 'qrcode', 'status', 'price', 'user_id', 'gudang_id', 'updated_at', 'pic_cutting', 'gelar1', 'gelar2', 'tgl_cutting', 'vendor_pola'];
+    protected $allowedFields = ['material_id', 'material_type', 'vendor_id', 'color_id', 'weight', 'roll', 'qrcode', 'status', 'price', 'user_id', 'gudang_id', 'updated_at', 'vendor_pola'];
 
     public function getAllMaterial($date1 = null, $date2 = null) {
         if (!is_null($date1)) {
             $query =  $this->db->table('materials')
-            ->select('materials.*, materials.weight - IFNULL(berat_cutting, 0) as total_berat, material_types.type, colors.color')
+            ->select('materials.*, materials.weight - IFNULL(berat_cutting, 0) as total_berat, material_vendors.vendor, material_types.type, colors.color')
             ->join('material_types', 'material_types.id = materials.material_type')
             ->join('colors', 'colors.id = materials.color_id')
             ->join('gudang', 'gudang.id = materials.gudang_id')
@@ -25,13 +25,37 @@ class MaterialModel extends Model
             ->orderBy('created_at', 'desc')->get(); 
         } else {
             $query =  $this->db->table('materials')
-            ->select('materials.*, (materials.weight - IFNULL(berat_cutting, 0)) as total_berat, material_types.type, colors.color')
+            ->select('materials.*, (materials.weight - IFNULL(berat_cutting, 0)) as total_berat, material_vendors.vendor, material_types.type, colors.color')
             ->join('material_types', 'material_types.id = materials.material_type')
             ->join('colors', 'colors.id = materials.color_id')
             ->join('gudang', 'gudang.id = materials.gudang_id')
             ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
             ->join('(SELECT m.id, SUM(c.berat) as berat_cutting FROM cutting c JOIN materials as m ON m.id = c.material_id GROUP BY c.material_id) as m','materials.id = m.id', 'left')
             ->where('status', '1')
+            ->orderBy('created_at', 'desc')->get();
+        }
+        return $query;
+    }
+    
+    public function getAllMaterialRetur($date1 = null, $date2 = null) {
+        if (!is_null($date1)) {
+            $query =  $this->db->table('materials')
+            ->select('materials.* material_vendors.vendor, material_types.type, colors.color')
+            ->join('material_types', 'material_types.id = materials.material_type')
+            ->join('colors', 'colors.id = materials.color_id')
+            ->join('gudang', 'gudang.id = materials.gudang_id')
+            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')            
+            ->where('status', '0')
+            ->where('created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')
+            ->orderBy('created_at', 'desc')->get(); 
+        } else {
+            $query =  $this->db->table('materials')
+            ->select('materials.*, material_vendors.vendor, material_types.type, colors.color')
+            ->join('material_types', 'material_types.id = materials.material_type')
+            ->join('colors', 'colors.id = materials.color_id')
+            ->join('gudang', 'gudang.id = materials.gudang_id')
+            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
+            ->where('status', '0')
             ->orderBy('created_at', 'desc')->get();
         }
         return $query;
@@ -45,9 +69,10 @@ class MaterialModel extends Model
         ->join('colors', 'colors.id = materials.color_id')
         ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
         ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_masuk FROM materials WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as s', 's.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
-        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok FROM materials WHERE MONTH(materials.created_at) <= MONTH(CURRENT_DATE())-1 AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as st', 'st.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
-        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_retur FROM materials WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) AND status = 0 GROUP BY material_type, color_id) as sr', 'sr.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
-        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_habis FROM materials JOIN cutting ON cutting.material_id = materials.id WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) AND (materials.weight - cutting.berat) <= 0 GROUP BY material_type, color_id) as ct', 'ct.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')           
+        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok FROM materials WHERE materials.status = 1 AND MONTH(materials.created_at) <= MONTH(CURRENT_DATE())-1 AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as st', 'st.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_retur FROM materials WHERE materials.status = 0 AND MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) AND status = 0 GROUP BY material_type, color_id) as sr', 'sr.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_habis FROM materials LEFT JOIN (SELECT cutting.material_id, SUM(berat) as total_berat FROM cutting GROUP BY cutting.material_id) as ct ON ct.material_id = materials.id WHERE (materials.weight - IFNULL(ct.total_berat, 0)) <= 0 GROUP BY material_type, color_id) as ct', 'ct.material_type = materials.material_type AND ct.color_id = materials.color_id', 'left')           
+        
         ->groupBy('materials.material_type, materials.color_id')
         ->orderBy('materials.created_at', 'desc')->get();
         return $query;
@@ -79,11 +104,10 @@ class MaterialModel extends Model
 
     public function getAllMaterialOut() {
         $query =  $this->db->table('materials')
-        ->select('materials.*, material_types.type, colors.color, gudang, roll, vendor, tim_cutting.name as pic, material_patterns.created_at as created_at_pola, users.name ')
+        ->select('materials.*, material_types.type, colors.color, gudang, roll, vendor, material_patterns.created_at as created_at_pola, users.name ')
         ->join('material_types', 'material_types.id = materials.material_type')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
-        ->join('tim_cutting', 'tim_cutting.id = materials.pic_cutting')
         ->join('material_vendors', 'material_vendors.id = materials.vendor_id')
         ->join('material_patterns', 'material_patterns.material_id = materials.id')
         ->join('users', 'users.id = material_patterns.user_id_out')
@@ -120,9 +144,10 @@ class MaterialModel extends Model
 
     public function getMaterialRetur() {
         $query = $this->db->table('materials')
-            ->select('material_types.type, colors.color, materials.updated_at')
+            ->select('materials.material_id, material_types.type, vendor, colors.color,  materials.updated_at')
             ->join('material_types', 'material_types.id = materials.material_type')
             ->join('colors', 'colors.id = materials.color_id')
+            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')  
             ->where('materials.status', '0')
             ->orderBy('materials.updated_at', 'DESC')
             ->get();
@@ -374,9 +399,9 @@ class MaterialModel extends Model
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
             ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
-            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
-            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('tim_cutting as tc', 'tc.id = ct.pic')
+            ->join('tim_gelar as g1', 'g1.id = ct.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = ct.gelar2')
             ->join('pola as p', 'p.cutting_id = ct.id', 'left')
             ->where('ct.tgl BETWEEN "'.$date1.'" AND "'.$date2.'" ')
             ->groupBy('ct.id')
@@ -560,9 +585,9 @@ class MaterialModel extends Model
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
             ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
-            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
-            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('tim_gelar as g1', 'g1.id = ct.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = ct.gelar2')
+            ->join('tim_cutting as tc', 'tc.id = ct.pic')
             ->join('pola as p', 'p.cutting_id = ct.id')
             ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
             ->groupBy('p.id')
@@ -575,9 +600,9 @@ class MaterialModel extends Model
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
             ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
-            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
-            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('tim_gelar as g1', 'g1.id = ct.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = ct.gelar2')
+            ->join('tim_cutting as tc', 'tc.id = ct.pic')
             ->join('pola as p', 'p.cutting_id = ct.id')
             ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
             ->where('p.tgl_ambil BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
@@ -596,9 +621,9 @@ class MaterialModel extends Model
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
             ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
-            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
-            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('tim_gelar as g1', 'g1.id = ct.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = ct.gelar2')
+            ->join('tim_cutting as tc', 'tc.id = ct.pic')
             ->join('pola as p', 'p.cutting_id = ct.id')
             ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
             ->join('products', 'products.pola_id = p.id', 'left')
@@ -611,9 +636,9 @@ class MaterialModel extends Model
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
             ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
-            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
-            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('tim_gelar as g1', 'g1.id = ct.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = ct.gelar2')
+            ->join('tim_cutting as tc', 'tc.id = ct.pic')
             ->join('pola as p', 'p.cutting_id = ct.id')
             ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
             ->where('p.tgl_ambil BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
@@ -632,9 +657,9 @@ class MaterialModel extends Model
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
             ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = m.gelar1')
-            ->join('tim_gelar as g2', 'g2.id = m.gelar2')
-            ->join('tim_cutting as tc', 'tc.id = m.pic_cutting')
+            ->join('tim_gelar as g1', 'g1.id = ct.gelar1')
+            ->join('tim_gelar as g2', 'g2.id = ct.gelar2')
+            ->join('tim_cutting as tc', 'tc.id = ct.pic')
             ->join('pola as p', 'p.cutting_id = ct.id')
             ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
             ->where('p.id', $id)

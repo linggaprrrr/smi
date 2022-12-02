@@ -40,6 +40,7 @@
                                     <div class="form-group">
                                         <label for="">Warna*</label>
                                         <select class="form-control" name="warna">
+                                            <option value="">-</option>
                                         <?php if ($colors->getNumRows() > 0) : ?>
                                             <?php foreach ($colors->getResultObject() as $color) : ?>
                                                 <option value="<?= $color->id ?>"><?= $color->color ?></option>
@@ -51,6 +52,7 @@
                                     <div class="form-group">
                                         <label for="">Vendor Kain*</label>
                                         <select class="form-control vendor-kain" name="vendor" required>                                            
+                                            <option value="">-</option>
                                             <?php if ($materialVendors->getNumRows() > 0) : ?>
                                                 <?php foreach ($materialVendors->getResultObject() as $vendor) : ?>
                                                     <option value="<?= $vendor->id ?>"><?= $vendor->vendor ?></option>
@@ -179,7 +181,7 @@
                                     </select>   
                                 </td>                                
                                 <td>
-                                    <input type="text" class="form-control berat" name="weight" data-id='<?= $kain->id ?>' value="<?= $kain->total_berat ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                                    <input type="text" class="form-control berat" name="weight" data-id='<?= $kain->id ?>' value="<?= number_format($kain->total_berat, 2) ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 </td>
                                 <td class="text-center align-middle"><?= date('m/d/Y', strtotime($kain->created_at)) ?></td>                                
                                 <td class="text-center">
@@ -269,7 +271,7 @@
                                                     <input type="text" class="form-control text-center qty-cutting" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                 </td>
                                                 <td class="text-center align-middle">
-                                                    <input type="text" class="form-control text-center berat-cutting" name="berat" data-id='<?= $cutting->id ?>' data-material='<?= $cutting->material_id ?>'  value="<?= $cutting->berat ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    <input type="text" class="form-control text-center berat-cutting" name="berat" data-id='<?= $cutting->id ?>' data-material='<?= $cutting->material_id ?>'  value="<?= number_format($cutting->berat, 2) ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                 </td>
                                                 <td class="text-center align-middle">                                
                                                     <select name="gelar1" data-id="<?= $cutting->id ?>" class="form-control gelar1">
@@ -392,7 +394,6 @@
                                                 <td class="text-center align-middle">
                                                     <a href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-info-circle fa-lg mr-2"></i></a>
                                                     <!-- <a href="" data-toggle="modal" class="editable-cutting" data-id="<?= $cutting->id ?>"><i class="fa fa-edit fa-lg text-secondary"></i></a> -->
-                                                    <a href="" data-toggle="modal"  class="pola-out" data-id="<?= $cutting->id ?>" ><i class="fa fa-sign-out-alt fa-lg text-success"></i></a>
                                                     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="diaxlog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                                             <div class="modal-content">

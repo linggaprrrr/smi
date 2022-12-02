@@ -2,8 +2,6 @@
 
 <?= $this->section('content') ?>
 <div class="row">
-    
-
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-4 col-md-6 mb-4">
         <div class="card border-left-secondary shadow h-100 py-2">
@@ -12,7 +10,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
                             Stok Gudang</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalGudang['stok']) ? "0" : $totalGudang['stok']) ?></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalGudang) ? "0" : $totalGudang['stok']) ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -28,7 +26,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Stok Masuk <mark>(<?= date('F') ?>)</mark></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalStokMasuk['stok']) ? "0" : $totalStokMasuk['stok']) ?></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalStokMasuk) ? "0" : $totalStokMasuk['stok']) ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -46,7 +44,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                             Total Keluar <mark>(<?= date('F') ?>)</mark></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokKeluar['stok']) ? "0" : ($stokKeluar['stok'])) ?></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokKeluar) ? "0" : ($stokKeluar['stok'])) ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -64,7 +62,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                             Produk Retur <mark>(<?= date('F') ?>)</mark></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokRetur['stok']) ? "0" : $stokRetur['stok']) ?></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokRetur) ? "0" : $stokRetur['stok']) ?></div>
                     </div>
                     <div class="col-auto"> 
                         <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>

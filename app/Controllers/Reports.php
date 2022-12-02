@@ -92,6 +92,15 @@ class Reports extends BaseController
             $productReject = $this->productModel->getAllProductReject($date1, $date2);
             $cuttings = $this->materialModel->getAllCuttingData2($date1, $date2);
             $rejectedSold = $this->productModel->rejectedSold($date1. $date2);
+            $kainRetur = $this->materialModel
+                ->select('materials.*, material_vendors.vendor, material_types.type, colors.color')
+                ->join('material_types', 'materials.material_type = material_types.id')
+                ->join('colors', 'colors.id = materials.color_id')
+                ->join('material_vendors', 'material_vendors.id = materials.vendor_id')  
+                ->where('materials.status', '0')
+                ->where('materials.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+                ->orderBy('created_at', 'DESC')
+                ->get();
             $data = array(
                 'title' => 'Laporan',
                 'materials' => $materials,
@@ -107,6 +116,7 @@ class Reports extends BaseController
                 'date2' => $date[1],
                 'picCutting' => $picCutting,
                 'timGelars' => $getAllTimGelar,
+                'kainRetur' => $kainRetur,
             );
         } else {
             $materials = $this->materialModel->getAllMaterial();
@@ -118,6 +128,14 @@ class Reports extends BaseController
             $cuttings = $this->materialModel->getAllCuttingData2();
             $productReject = $this->productModel->getAllProductReject();
             $rejectedSold = $this->productModel->rejectedSold();
+            $kainRetur = $this->materialModel
+                ->select('materials.*, material_vendors.vendor, material_types.type, colors.color')
+                ->join('material_types', 'materials.material_type = material_types.id')
+                ->join('colors', 'colors.id = materials.color_id')
+                ->join('material_vendors', 'material_vendors.id = materials.vendor_id')  
+                ->where('materials.status', '0')
+                ->orderBy('created_at', 'DESC')
+                ->get();
             $data = array(
                 'title' => 'Laporan',
                 'materials' => $materials,
@@ -133,6 +151,7 @@ class Reports extends BaseController
                 'date2' => $date2,
                 'picCutting' => $picCutting,
                 'timGelars' => $getAllTimGelar,
+                'kainRetur' => $kainRetur,
             );
         }
        
@@ -276,76 +295,28 @@ class Reports extends BaseController
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->where('product_barcodes.status', '3')
             ->get();
-            $selling = 0;        
-            if ($getStok->getNumRows() > 0) {
-                foreach ($getStok->getResultObject() as $product) {                
-                    if ($penjualan->getNumRows() > 0 || $out->getNumRows() > 0) {
-                        foreach ($penjualan->getResultObject() as $sell) {                
-                            if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
-                                $selling = $selling + $sell->qty;                         
-                            }
-                        }        
-                        foreach($out->getResultObject() as $keluar) {
-                            if (($keluar->model_id == $product->model_id) && ($keluar->color_id == $product->color_id) && ($keluar->size == $product->size)) {
-                                $selling = $selling + 1;                         
-                            }
-                        }
-                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($selling)) ;                                                            
-                        array_push($stok, [
-                            'id' => $product->id,
-                            'model_id' => $product->model_id,
-                            'product_name' => $product->product_name,
-                            'model_name' => $product->model_name,
-                            'color' => $product->color,
-                            'size' => $product->size,
-                            'stok' => $product->stok,
-                            'stok_masuk' => $product->stok_masuk,
-                            'penjualan' => $selling,
-                            'stok_retur' => $product->stok_retur,
-                            'sisa' => $sisa,
-                            'hpp' => $product->hpp,
-                            'hpp_jual' => $product->hpp_jual,
-                        ]);
-                        $selling = 0;
-                    } else {
-                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($selling)) ;                                                            
-                        array_push($stok, [
-                            'id' => $product->id,
-                            'model_id' => $product->model_id,
-                            'product_name' => $product->product_name,
-                            'model_name' => $product->model_name,
-                            'color' => $product->color,
-                            'size' => $product->size,
-                            'stok' => $product->stok,
-                            'stok_masuk' => $product->stok_masuk,
-                            'penjualan' => $selling,
-                            'stok_retur' => $product->stok_retur,
-                            'sisa' => $sisa,
-                            'hpp' => $product->hpp,
-                            'hpp_jual' => $product->hpp_jual,
-                        ]);
-                    }
-                }
-            }
+            $selling = 0;      
             $shippings = $this->shippingModel
                 ->orderBy('qrcode', 'asc')
                 ->orderBy('created_at', 'desc')
                 ->get();
-            $data = array(
-                'title' => 'Laporan',
-                'materials' => $materials,
-                'productsIn' => $productsIn,
-                'productsOut' => $productsOut,
-                'polaIn' => $polaIn,
-                'polaOut' => $polaOut,
-                'cuttings' => $cuttings,
-                'models' => $models,
-                'stokProduk' => $sisaStok,
-                'shippings' => $shippings,
-                'date1' => $date1,  
-                'date2' => $date2,
-            );
         }
+        
+        
+         $data = array(
+            'title' => 'Laporan',
+            'materials' => $materials,
+            'productsIn' => $productsIn,
+            'productsOut' => $productsOut,
+            'polaIn' => $polaIn,
+            'polaOut' => $polaOut,
+            'cuttings' => $cuttings,
+            'models' => $models,
+            'stokProduk' => $sisaStok,
+            'shippings' => $shippings,
+            'date1' => $date1,  
+            'date2' => $date2,
+        );
         return view('gudang_lovish/reports', $data);    
     }
 
