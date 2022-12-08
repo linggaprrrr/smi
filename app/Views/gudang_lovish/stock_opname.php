@@ -26,8 +26,8 @@
                 
                 <tbody>
                     <?php $no = 1; ?>
-                    <?php if ($products->getNumRows() > 0) : ?>
-                        <?php foreach ($products->getResultArray() as $product) : ?>    
+                    <?php if (count($products) > 0) : ?>
+                        <?php foreach ($products as $product) : ?>    
                             <?php 
                                 $selisih = $product['sisa'] - $product['scan_in'];
                                 ?>                                                

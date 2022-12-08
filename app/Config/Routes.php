@@ -76,7 +76,6 @@ $routes->post('/update-gelar', 'Materials::updateGelar');
 $routes->post('/simpan-cutting', 'Materials::saveCutting');
 $routes->post('/update-cutting', 'Materials::updateCutting');
 
-
 $routes->post('/generate-qr', 'QRCodeGenerator::generateQR');
 $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
 $routes->post('/generate-qr-produk-reject', 'QRCodeGenerator::generateQRProductReject');
@@ -105,6 +104,7 @@ $routes->post('/upload-vendor-penjualan', 'Reports::uploadVendorSeller');
 $routes->post('/upload-vendor-pola', 'Reports::uploadVendorPola');
 $routes->post('/upload-gelar', 'Reports::uploadTimGelar');
 $routes->post('/upload-cutting', 'Reports::uploadTimCutting');
+$routes->post('/stok-masuk-to-awal', 'Products::stokMasukToIn');
 
 // ADMIN API
 $routes->get('/get-user', 'Users::getUser');

@@ -119,19 +119,19 @@ class Api extends BaseController {
             case "pengiriman-produk" :
                     $resi = $post['qr'];
                     $prod = explode('-', $post['prod']);
-                    $getProduct = $this->produkModel
-                        ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                        ->where('product_barcodes.id', $prod[0])
-                        ->where('product_barcodes.status !=', '5')
+                    $getProduct = $this->shippinglModel                        
+                        ->where('product_id', $prod[0])                        
                         ->get();
                     if ($getProduct->getNumRows() > 0) {                         
+                        $status = '0';                 
+                    } else {
                         $getShipment = $this->shippinglModel->where('resi', $resi)->first();            
                         if (!is_null($getShipment) || !empty($getShipment)) {
                             $status = '1';                 
                             $this->shippinglModel->insertProductShipment($prod[0], $getShipment['id']);   
                             $this->produkModel->setProductOutShipment($prod[0], '0');
                         } 
-                    }    
+                    } 
                 break;
             case "so" : 
                 $getProduct = $this->produkModel->findProductSo($qr[0]);

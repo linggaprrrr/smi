@@ -111,12 +111,12 @@ class QRCodeGenerator extends BaseController
             $json = array();
             $qrs = array(
                 'key' => '',
-                'qr' => ''
+                'qr' => '',
             );
             for ($i=0; $i < count($materials); $i++) {
                 $getMaterial = $this->materialModel->getMaterialDetail($materials[$i]);
                           
-                $data = $getMaterial[0]->id.'-'.$getMaterial[0]->type.'-'.$getMaterial[0]->color;                
+                $data = $getMaterial[0]->id.'-'.$getMaterial[0]->type.'-'.$getMaterial[0]->color.'-'.$getMaterial[0]->weight;                
                 $qr = QrCode::create($data);
                 $writer = new PngWriter();
                 $result = $writer->write($qr);    

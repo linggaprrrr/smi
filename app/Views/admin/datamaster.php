@@ -6,10 +6,12 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Kain</h6>
+                
                 <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-kain"><i class="fa fa-plus mr-2"></i>Tambah Kain</button>
                 <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importkain"><i class="fa fa-file-excel mr-2"></i>
                     Import
                 </button>
+                <a class="btn float-right" href="<?= base_url('download/import kain template.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
 
                 <!-- Modal -->
                 <div class="modal fade" id="importkain" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -18,6 +20,7 @@
                     <?= csrf_field() ?>
                         <div class="modal-content">
                             <div class="modal-header">
+                                
                                 <h5 class="modal-title" id="exampleModalLabel">Upload Jenis Kain</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -153,7 +156,7 @@
                 <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importmodel"><i class="fa fa-file-excel mr-2"></i>
                     Import
                 </button>
-
+                <a class="btn float-right" href="<?= base_url('download/import model template.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
                 <!-- Modal -->
                 <div class="modal fade" id="importmodel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -316,7 +319,7 @@
                 <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importwarna"><i class="fa fa-file-excel mr-2"></i>
                     Import
                 </button>
-
+                <a class="btn float-right" href="<?= base_url('download/import warna template.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
                 <!-- Modal -->
                 <div class="modal fade" id="importwarna" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -449,7 +452,7 @@
                 <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importsupplier"><i class="fa fa-file-excel mr-2"></i>
                     Import
                 </button>
-
+                <a class="btn float-right" href="<?= base_url('download/import vendor kain.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
                 <!-- Modal -->
                 <div class="modal fade" id="importsupplier" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -585,9 +588,9 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Vendor Penjualan</h6>
                 <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-vendorpenjualan"><i class="fa fa-plus mr-2"></i>Tambah Vendor</button>
-                <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importvendorselling"><i class="fa fa-file-excel mr-2"></i>
+                <!-- <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importvendorselling"><i class="fa fa-file-excel mr-2"></i>
                     Import
-                </button>
+                </button> -->
 
                 <!-- Modal -->
                 <div class="modal fade" id="importvendorselling" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -720,7 +723,7 @@
                 <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importvendorpola"><i class="fa fa-file-excel mr-2"></i>
                     Import
                 </button>
-
+                <a class="btn float-right" href="<?= base_url('download/import vendor pola template.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
                 <!-- Modal -->
                 <div class="modal fade" id="importvendorpola" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -852,7 +855,7 @@
                 <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importgelar"><i class="fa fa-file-excel mr-2"></i>
                     Import
                 </button>
-
+                <a class="btn float-right" href="<?= base_url('download/import tim gelar template.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
                 <!-- Modal -->
                 <div class="modal fade" id="importgelar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -982,7 +985,7 @@
                 <button type="button" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#importcutting"><i class="fa fa-file-excel mr-2"></i>
                     Import
                 </button>
-
+                <a class="btn float-right" href="<?= base_url('download/import tim cutting template.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
                 <!-- Modal -->
                 <div class="modal fade" id="importcutting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">

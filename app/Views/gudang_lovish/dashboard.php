@@ -10,7 +10,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
                             Stok Gudang</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalGudang) ? "0" : $totalGudang['stok']) ?></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalGudang) ? "0" : $totalGudang) ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -141,8 +141,8 @@
                         
                         <tbody>
                             <?php $no = 1; ?>
-                            <?php if ($productLovish->getNumRows() > 0) : ?>
-                                <?php foreach ($productLovish->getResultArray() as $product) : ?>
+                            <?php if (count($productLovish) > 0) : ?>
+                                <?php foreach ($productLovish as $product) : ?>
                                     
                                     <tr class="">
                                         <td class="text-center"><?= $no++ ?></td>

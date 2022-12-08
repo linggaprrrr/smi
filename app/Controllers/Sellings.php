@@ -79,9 +79,26 @@
                     }
                     
                     if (count($temp) == 3) {
-                        $color = $temp[2];
+                        if (strpos($row[1], 'REG') !== false) {
+                            $size = "REG";
+                            $color = trim($temp[2], $size);
+                        } else if (strpos($row[1], 'JUMBO') !== false || strpos($row[1], 'JUM') !== false) {
+                            $size = "JUMBO";
+                            $color = trim($temp[2], $size);
+                        } else {
+                            $color = trim($temp[2]);
+                        }
+                        
                     } else if (count($temp) > 3) {
-                        $color = $temp[2]. ' '. $temp[3];
+                        if (strpos($row[1], 'REG') !== false) {
+                            $size = "REG";
+                            $color = trim($temp[2]. ' '. $temp[3], $size);
+                        } else if (strpos($row[1], 'JUMBO') !== false || strpos($row[1], 'JUM') !== false) {
+                            $size = "JUMBO";
+                            $color = trim($temp[2]. ' '. $temp[3], $size);
+                        } else {
+                            $color = trim($temp[2]. ' '. $temp[3]);
+                        }                        
                     }
     
                     $getColor = $this->materialModel->getColorByName($color);
@@ -92,11 +109,7 @@
                     }
     
     
-                    if (strpos($row[1], 'REG') !== false) {
-                        $size = "REG";
-                    } else if (strpos($row[1], 'JUMBO') !== false) {
-                        $size = "JUMBO";
-                    }
+                    
     
     
                     $this->sellingModel->save([

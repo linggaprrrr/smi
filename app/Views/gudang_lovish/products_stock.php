@@ -9,7 +9,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary float-left">Stok Produk</h6>
-        <!-- <a href="" class="btn btn-primary float-right" data-toggle="modal"><i class="fa fa-plus mr-2"></i>Replace SO</a>         -->
+        <a href="" class="btn btn-primary float-right stokin" data-toggle="modal"><i class="fa fa-plus mr-2"></i>Stok Awal</a>        
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -34,8 +34,8 @@
                 
                 <tbody>
                     <?php $no = 1; ?>
-                    <?php if ($products->getNumRows() > 0) : ?>
-                        <?php foreach ($products->getResultArray() as $product) : ?>     
+                    <?php if (count($products) > 0) : ?>
+                        <?php foreach ($products as $product) : ?>     
                             <?php 
                                 $alert = 0;
                                 $stok = $product['stok'] + $product['stok_masuk'];
@@ -106,6 +106,30 @@
                     icon: "success",
                     });
                     $.post('/delete-product-detail-lovish', {product_id: id})
+                        .done(function(data) {
+                            setTimeout(location.reload.bind(location), 1000);
+                        });
+                } else {
+                    swal("Data tidak jadi dihapus!");
+                }
+            });
+        })
+
+        $(document).on('click', '.stokin', function() {
+            const id = '1';
+            swal({
+                    title: "Apakah anda yakin?",
+                    text: "Data stok masuk ke stok awal",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Data berhasil dimasukkan!", {
+                    icon: "success",
+                    });
+                    $.post('/stok-masuk-to-awal', {product_id: id})
                         .done(function(data) {
                             setTimeout(location.reload.bind(location), 1000);
                         });

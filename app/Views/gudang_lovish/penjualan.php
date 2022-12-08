@@ -12,6 +12,7 @@
         <h6 class="m-0 font-weight-bold text-primary float-left">Data Penjualan</h6>
         
         <button class="btn btn-success float-right mr-2" data-toggle="modal" data-target=".export-produk"><i class="fa fa-file-excel mr-2"></i>Import Penjualan</button>
+        <a class="btn float-right" href="<?= base_url('download/import penjualan template.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
         <div class="modal fade export-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -22,6 +23,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>
+                            
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
@@ -65,7 +67,7 @@
                         <?php foreach($sellings->getResultObject() as $product) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td class="text-center"><?= date('m/d/Y', strtotime($product->created_at)) ?></td>
+                                <td class="text-center"><?= $product->created_at ?></td>
                                 <td class="text-center"><?= $product->product_name ?></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td class="text-center"><?= $product->color ?></td>

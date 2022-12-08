@@ -190,17 +190,15 @@ class ProductModel extends Model
             ->select('sellings.*, model_name, jenis as product_name, color, SUM(qty) as penjualan')            
             ->join('models', 'models.id = sellings.model_id')            
             ->join('colors', 'colors.id = sellings.color_id')
-            ->where('sellings.status', '3')
-            ->groupBy('model_id, color_id, size')            
+            ->groupBy('sellings.id') 
             ->get();
         } else {
             $query = $this->db->table('sellings')
             ->select('sellings.*, model_name, jenis as product_name, color, SUM(qty) as penjualan')            
             ->join('models', 'models.id = sellings.model_id')            
-            ->join('colors', 'colors.id = sellings.color_id')
-            ->where('sellings.status', '3')
-            ->where('sellings.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
-            ->groupBy('model_id, color_id, size')            
+            ->join('colors', 'colors.id = sellings.color_id')            
+            ->where('sellings.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')                       
+            ->groupBy('sellings.id')
             ->get();
         }
 
@@ -543,10 +541,9 @@ class ProductModel extends Model
     public function productsRetur($date1 = null, $date2 = null) {
         if (is_null($date1)) {
             $query = $this->db->table('products')
-            ->select('product_logs.qty as qty, size, product_logs.created_at, model_name,jenis as  product_name, color, name, price, weight')
+            ->select('product_logs.qty as qty, size, product_logs.created_at, model_name,jenis as  product_name, color, price, weight')
             ->join('models', 'models.id = products.model_id')
-            ->join('colors', 'colors.id = products.color_id')
-            ->join('users', 'users.id = products.user_id')
+            ->join('colors', 'colors.id = products.color_id')            
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
             ->where('product_logs.status','4')
@@ -556,10 +553,9 @@ class ProductModel extends Model
             ->get();
         } else {
             $query = $this->db->table('products')
-            ->select('product_logs.qty as qty, size, product_logs.created_at, model_name,jenis as  product_name, color, name, price, weight')
+            ->select('product_logs.qty as qty, size, product_logs.created_at, model_name,jenis as  product_name, color, price, weight')
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
-            ->join('users', 'users.id = products.user_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
             ->where('product_logs.status','4')
@@ -742,6 +738,10 @@ class ProductModel extends Model
             ->get();
         }
         return $query;
+    }
+
+    public function setToStokAwal() {
+        $this->db->query("UPDATE product_barcodes SET status = '6' WHERE status='2' ");
     }
 
 }   

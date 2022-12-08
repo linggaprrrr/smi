@@ -453,8 +453,8 @@
                                     
                                     <tbody>
                                         <?php $no = 1; ?>
-                                        <?php if ($productLovish->getNumRows() > 0) : ?>
-                                            <?php foreach ($productLovish->getResultArray() as $product) : ?>
+                                        <?php if (count($productLovish) > 0) : ?>
+                                            <?php foreach ($productLovish as $product) : ?>
                                                 
                                                 <tr class="">
                                                     <td class="text-center"><?= $no++ ?></td>
