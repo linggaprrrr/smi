@@ -31,4 +31,9 @@ class LogModel extends Model
         return $query;
     }
 
+    public function saveHistoryStok($data) {
+        $this->db->table('history_stok')
+            ->insert($data);
+    }
+
 }

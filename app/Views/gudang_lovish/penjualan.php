@@ -9,8 +9,24 @@
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Data Penjualan</h6>
-        
+        <div class="float-left">
+            <form method="GET" action="<?= base_url('/operasional/penjualan') ?>" id="date" >
+                <div class="form-group" style="width: 250px;">
+                    <label for="">Date Range: </label>                       
+                    <?php if (is_null($date1)) : ?>
+                        <input type="text" name="dates" class="form-control text-center daterange" readonly />            
+                    <?php else : ?>
+                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?> - <?= $date2 ?>" readonly />            
+                    <?php endif ?> 
+                </div>    
+            </form>
+        </div>
+    
+        <?php if (!is_null($date1)) : ?>
+            <a class="btn btn-success float-right" href="<?= base_url('/export-penjualan/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+        <?php else : ?>
+            <a class="btn btn-success float-right" href="<?= base_url('/export-penjualan') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+        <?php endif ?>
         <button class="btn btn-success float-right mr-2" data-toggle="modal" data-target=".export-produk"><i class="fa fa-file-excel mr-2"></i>Import Penjualan</button>
         <a class="btn float-right" href="<?= base_url('download/import penjualan template.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
         <div class="modal fade export-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -89,7 +105,24 @@
 <?= $this->section('js') ?>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
+    $(document).ready(function() {
+        $('.daterange').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,        
+            locale: {
+                format: 'M/D/YYYY HH:MM'
+            }
+        });      
+
+        $('.daterange').change(function() {
+            $('#date').submit();
+        })
+    });
+    
     var input = document.getElementById('file-upload');
     var infoArea = document.getElementById('file-upload-filename');
     input.addEventListener('change', showFileName);
@@ -99,5 +132,6 @@
         var fileName = input.files[0].name;
         infoArea.textContent = '' + fileName;
     }
+    
 </script>
 <?= $this->endSection() ?>

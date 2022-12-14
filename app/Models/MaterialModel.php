@@ -64,15 +64,13 @@ class MaterialModel extends Model
     public function getStokMaterialIn() {
 
         $query =  $this->db->table('materials')
-        ->select('material_types.type, colors.color, stok, stok_masuk, stok_retur, stok_habis, materials.created_at, weight')
+        ->select('material_types.type, colors.color, stok_masuk, stok_retur, stok_habis, materials.created_at, weight')
         ->join('material_types', 'material_types.id = materials.material_type')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
-        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_masuk FROM materials WHERE MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as s', 's.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
-        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok FROM materials WHERE materials.status = 1 AND MONTH(materials.created_at) <= MONTH(CURRENT_DATE())-1 AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) GROUP BY material_type, color_id) as st', 'st.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
-        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_retur FROM materials WHERE materials.status = 0 AND MONTH(materials.created_at) = MONTH(CURRENT_DATE()) AND YEAR(materials.created_at) = YEAR(CURRENT_DATE()) AND status = 0 GROUP BY material_type, color_id) as sr', 'sr.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_masuk FROM materials GROUP BY material_type, color_id) as s', 's.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_retur FROM materials WHERE materials.status = 0 AND status = 0 GROUP BY material_type, color_id) as sr', 'sr.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
         ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_habis FROM materials LEFT JOIN (SELECT cutting.material_id, SUM(berat) as total_berat FROM cutting GROUP BY cutting.material_id) as ct ON ct.material_id = materials.id WHERE (materials.weight - IFNULL(ct.total_berat, 0)) <= 0 GROUP BY material_type, color_id) as ct', 'ct.material_type = materials.material_type AND ct.color_id = materials.color_id', 'left')           
-        
         ->groupBy('materials.material_type, materials.color_id')
         ->orderBy('materials.created_at', 'desc')->get();
         return $query;

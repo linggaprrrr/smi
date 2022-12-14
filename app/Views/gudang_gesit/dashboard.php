@@ -105,7 +105,7 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">History Stok Kain Masuk</h6>
                 <div>
-                <a class="btn btn-success float-right" href="<?= base_url('/export-data-stok-kain') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <a class="btn btn-success float-right" href="<?= base_url('/export-data-stok-kain') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                 </div>
             </div>
             <div class="card-body">
@@ -199,8 +199,7 @@
                                 <th class="text-center" style="width: 5%">No</th>
                                 <th class="text-center">Jenis</th>
                                 <th class="text-center">Warna</th>
-                                <th class="text-center">Stok Awal</th>
-                                <th class="text-center">Stok Masuk</th>
+                                <th class="text-center">Stok</th>
                                 <th class="text-center">Stok Retur</th>
                                 <th class="text-center">Stok Habis</th>
                                 <th class="text-center">Total Stok</th>
@@ -211,14 +210,13 @@
                             <?php $no = 1; ?>
                             <?php if ($materials->getNumRows() > 0) : ?>
                                 <?php foreach ($materials->getResultObject() as $kain) : ?>
-                                    <?php 
-                                        $total = $kain->stok + $kain->stok_masuk - ($kain->stok_retur + $kain->stok_habis);                                    
+                                    <?php                                     
+                                        $total = $kain->stok_masuk - ($kain->stok_retur + $kain->stok_habis);                                    
                                     ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= $kain->type ?></td>
                                         <td><?= $kain->color ?></td>
-                                        <td class="text-center"><?= $kain->stok ?></td>
                                         <td class="text-center"><?= $kain->stok_masuk ?></td>
                                         <td class="text-center text-danger"><?= $kain->stok_retur ?></td>
                                         <td class="text-center text-danger"><?= $kain->stok_habis ?></td>                                        

@@ -81,7 +81,11 @@ $routes->post('/generate-qr-produk', 'QRCodeGenerator::generateQRProduct');
 $routes->post('/generate-qr-produk-reject', 'QRCodeGenerator::generateQRProductReject');
 $routes->get('/export-data-kain', 'Materials::exportData');
 $routes->get('/export-data-kain/(:any)/(:any)', 'Materials::exportData/$1/$2');
+$routes->get('/export-data-kain-retur', 'Materials::exportDataRetur');
+$routes->get('/export-data-kain-retur/(:any)/(:any)', 'Materials::exportDataRetur/$1/$2');
 $routes->get('/export-data-stok-kain', 'Materials::exportDataStok');
+$routes->get('/export-penjualan', 'Sellings::exportPenjualan');
+$routes->get('/export-penjualan/(:any)/(:any)', 'Sellings::exportData/$1/$2');
 $routes->get('/export-produk-reject', 'Products::exportProductReject');
 $routes->get('/export-produk-reject/(:any)/(:any)', 'Products::exportProductReject/$1/$2');
 $routes->post('/simpan-user', 'Users::saveUser');
@@ -105,6 +109,8 @@ $routes->post('/upload-vendor-pola', 'Reports::uploadVendorPola');
 $routes->post('/upload-gelar', 'Reports::uploadTimGelar');
 $routes->post('/upload-cutting', 'Reports::uploadTimCutting');
 $routes->post('/stok-masuk-to-awal', 'Products::stokMasukToIn');
+$routes->post('/reset-so', 'Products::resetSO');
+$routes->get('/export-so', 'Products::exportSO');
 
 // ADMIN API
 $routes->get('/get-user', 'Users::getUser');
@@ -169,6 +175,7 @@ $routes->get('export-pengiriman', 'Shippings::exportShipments');
 $routes->get('export-data-cutting', 'Materials::exportDataCutting');
 $routes->get('export-data-cutting/(:any)/(:any)', 'Materials::exportDataCutting/$1/$2');
 $routes->get('export-data-stok-produk', 'Products::exportDataStokProduct');
+$routes->get('export-data-stok-produk/(:any)/(:any)', 'Products::exportDataStokProduct/$1/$2');
 
 // produk gesit
 $routes->post('on-change-product-type', 'Products::onChangeProductType');
@@ -266,6 +273,15 @@ $routes->post('/reject-in-sold-scanning', 'QRCodeGenerator::scanningRejectSold')
 $routes->post('/reject-in', 'Products::rejectIn');
 $routes->post('/reject-permanent', 'Products::rejectPermanent');
 $routes->post('/update-harga-jual', 'Products::updateHargaJualReject');
+
+$routes->get('/export-dash-pengiriman', 'Shippings::exportShipments');
+$routes->get('/export-dash-produk-retur', 'Products::exportRetur');
+$routes->get('/export-dash-produk-masuk', 'Products::exportProdukMasuk');
+$routes->get('/export-dash-produk-keluar', 'Products::exportProdukKeluar');
+$routes->get('/export-dash-stok-gudang', 'Products::exportStokGudang');
+$routes->get('/export-produk-masuk-gudang', 'Products::exportProdukMasukGesit');
+$routes->get('/export-produk-masuk-gudang/(:any)/(:any)', 'Products::exportProdukMasukGesit/$1/$2');
+
 
 
 // test

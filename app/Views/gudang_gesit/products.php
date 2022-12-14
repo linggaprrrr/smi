@@ -3,6 +3,7 @@
     option {
     background:transparent; 
 }
+
 </style>
 <?= $this->section('content') ?>
 <div class="card shadow mb-4">
@@ -193,7 +194,6 @@
                         <th class="text-center">Warna</th>
                         <th class="text-center">Reject</th>
                         <th class="text-center">Tanggal</th>
-                        <th class="text-right"><i class="fa fa-fas fa-angle-down"></i></th>
                     </tr>
                 </thead>
                 
@@ -207,15 +207,7 @@
                                 <td class="text-center"><?= $product->model_name ?></td>                                
                                 <td class="text-center"><?= $product->color ?></td>                         
                                 <td class="text-center"><?= strtoupper($product->category) ?></td>       
-                                <td class="text-center"><?= $product->date ?></td>
-                                <?php if ($product->category == 'noda' || $product->category == 'jahit') :?>
-                                    <td class="text-center">
-                                        <a href="" data-toggle="modal"  class="reject-in" data-id="<?= $product->barcode_id ?>" ><i class="fa fa-sign-out-alt fa-lg text-primary"></i></a>
-                                        <a href="" data-toggle="modal"  class="reject-permanent" data-id="<?= $product->barcode_id ?>" ><i class="fa fa-trash fa-lg text-danger"></i></a>
-                                    </td>                                        
-                                <?php else : ?>
-                                    <td></td>
-                                <?php endif ?>
+                                <td class="text-center"><?= $product->date ?></td>                                
 
                             </tr>
                         <?php endforeach ?>

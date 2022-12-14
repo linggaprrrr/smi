@@ -233,7 +233,7 @@ class ProductModel extends Model
             ->where('product_logs.qty !=','0')
             ->where('product_barcodes.status != ','1')
             ->where('product_barcodes.status != ','0')
-            ->where('products.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')
+            ->where('product_logs.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')
             ->orderBy('created_at', 'desc')
             ->get();
         }
@@ -388,7 +388,8 @@ class ProductModel extends Model
     }
 
     public function findProductOut($id) {
-        $query = $this->db->query("SELECT product_barcodes.id FROM products JOIN product_barcodes ON product_barcodes.product_id = products.id WHERE product_barcodes.id = '$id' AND (product_barcodes.status = 2 OR product_barcodes.status = 3) ");        return $query;    
+        $query = $this->db->query("SELECT product_barcodes.id FROM products JOIN product_barcodes ON product_barcodes.product_id = products.id WHERE product_barcodes.id = '$id' AND (product_barcodes.status = '2' OR product_barcodes.status = '3' OR product_barcodes.status = '5') ");        
+        return $query;    
 
     }   
     
@@ -434,6 +435,14 @@ class ProductModel extends Model
         return $query;    
     }
 
+    public function findProductRejectQC($id) {
+        $query = $this->db->table('product_barcodes')            
+            ->where('id', $id)
+            ->where('status', '1')
+            ->get();
+        return $query;    
+    }
+
     public function getAllVendorPenjualan() {
         $query = $this->db->table('selling_vendors')
         ->orderBy('id', 'desc')
@@ -468,12 +477,23 @@ class ProductModel extends Model
     }
 
     public function setProductIn($id) {
-        $getProduct = $this->db->query("SELECT * FROM product_barcodes WHERE id = '$id' ");
-        $productId = "";
+        $getProduct = $this->db->query("SELECT products.model_id, products.color_id FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE product_barcodes.id = '$id' ");
+        $model = "";
+        $color = "";
         if ($getProduct->getNumRows() > 0) {
-            $productId = $getProduct->getResultArray();
+            foreach($getProduct->getResultObject() as $prod) {
+                $model = $prod->model_id;
+                $color = $prod->color_id;
+            }
+            $this->db->query("INSERT INTO product_logs(product_id, status) VALUES('$id', 2) ");
         }
-        $this->db->query("INSERT INTO product_logs(product_id, status) VALUES('$id', 2) ");
+        $data = [
+            'model_id' => $model, 
+            'color_id' => $color,
+            'qty' => 1,
+            'jenis' => 'in'
+        ];
+        return $data;
     }
 
     public function updateQRStatus($id) {
@@ -488,6 +508,23 @@ class ProductModel extends Model
     public function setProductOutShipment($id) {
         $this->db->query("UPDATE product_barcodes SET status = '5' WHERE id = '$id' ");
         $this->db->query("INSERT INTO product_logs(product_id, qty, status) VALUES('$id', '1', '5') ");
+        $getProduct = $this->db->query("SELECT products.model_id, products.color_id FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE product_barcodes.id = '$id' ");
+        $model = "";
+        $color = "";
+        if ($getProduct->getNumRows() > 0) {
+            foreach($getProduct->getResultObject() as $prod) {
+                $model = $prod->model_id;
+                $color = $prod->color_id;
+            }           
+        }
+        $data = [
+            'model_id' => $model, 
+            'color_id' => $color,
+            'qty' => 1,
+            'jenis' => 'pengiriman'
+        ];
+        
+        return $data;
     }
 
     public function updateStokOut($id, $user) {
@@ -532,6 +569,24 @@ class ProductModel extends Model
     
     public function returProduct($id) {
         $this->db->query("INSERT product_logs(product_id, status) VALUES('$id', 4) ");
+        $getProduct = $this->db->query("SELECT products.model_id, products.color_id FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE product_barcodes.id = '$id' ");
+        $model = "";
+        $color = "";
+        if ($getProduct->getNumRows() > 0) {
+            foreach($getProduct->getResultObject() as $prod) {
+                $model = $prod->model_id;
+                $color = $prod->color_id;
+            }           
+        }
+        $data = [
+            'model_id' => $model, 
+            'color_id' => $color,
+            'qty' => 1,
+            'jenis' => 'retur'
+        ];
+        
+        return $data;
+        
     }
     
     public function deleteProductBarcode($productId) {
@@ -576,6 +631,22 @@ class ProductModel extends Model
             $this->db->query("INSERT penjualan_reject(reject_id) VALUES('$id') ");
             $this->db->query("UPDATE product_logs SET qty = '1' WHERE product_id='$id' ");
         }
+        $getProduct = $this->db->query("SELECT products.model_id, products.color_id FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE product_barcodes.id = '$id' ");
+        $model = "";
+        $color = "";
+        if ($getProduct->getNumRows() > 0) {
+            foreach($getProduct->getResultObject() as $prod) {
+                $model = $prod->model_id;
+                $color = $prod->color_id;
+            }            
+        }
+        $data = [
+            'model_id' => $model, 
+            'color_id' => $color,
+            'qty' => 1,
+            'jenis' => 'reject'
+        ];
+        return $data;
     }
     
     public function saveJualReject($id) {
@@ -741,7 +812,69 @@ class ProductModel extends Model
     }
 
     public function setToStokAwal() {
-        $this->db->query("UPDATE product_barcodes SET status = '6' WHERE status='2' ");
+        $data = $this->db->query("SELECT *, SUM(qty) as total FROM history_stok GROUP BY model_id, color_id, jenis");
+        $jumModel = $this->db->query("SELECT model_id, color_id as jum FROM history_stok GROUP BY model_id, color_id");
+        $sisa = 0;
+        $stokMasuk = 0;
+        $penjualan = 0;
+        $pengiriman = 0;
+        $retur = 0;
+        $model = "";
+        $color = "";
+        $count = 0;
+        if ($data->getNumRows() > 0) {
+            foreach($data->getResultObject() as $stok) {
+                if ($count == 0) {
+                    $model = $stok->model_id;
+                    $color = $stok->color_id;
+                }     
+
+                if ($model == $stok->model_id && $color == $stok->color_id) {                    
+                    if ($stok->jenis == 'in') {
+                        $stokMasuk = $stokMasuk + $stok->total;
+                        echo ($stokMasuk);
+                    } elseif ($stok->jenis == 'pengiriman') {
+                        $pengiriman = $stok->total;
+                    } elseif ($stok->jenis == 'penjualan') {
+                        $penjualan = $stok->total;
+                    } elseif ($stok->jenis == 'retur') {
+                        $retur = $stok->total;
+                    }                    
+                } else {                    
+                    $sisa = $stokMasuk + $retur - $penjualan;
+                    $sisagudang = $stokMasuk + $retur - $pengiriman;
+                    $this->db->query("UPDATE history_stok SET status = '1' WHERE model_id='$model' AND color_id='$color' ");
+                    $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisa', 'sisa_penjualan') ");
+                    $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisagudang', 'sisa_pengiriman') ");
+                    $model = $stok->model_id;
+                    $color = $stok->color_id;
+                    if ($stok->jenis == 'in') {
+                        $stokMasuk = $stok->total;
+                    } elseif ($stok->jenis == 'pengiriman') {
+                        $pengiriman = $stok->total;
+                    } elseif ($stok->jenis == 'penjualan') {
+                        $penjualan = $stok->total;
+                    } elseif ($stok->jenis == 'retur') {
+                        $retur = $stok->total;
+                    }
+                    
+                }
+
+                $count++;                
+            }
+            if ($jumModel->getNumRows() == 1) {
+                $sisa = $stokMasuk + $retur - $penjualan;
+                $sisagudang = $stokMasuk + $retur - $pengiriman;
+                $this->db->query("UPDATE history_stok SET status = '1' WHERE model_id='$model' AND color_id='$color' ");
+                $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisa', 'sisa_penjualan') ");
+                $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisagudang', 'sisa_pengiriman') ");
+            }
+        }
+        // echo ($sisa);
+    }
+    
+    public function resetSO() {
+        $this->db->query("DELETE FROM scan_so");
     }
 
 }   

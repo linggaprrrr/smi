@@ -9,7 +9,9 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary float-left">Stok Produk</h6>
-        <!-- <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-produk"><i class="fa fa-plus mr-2"></i>Replace SO</button>         -->
+        <a class="btn btn-success float-right ml-2" href="<?= base_url('/export-so') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>        
+        <button class="btn btn-primary float-right reset" data-toggle="modal">Reset SO</button>  
+         
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -78,6 +80,30 @@
                         .done(function(data) {
                             setTimeout(location.reload.bind(location), 1000);
                         });
+                } else {
+                    swal("Data tidak jadi dihapus!");
+                }
+            });
+        })
+        
+        $(document).on('click', '.reset', function() {
+            const id = '1';
+            swal({
+                    title: "Apakah anda yakin?",
+                    text: "Data yang hasil scan so akan dihapus selamanya",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Data berhasil dihapus!", {
+                    icon: "success",
+                    });
+                    $.post('/reset-so', {product_id: id})
+                        // .done(function(data) {
+                        //     setTimeout(location.reload.bind(location), 1000);
+                        // });
                 } else {
                     swal("Data tidak jadi dihapus!");
                 }

@@ -7,9 +7,21 @@
 <?= $this->section('content') ?>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Stok Produk</h6>
-        <a href="" class="btn btn-primary float-right stokin" data-toggle="modal"><i class="fa fa-plus mr-2"></i>Stok Awal</a>        
+    <div class="card-header py-3">        
+        <div class="float-left">
+            <form method="GET" action="<?= base_url('/operasional/stok-produk') ?>" id="date" >
+                <div class="form-group" style="width: 250px;">
+                    <label for="">Date Range: </label>                               
+                    <?php if (is_null($date1)) : ?>
+                        <input type="text" name="dates" class="form-control text-center daterange" readonly />            
+                    <?php else : ?>
+                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?>" readonly />            
+                    <?php endif ?> 
+                </div>    
+            </form>
+            
+        </div>
+        <a href="" class="btn btn-primary float-right stokin" data-toggle="modal"><i class="fa fa-plus mr-2"></i>Stok Awal</a>                
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -21,14 +33,15 @@
                         <th class="text-center">Stok Awal</th>
                         <th class="text-center">Stok Masuk (Gesit)</th>                        
                         <th class="text-center">Stok Retur</th>
-                        <th class="text-center">Penjualan Langsung</th>
+                        <th class="text-center">Penjualan Import Admin</th>
                         <th class="text-center">Pengiriman</th>
-                        <th class="text-center">Sisa Stok</th>
+                        <th class="text-center">Sisa Stok Penjualan</th>
+                        <th class="text-center">Sisa Stok Gudang</th>
                         <th class="text-center">HPP Gesit</th>
                         <th class="text-center">HPP Jual</th>
                         <th class="text-center">Nilai Barang</th>
                         <th class="text-center">Nilai Jual</th>
-                        <th class="text-center">Margin Tetap</th>
+                        <th class="text-center">Pendapatan HPP</th>
                     </tr>
                 </thead>
                 
@@ -67,6 +80,7 @@
                                 <?php else : ?>
                                   <td class="text-center align-middle table-danger"><?= $product['sisa'] ?></td>      
                                 <?php endif ?>
+                                <td class="text-center align-middle table-warning"><?= $product['sisa_gudang'] ?></td>   
                                 <td class="text-center align-middle">Rp <?= number_format($product['hpp'], 0) ?></td>
                                 <td class="text-center align-middle"><input type="text" name="hpp-jual" data-id="<?= $product['id'] ?>" data-model="<?= $product['model_id'] ?>" data-size="<?= $product['size'] ?>" class="form-control hpp-jual" value="<?= $product['hpp_jual'] ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 <td class="text-center align-middle">Rp <?= number_format(($product['hpp'] * $product['sisa']), 0) ?></td>                            
@@ -88,9 +102,23 @@
 <?= $this->section('js') ?>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
     $(document).ready(function() {
 
+        $('.daterange').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,        
+            locale: {
+                format: 'M/D/YYYY HH:MM'
+            }
+        });      
+
+        $('.daterange').change(function() {
+            $('#date').submit();
+        })
         $(document).on('click', '.btn-hapus-produk', function() {
             const id = $(this).data('id');
             swal({
@@ -119,7 +147,7 @@
             const id = '1';
             swal({
                     title: "Apakah anda yakin?",
-                    text: "Data stok masuk ke stok awal",
+                    text: "Data sisa stok penjualan ke stok awal",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,

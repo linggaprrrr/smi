@@ -25,7 +25,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Stok Masuk <mark>(<?= date('F') ?>)</mark></div>
+                            Stok Masuk </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalStokMasuk) ? "0" : $totalStokMasuk['stok']) ?></div>
                     </div>
                     <div class="col-auto">
@@ -43,8 +43,8 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Total Keluar <mark>(<?= date('F') ?>)</mark></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokKeluar) ? "0" : ($stokKeluar['stok'])) ?></div>
+                            Total Keluar </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokKeluar['stok']) ? "0" : ($stokKeluar['stok'])) ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -61,8 +61,8 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Produk Retur <mark>(<?= date('F') ?>)</mark></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokRetur) ? "0" : $stokRetur['stok']) ?></div>
+                            Produk Retur </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokRetur['stok']) ? "0" : $stokRetur['stok']) ?></div>
                     </div>
                     <div class="col-auto"> 
                         <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
@@ -82,7 +82,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Total Nilai Barang <mark>(<?= date('F') ?>)</mark></div>
+                            Total Nilai Barang </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">Rp. <?= (is_null($totalNilaiBarang) ? "0" : number_format($totalNilaiBarang, 0, ',', '.')) ?></div>
                     </div>
                     <div class="col-auto"> 
@@ -98,7 +98,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Total Nilai Barang Jual <mark>(<?= date('F') ?>)</mark></div>
+                            Total Nilai Barang Jual </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">Rp. <?= (is_null($totalNilaiBarangJual) ? "0" : number_format($totalNilaiBarangJual, 0, ',', '.')) ?></div>
                     </div>
                     <div class="col-auto"> 
@@ -115,7 +115,11 @@
             <form method="GET" action="<?= base_url('/operasional/dashboard') ?>" id="date" >
                 <div class="form-group" style="width: 250px;">
                     <label for="">Date Range: </label>    
-                    <input type="text" name="dates" class="form-control text-center daterange" value="<?= date('m/d/Y H:i') ?> - <?= date('m/d/Y H:i') ?>" readonly />                                                    
+                    <?php if (is_null($date1)) : ?>
+                        <input type="text" name="dates" class="form-control text-center daterange" readonly />            
+                    <?php else : ?>
+                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?>" readonly />            
+                    <?php endif ?> 
                 </div>    
             </form>
         </div>
@@ -124,6 +128,9 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Stok Gudang</h6>
+                <div>
+                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-stok-gudang') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -170,6 +177,9 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Total Produk Keluar</h6>
+                <div>
+                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-keluar') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -216,6 +226,9 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Produk Masuk</h6>
+                <div>
+                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-masuk') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -257,6 +270,9 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Produk Retur</h6>
+                <div>
+                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-retur') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -413,6 +429,9 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Data Pengiriman</h6>
+                <div>
+                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-pengiriman') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -530,9 +549,7 @@
         });
         $('.daterange').daterangepicker({
             timePicker: true,
-            timePicker24Hour: true,
-            startDate: moment().startOf('hour'),
-            endDate: moment().startOf('hour').add(32, 'hour'),
+            timePicker24Hour: true,            
             locale: {
                 format: 'M/D/YYYY HH:MM'
             }

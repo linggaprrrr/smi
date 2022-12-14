@@ -7,12 +7,29 @@
 <?= $this->section('content') ?>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Produk Masuk Dari Gesit</h6>
-        <!-- <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-produk"><i class="fa fa-plus mr-2"></i>Tambah Produk</button> -->
+    <div class="card-header py-3">        
         
+        <?php if (!is_null($date1)) : ?>
+            <a class="btn btn-success float-left" href="<?= base_url('/export-produk-masuk-gudang/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+        <?php else : ?>
+            <a class="btn btn-success float-left" href="<?= base_url('/export-produk-masuk-gudang') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+        <?php endif ?>
+        <div class="float-right">
+            <form method="GET" action="<?= base_url('/operasional/produk') ?>" id="date" >
+                <div class="form-group" style="width: 250px;">
+                    <label for="">Date Range: </label>                       
+                    <?php if (is_null($date1)) : ?>
+                        <input type="text" name="dates" class="form-control text-center daterange" readonly />            
+                    <?php else : ?>
+                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?> - <?= $date2 ?>" readonly />            
+                    <?php endif ?> 
+                </div>    
+            </form>
+        </div>
     </div>
     <div class="card-body">
+        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Produk Masuk Dari Gesit</h6>
+        <br>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
                 <thead>
@@ -31,7 +48,8 @@
                     <?php $no = 1; ?>
                     <?php if ($productsOut->getNumRows() > 0) : ?>
                         <?php foreach ($productsOut->getResultObject() as $product) : ?>
-                            <tr>
+                            <?php if (!is_null($product->model_name)) : ?>
+                                <tr>
                                 <td class="text-center"><?= $no++ ?></td>
                                 <td class="text-center"><div><?= $product->product_name ?></div></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
@@ -40,6 +58,7 @@
                                 <td class="text-center"><?= $product->created_at ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
                             </tr>
+                        <?php endif ?>
                         <?php endforeach ?>
                     <?php endif ?>
                 </tbody>
@@ -223,8 +242,23 @@
 <?= $this->section('js') ?>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
     $(document).ready(function() {
+
+        $('.daterange').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,        
+            locale: {
+                format: 'M/D/YYYY HH:MM'
+            }
+        });      
+
+        $('.daterange').change(function() {
+            $('#date').submit();
+        })
 
         var input = document.getElementById('file-upload');
         var infoArea = document.getElementById('file-upload-filename');

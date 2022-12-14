@@ -88,7 +88,7 @@ class Shippings extends BaseController
             $shippings = $this->shippinglModel->getAllShippingDetail($date1, $date2);
         }
         
-        $date = time();
+        $date = date('m-d-Y H:i:s');
         $fileName = "Data Pengiriman {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();

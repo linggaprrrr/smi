@@ -26,7 +26,7 @@ class Api extends BaseController {
     public function kirimQR() {
         $post = $this->request->getVar();
         $jenis = $post['jenis'];
-        $status = 0;
+        $status = '0';
         $resi = $post['qr'];
         $qr = explode('-', $post['qr']);
         
@@ -34,7 +34,7 @@ class Api extends BaseController {
             case "cutting" :                 
                 $getMaterial = $this->materialModel->find($qr[0]);
                 if ($getMaterial) {
-                    $status = 1;
+                    $status = '1';
                     $getCOA = $this->materialModel->getCOA();
                     $this->materialModel->insertCutting($qr[0], $getCOA[0]->biaya, $getCOA[1]->biaya);
                     $this->materialModel->save([
@@ -45,20 +45,24 @@ class Api extends BaseController {
                 break;
             case "produk-keluar" : 
                 $productStatus = $this->produkModel->productStatus($qr[0]);        
-                $status = '0';                
-                if ($productStatus[0]->status == '1') {
-                    $status = '1';       
-                    $this->produkModel->updateQRStatus($qr[0]);     
-                    $this->produkModel->setProductIn($qr[0]);
-                }        
+                $status = '0';                                                
+                if (count($productStatus) > 0) {                    
+                    if ($productStatus[0]->status == '1') {                        
+                        $status = '1';       
+                        $this->produkModel->updateQRStatus($qr[0]);     
+                        $data = $this->produkModel->setProductIn($qr[0]);
+                        $this->logModel->saveHistoryStok($data);
+                    }  
+                }      
                 break;
             case "reject" : 
                 $check = $this->produkModel->findProductReject($qr[0]);
-                $status = 0;
+                $status = '0';
                 
                 if ($check->getNumRows() > 0) {
-                    $status = 1;
-                    $this->produkModel->saveReject($qr[0], 'noda');    
+                    $status = '1';
+                    $data = $this->produkModel->saveReject($qr[0], 'noda');    
+                    $this->logModel->saveHistoryStok($data);
                 }
                 break;
             case "reject-jahit" : 
@@ -66,8 +70,9 @@ class Api extends BaseController {
                 $status = 0;
                 
                 if ($check->getNumRows() > 0) {
-                    $status = 1;
-                    $this->produkModel->saveReject($qr[0], 'jahit');    
+                    $status = '1';
+                    $data = $this->produkModel->saveReject($qr[0], 'jahit'); 
+                    $this->logModel->saveHistoryStok($data);  
                 }
                 break;
             case "reject-permanent" : 
@@ -75,16 +80,19 @@ class Api extends BaseController {
                 $status = 0;
                 
                 if ($check->getNumRows() > 0) {
-                    $status = 1;
-                    $this->produkModel->saveReject($qr[0], 'permanent');    
+                    $status = '1';
+                    $data = $this->produkModel->saveReject($qr[0], 'permanent');  
+                    $this->logModel->saveHistoryStok($data);    
+                } else {
+                    $this->produkModel->rejectPermanent($qr[0]);
                 }
                 break;
             case "penjualan-reject" : 
                 $check = $this->produkModel->findProductRejectSold($qr[0]);
-                $status = 0;
+                $status = '0';
                 
                 if ($check->getNumRows() > 0) {
-                    $status = 1;
+                    $status = '1';
                     $this->produkModel->saveJualReject($qr[0]);    
                 }
                 break;
@@ -113,25 +121,18 @@ class Api extends BaseController {
                     $numbers = rand(1000, 9999);
                     $info = 'BOX-'.substr($str, 0, 3).''.$numbers;
                     $this->shippinglModel->insertShippingDetail($info, $qr);
-                    $status = 1;
+                    $status = '1';
+                    
                 }
                 break;
-            case "pengiriman-produk" :
+            case "pengiriman-produk" :      
+                    $status = '1';
                     $resi = $post['qr'];
                     $prod = explode('-', $post['prod']);
-                    $getProduct = $this->shippinglModel                        
-                        ->where('product_id', $prod[0])                        
-                        ->get();
-                    if ($getProduct->getNumRows() > 0) {                         
-                        $status = '0';                 
-                    } else {
-                        $getShipment = $this->shippinglModel->where('resi', $resi)->first();            
-                        if (!is_null($getShipment) || !empty($getShipment)) {
-                            $status = '1';                 
-                            $this->shippinglModel->insertProductShipment($prod[0], $getShipment['id']);   
-                            $this->produkModel->setProductOutShipment($prod[0], '0');
-                        } 
-                    } 
+                    $getShipment = $this->shippinglModel->where('resi', $resi)->first();            
+                    $this->shippinglModel->insertProductShipment($prod[0], $getShipment['id']);   
+                    $data = $this->produkModel->setProductOutShipment($prod[0], '0');
+                    $this->logModel->saveHistoryStok($data);    
                 break;
             case "so" : 
                 $getProduct = $this->produkModel->findProductSo($qr[0]);
@@ -158,12 +159,17 @@ class Api extends BaseController {
                 $status = '0';
                 if ($getProduct->getNumRows() > 0) {
                     $status = '1';           
-                    $this->produkModel->returProduct($qr[0]);
+                    $data = $this->produkModel->returProduct($qr[0]);
+                    $this->logModel->saveHistoryStok($data); 
                     $this->logModel->save([
                         'description' => 'Meretur data Produk ('.$qr[1].' '.$qr[2].' '.$qr[3].')',
                         'user_id' =>  session()->get('user_id'),
                     ]);
                 }
+                break;
+            case "perbaikan" : 
+                    $this->produkModel->rejectIn($qr[0]);
+                    $status = '1';
                 break;
         }
 

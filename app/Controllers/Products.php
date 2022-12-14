@@ -115,7 +115,6 @@ class Products extends BaseController
             'color_id' => $data->color,
             'user_id' => session()->get('user_id'),
             'hpp_jual' => $data->hpp,
-            
             'qty' => $data->jumlah_setor,                
         ];
         $this->productModel->save($product);
@@ -136,6 +135,14 @@ class Products extends BaseController
             'description' => 'Menambahkan produk baru ('.$getProduct['jenis'].' '.$getProduct['model_name'].' '.$getProduct['color'].') sebanyak '.$data->jumlah_setor.'. ',
             'user_id' =>  session()->get('user_id'),
         ]);
+        $this->logModel->saveHistoryStok([
+            'model_id' => $data->id,
+            'color_id' => $data->color,
+            'qty' => $data->jumlah_setor,   
+            'size' => 1,
+            'jenis' => 'create',                         
+        ]);
+
     }
 
     public function getProductDetail() {
@@ -420,7 +427,7 @@ class Products extends BaseController
             $products = $this->productModel->getAllProductInHistory($date1, $date2);
         }
         
-        $date = time();
+        $date = date('m-d-Y H:i:s');
         $fileName = "Data Produk Gesit {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -464,7 +471,7 @@ class Products extends BaseController
             $products = $this->productModel->rejectedSold($date1, $date2);
         }
         
-        $date = time();
+        $date = date('m-d-Y H:i:s');
         $fileName = "Data Penjualan Reject {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -508,7 +515,7 @@ class Products extends BaseController
             $products = $this->productModel->getAllProductOut($date1, $date2);
         }
         
-        $date = time();
+        $date = date('m-d-Y H:i:s');
         $fileName = "Data Produk Masuk Gudang {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -633,7 +640,7 @@ class Products extends BaseController
                 
             }
         }
-        $date = time();
+        $date = date('m-d-Y H:i:s');
         $fileName = "Data Stok Produk {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -712,26 +719,58 @@ class Products extends BaseController
     }
 
     // gudang 
-    public function gudangProduk() {               
+    public function gudangProduk() {     
+        $date = $this->request->getVar('dates');
+        $date1 = null;          
+        $date2 = null;
         $productsIn = $this->productModel->getAllProductLovish();        
-        $productsOut = $this->productModel->getAllProductOut();        
-        $productsExp = $this->productModel->getAllProductExp();        
-        $models = $this->designModel->getAllModel();
-        $colors = $this->materialModel->getAllColors();
-        $products = $this->productModel->getAllProductLovish();
-        $types = $this->productModel->getAllProduct();
-        $vendors = $this->productModel->getAllVendorPenjualan();
-        $data = array(
-            'title' => 'Produk',
-            'productsIn' => $productsIn,
-            'productsOut' => $productsOut,
-            'productsExp' => $productsExp,
-            'models' => $models,
-            'products' => $products,
-            'colors' => $colors,
-            'types' => $types,
-            'vendors' => $vendors
-        );
+        if (is_null($date)) {
+            $productsOut = $this->productModel->getAllProductOut(); 
+            $productsExp = $this->productModel->getAllProductExp();        
+            $models = $this->designModel->getAllModel();
+            $colors = $this->materialModel->getAllColors();
+            $products = $this->productModel->getAllProductLovish();
+            $types = $this->productModel->getAllProduct();
+            $vendors = $this->productModel->getAllVendorPenjualan();
+            $data = array(
+                'title' => 'Produk',
+                'productsIn' => $productsIn,
+                'productsOut' => $productsOut,
+                'productsExp' => $productsExp,
+                'models' => $models,
+                'products' => $products,
+                'colors' => $colors,
+                'types' => $types,
+                'vendors' => $vendors,
+                'date1' => $date1,
+                'date2' => $date2
+            );       
+        } else {
+            $date = explode("-",$date);            
+            $date1 = date('Y-m-d H:i:s', strtotime($date[0]));
+            $date2 = date('Y-m-d H:i:s', strtotime($date[1]));
+            $productsOut = $this->productModel->getAllProductOut($date1, $date2);        
+            $productsExp = $this->productModel->getAllProductExp();        
+            $models = $this->designModel->getAllModel();
+            $colors = $this->materialModel->getAllColors();
+            $products = $this->productModel->getAllProductLovish();
+            $types = $this->productModel->getAllProduct();
+            $vendors = $this->productModel->getAllVendorPenjualan();
+            $data = array(
+                'title' => 'Produk',
+                'productsIn' => $productsIn,
+                'productsOut' => $productsOut,
+                'productsExp' => $productsExp,
+                'models' => $models,
+                'products' => $products,
+                'colors' => $colors,
+                'types' => $types,
+                'vendors' => $vendors,
+                'date1' => $date1,
+                'date2' => $date2
+            );
+        }
+        
         return view('gudang_lovish/products', $data);       
     }
 
@@ -810,106 +849,216 @@ class Products extends BaseController
 
 
     public function gudangLovishStokProduk() {
-        $models = $this->designModel->getAllModel();
-        $colors = $this->materialModel->getAllColors();
-        $vendors = $this->productModel->getAllVendorPenjualan();
-        $products = $this->productModel->getAllStockProductLovish();
-     
-        $penjualan = $this->sellingModel
-            ->select('sellings.*')
-            ->join('models', 'models.id = sellings.model_id')
-            ->join('colors', 'colors.id = sellings.color_id')            
-            ->get();        
-        $stok = array();        
-        $sisaStok = $this->productModel
-                ->select('models.hpp, products.id, products.hpp_jual, products.model_id, products.color_id, products.size, models.jenis as product_name, model_name, color, products.size, product_barcodes.updated_at, stok_masuk, penjualan, stok_retur, pengiriman, (IFNULL(stok_masuk, 0) + IFNULL(stok, 0) + IFNULL(stok_retur, 0) - (IFNULL(penjualan, 0) + IFNULL(pengiriman, 0)) ) as sisa, stok')
-                ->join('models', 'models.id = products.model_id')
-                ->join('colors', 'colors.id = products.color_id')
+        $date = $this->request->getVar('dates');
+        $dates = $this->request->getVar('dates');
+        if (is_null($date)) {
+            $models = $this->designModel->getAllModel();
+            $colors = $this->materialModel->getAllColors();
+            $vendors = $this->productModel->getAllVendorPenjualan();
+            $products = $this->productModel->getAllStockProductLovish();
+         
+            $penjualan = $this->sellingModel
+                ->select('sellings.*')
+                ->join('models', 'models.id = sellings.model_id')
+                ->join('colors', 'colors.id = sellings.color_id')            
+                ->get();        
+            $stok = array();        
+            $sisaStok = $this->productModel
+                    ->select('models.hpp, products.id, products.hpp_jual, products.model_id, products.color_id, products.size, models.jenis as product_name, model_name, color, products.size, product_barcodes.updated_at, stok_masuk, penjualan, stok_retur, pengiriman, stok')
+                    ->join('models', 'models.id = products.model_id')
+                    ->join('colors', 'colors.id = products.color_id')
+                    ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                    ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok FROM history_stok WHERE jenis="sisa_penjualan" AND status = 0 GROUP BY model_id, color_id, size) as a','products.model_id = a.model_id AND a.color_id = products.color_id', 'left') 
+                    ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok_masuk FROM history_stok WHERE jenis="in" AND status = 0 GROUP BY model_id, color_id, size) as m', 'm.model_id = products.model_id AND m.color_id = products.color_id', 'left')
+                    ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as penjualan FROM history_stok WHERE jenis="penjualan" AND status = 0 GROUP BY model_id, color_id, size) as k', 'k.model_id = products.model_id AND k.color_id = products.color_id', 'left')                
+                    ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok_retur FROM history_stok WHERE jenis="retur" AND status = 0 GROUP BY model_id, color_id, size) as r', 'r.model_id = products.model_id AND r.color_id = products.color_id', 'left')
+                    ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as pengiriman FROM history_stok WHERE jenis="pengiriman" AND status = 0 GROUP BY model_id, color_id, size) as s', 's.model_id = products.model_id AND s.color_id = products.color_id', 'left')
+                    ->groupBy('models.id, colors.id, products.size')
+                    ->get();                
+            $selling = 0;             
+            $stokIn = $this->productModel
                 ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                ->join('(SELECT id, SUM(qty) as stok FROM products WHERE status= 2 GROUP BY model_id, color_id, size) as a','products.id = a.id', 'left') 
-                ->join('(SELECT product_barcodes.product_id, COUNT(product_barcodes.id) as stok_masuk FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE product_barcodes.status != "0" AND product_barcodes.status != "1" AND product_barcodes.status != "6" GROUP BY model_id, color_id, size) as m', 'm.product_id = products.id', 'left')
-                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as penjualan FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id WHERE product_logs.status = 3 GROUP BY model_id, color_id, size) as k', 'k.product_id = products.id', 'left')                
-                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as stok_retur FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 4 GROUP BY model_id, color_id, size) as r', 'r.product_id = products.id', 'left')
-                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as pengiriman FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 5 GROUP BY model_id, color_id, size) as s', 's.product_id = products.id', 'left')
-                ->groupBy('models.id, colors.id, products.size')
-                ->get();
-        $selling = 0;     
-        $stokIn = $this->productModel
-            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-            ->where('product_barcodes.status', '6')
-            ->get();    
-        $toIn = 0;
-        if ($sisaStok->getNumRows() > 0) {
-            foreach ($sisaStok->getResultObject() as $product) {                
-                if ($penjualan->getNumRows() > 0) {
-                    foreach ($penjualan->getResultObject() as $sell) {                                        
-                        if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
-                            $selling = $selling + $sell->qty;                         
+                ->where('product_barcodes.status', '6')
+                ->get();    
+            $toIn = 0;
+            if ($sisaStok->getNumRows() > 0) {
+                foreach ($sisaStok->getResultObject() as $product) {                
+                    if ($penjualan->getNumRows() > 0) {                          
+                        foreach ($stokIn->getResultObject() as $in) {                                        
+                            if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
+                                $toIn = $toIn + $product->stok;                         
+                            }    
                         }
-                    }        
-                    foreach ($stokIn->getResultObject() as $in) {                                        
-                        if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
-                            $toIn = $toIn + $product->stok + 1;                         
-                        }    
+                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling)) ;
+                        $sisa_gudang = ($product->stok + $product->stok_masuk + $product->stok_retur - $product->pengiriman) ;                                                            
+                        array_push($stok, [
+                            'id' => $product->id,
+                            'model_id' => $product->model_id,
+                            'product_name' => $product->product_name,
+                            'model_name' => $product->model_name,
+                            'color' => $product->color,
+                            'size' => $product->size,
+                            'stok' => $product->stok,
+                            'stok_masuk' => $product->stok_masuk,
+                            'penjualan' => $selling + $product->penjualan,
+                            'pengiriman' => $product->pengiriman,
+                            'stok_retur' => $product->stok_retur,
+                            'sisa' => $sisa,
+                            'sisa_gudang' => $sisa_gudang,
+                            'hpp' => $product->hpp,
+                            'hpp_jual' => $product->hpp_jual,
+                        ]);
+                        $selling = 0;
+                        $toIn = 0;
+                    } else {
+                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling)) ;
+                        $sisa_gudang = ($product->stok + $product->stok_masuk + $product->stok_retur - $product->pengiriman) ;                                                            
+                        foreach ($stokIn->getResultObject() as $in) {                                        
+                            if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
+                                $toIn = $toIn + $product->stok;                         
+                            }    
+                        }
+                        array_push($stok, [
+                            'id' => $product->id,
+                            'model_id' => $product->model_id,
+                            'product_name' => $product->product_name,
+                            'model_name' => $product->model_name,
+                            'color' => $product->color,
+                            'size' => $product->size,
+                            'stok' => $product->stok,
+                            'stok_masuk' => $product->stok_masuk,
+                            'penjualan' => $product->penjualan,
+                            'pengiriman' => $product->pengiriman,
+                            'stok_retur' => $product->stok_retur,
+                            'sisa' => $sisa,
+                            'sisa_gudang' => $sisa_gudang,
+                            'hpp' => $product->hpp,
+                            'hpp_jual' => $product->hpp_jual,
+                        ]);
+                        $toIn = 0;
                     }
-                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
-                    array_push($stok, [
-                        'id' => $product->id,
-                        'model_id' => $product->model_id,
-                        'product_name' => $product->product_name,
-                        'model_name' => $product->model_name,
-                        'color' => $product->color,
-                        'size' => $product->size,
-                        'stok' => $toIn,
-                        'stok_masuk' => $product->stok_masuk,
-                        'penjualan' => $selling + $product->penjualan,
-                        'pengiriman' => $product->pengiriman,
-                        'stok_retur' => $product->stok_retur,
-                        'sisa' => $sisa,
-                        'hpp' => $product->hpp,
-                        'hpp_jual' => $product->hpp_jual,
-                    ]);
-                    $selling = 0;
-                    $toIn = 0;
-                } else {
-                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
-                    foreach ($stokIn->getResultObject() as $in) {                                        
-                        if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
-                            $toIn = $toIn + $product->stok + 1;                         
-                        }    
-                    }
-                    array_push($stok, [
-                        'id' => $product->id,
-                        'model_id' => $product->model_id,
-                        'product_name' => $product->product_name,
-                        'model_name' => $product->model_name,
-                        'color' => $product->color,
-                        'size' => $product->size,
-                        'stok' => $toIn,
-                        'stok_masuk' => $product->stok_masuk,
-                        'penjualan' => $product->penjualan,
-                        'pengiriman' => $product->pengiriman,
-                        'stok_retur' => $product->stok_retur,
-                        'sisa' => $sisa,
-                        'hpp' => $product->hpp,
-                        'hpp_jual' => $product->hpp_jual,
-                    ]);
-                    $toIn = 0;
+                }
+            } else {
+                if ($penjualan->getNumRows() > 0) {
+                    
                 }
             }
+                    
+            $data = array(
+                'title' => 'Stock Produk',
+                'models' => $models,
+                'products' => $stok,
+                'colors' => $colors,
+                'vendors' => $vendors,
+                'date1' => null
+            );
         } else {
-            if ($penjualan->getNumRows() > 0) {
-                
+            $date = explode("-",$date);   
+            $date1 = date('Y-m-d 00:00:00', strtotime($date[0]));
+            $date2 = date('Y-m-d 00:00:00', strtotime($date[1]));
+            $models = $this->designModel->getAllModel();
+            $colors = $this->materialModel->getAllColors();
+            $vendors = $this->productModel->getAllVendorPenjualan();
+            $products = $this->productModel->getAllStockProductLovish();
+         
+            $penjualan = $this->sellingModel
+                ->select('sellings.*')
+                ->join('models', 'models.id = sellings.model_id')
+                ->join('colors', 'colors.id = sellings.color_id')            
+                ->get();        
+            $stok = array();        
+            $sisaStok = $this->productModel
+                    ->select('models.hpp, products.id, products.hpp_jual, products.model_id, products.color_id, products.size, models.jenis as product_name, model_name, color, products.size, product_barcodes.updated_at, stok_masuk, penjualan, stok_retur, pengiriman, (IFNULL(stok_masuk, 0) + IFNULL(stok, 0) + IFNULL(stok_retur, 0) - (IFNULL(penjualan, 0) + IFNULL(pengiriman, 0)) ) as sisa, stok')
+                    ->join('models', 'models.id = products.model_id')
+                    ->join('colors', 'colors.id = products.color_id')
+                    ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                    ->join('(SELECT id, SUM(qty) as stok FROM products WHERE status= 2 GROUP BY model_id, color_id, size) as a','products.id = a.id', 'left') 
+                    ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok_masuk FROM history_stok WHERE jenis="in" AND (created_at BETWEEN "'.$date1.'" AND "'.$date2.'") GROUP BY model_id, color_id, size) as m', 'm.model_id = products.model_id AND m.color_id = products.color_id', 'left')
+                    ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as penjualan FROM history_stok WHERE jenis="penjualan" AND (created_at BETWEEN "'.$date1.'" AND "'.$date2.'") GROUP BY model_id, color_id, size) as k', 'k.model_id = products.model_id AND k.color_id = products.color_id', 'left')                
+                    ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok_retur FROM history_stok WHERE jenis="retur" AND (created_at BETWEEN "'.$date1.'" AND "'.$date2.'") GROUP BY model_id, color_id, size) as r', 'r.model_id = products.model_id AND r.color_id = products.color_id', 'left')
+                    ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as pengiriman FROM history_stok WHERE jenis="pengiriman" AND (created_at BETWEEN "'.$date1.'" AND "'.$date2.'") GROUP BY model_id, color_id, size) as s', 's.model_id = products.model_id AND s.color_id = products.color_id', 'left')
+                    ->groupBy('models.id, colors.id, products.size')
+                    ->get();
+            $selling = 0;             
+            $stokIn = $this->productModel
+                ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                ->where('product_barcodes.status', '6')
+                ->get();    
+            $toIn = 0;
+            if ($sisaStok->getNumRows() > 0) {
+                foreach ($sisaStok->getResultObject() as $product) {                
+                    if ($penjualan->getNumRows() > 0) {                          
+                        foreach ($stokIn->getResultObject() as $in) {                                        
+                            if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
+                                $toIn = $toIn + $product->stok + 1;                         
+                            }    
+                        }
+                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling)) ;
+                        $sisa_gudang = ($product->stok + $product->stok_masuk + $product->stok_retur - $product->pengiriman) ;                                                            
+                        array_push($stok, [
+                            'id' => $product->id,
+                            'model_id' => $product->model_id,
+                            'product_name' => $product->product_name,
+                            'model_name' => $product->model_name,
+                            'color' => $product->color,
+                            'size' => $product->size,
+                            'stok' => $product->stok,
+                            'stok_masuk' => $product->stok_masuk,
+                            'penjualan' => $selling + $product->penjualan,
+                            'pengiriman' => $product->pengiriman,
+                            'stok_retur' => $product->stok_retur,
+                            'sisa' => $sisa,
+                            'sisa_gudang' => $sisa_gudang,
+                            'hpp' => $product->hpp,
+                            'hpp_jual' => $product->hpp_jual,
+                        ]);
+                        $selling = 0;
+                        $toIn = 0;
+                    } else {
+                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling)) ;
+                        $sisa_gudang = ($product->stok + $product->stok_masuk + $product->stok_retur - $product->pengiriman) ;                                                            
+                        foreach ($stokIn->getResultObject() as $in) {                                        
+                            if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
+                                $toIn = $toIn + $product->stok + 1;                         
+                            }    
+                        }
+                        array_push($stok, [
+                            'id' => $product->id,
+                            'model_id' => $product->model_id,
+                            'product_name' => $product->product_name,
+                            'model_name' => $product->model_name,
+                            'color' => $product->color,
+                            'size' => $product->size,
+                            'stok' => $toIn,
+                            'stok_masuk' => $product->stok_masuk,
+                            'penjualan' => $product->penjualan,
+                            'pengiriman' => $product->pengiriman,
+                            'stok_retur' => $product->stok_retur,
+                            'sisa' => $sisa,
+                            'sisa_gudang' => $sisa_gudang,
+                            'hpp' => $product->hpp,
+                            'hpp_jual' => $product->hpp_jual,
+                        ]);
+                        $toIn = 0;
+                    }
+                }
+            } else {
+                if ($penjualan->getNumRows() > 0) {
+                    
+                }
             }
+                    
+            $data = array(
+                'title' => 'Stock Produk',
+                'models' => $models,
+                'products' => $stok,
+                'colors' => $colors,
+                'vendors' => $vendors,
+                'date1' => $dates,
+                'date2' => $date2,
+            );
         }
-                
-        $data = array(
-            'title' => 'Produk',
-            'models' => $models,
-            'products' => $stok,
-            'colors' => $colors,
-            'vendors' => $vendors
-        );
+        
         return view('gudang_lovish/products_stock', $data);    
     }
 
@@ -1057,7 +1206,7 @@ class Products extends BaseController
         } else {
             $products = $this->productModel->getAllProductReject($date1, $date2);
         }
-        $date = time();
+        $date = date('m-d-Y H:i:s');
         $fileName = "Data Product Reject {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -1072,6 +1221,397 @@ class Products extends BaseController
             $sheet->setCellValue('B' . $i, $row->date);
             $sheet->setCellValue('C' . $i, $row->product_name .' '.$row->model_name.' '.$row->color);            
             $sheet->setCellValue('D' . $i, strtoupper($row->category));
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save("file/". $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize("file/". $fileName));
+		flush();
+		readfile("file/". $fileName);
+		exit;
+    }
+    
+    public function resetSO() {
+        $this->productModel->resetSO();
+    }
+
+    public function exportSO() {
+        $models = $this->designModel->getAllModel();
+        $colors = $this->materialModel->getAllColors();
+        $vendors = $this->productModel->getAllVendorPenjualan();
+        $products = $this->productModel->getAllStockProductLovish();
+        $penjualan = $this->sellingModel
+            ->select('sellings.*')
+            ->join('models', 'models.id = sellings.model_id')
+            ->join('colors', 'colors.id = sellings.color_id')            
+            ->get();        
+        $stok = array();  
+        $sisaStok = $this->productModel
+                ->select('models.hpp, products.id, products.hpp_jual, products.model_id, products.color_id, products.size, models.jenis as product_name, model_name, color, size, product_barcodes.updated_at, scan_in, stok_masuk, penjualan, stok_retur, pengiriman, (IFNULL(stok_masuk, 0) + IFNULL(stok, 0) + IFNULL(stok_retur, 0) - (IFNULL(penjualan, 0) + IFNULL(pengiriman, 0)) ) as sisa, stok')
+                ->join('models', 'models.id = products.model_id')
+                ->join('colors', 'colors.id = products.color_id')
+                ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                ->join('(SELECT id, SUM(qty) as stok FROM products WHERE status= 2 GROUP BY model_id, color_id, size) as a','products.id = a.id', 'left') 
+                ->join('(SELECT product_barcodes.product_id, COUNT(product_barcodes.id) as stok_masuk FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE product_barcodes.status != "0" AND product_barcodes.status != "1" GROUP BY model_id, color_id, size) as m', 'm.product_id = products.id', 'left')
+                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as penjualan FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id WHERE product_logs.status = 3 GROUP BY model_id, color_id, size) as k', 'k.product_id = products.id', 'left')
+                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as stok_retur FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 4 GROUP BY model_id, color_id, size) as r', 'r.product_id = products.id', 'left')
+                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as pengiriman FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 5 GROUP BY model_id, color_id, size) as s', 's.product_id = products.id', 'left')
+                ->join('(SELECT product_barcodes.product_id , COUNT(product_barcodes.product_id) as scan_in FROM products JOIN product_barcodes ON products.id = product_barcodes.product_id JOIN scan_so ON scan_so.product_id = product_barcodes.id GROUP BY model_id, color_id, size) as so', 'so.product_id = products.id', 'left')
+                // ->join('(SELECT m.product_id, SUM(m.qty) as scan_in FROM scan_so m JOIN product_barcodes b ON b.id = m.product_id JOIN products as p ON p.id = b.product_id WHERE m.status=1 AND (MONTH(m.created_at) = MONTH(CURRENT_DATE()) AND YEAR(m.created_at) = YEAR(CURRENT_DATE()) ) GROUP BY  p.model_id, p.color_id, p.size) as so', 'product_barcodes.id = so.product_id', 'left')
+                ->groupBy('models.id, colors.id, products.size')
+                ->get();
+        $stok = array();
+        $selling = 0;
+        
+        
+        if ($sisaStok->getNumRows() > 0) {
+            foreach ($sisaStok->getResultObject() as $product) {                
+                if ($penjualan->getNumRows() > 0) {
+                    foreach ($penjualan->getResultObject() as $sell) {                                        
+                        if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                            $selling = $selling + $sell->qty;                         
+                        }
+                    }        
+                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
+                    array_push($stok, [
+                        'id' => $product->id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling + $product->penjualan,
+                        'pengiriman' => $product->pengiriman,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'scan_in' => $product->scan_in,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                    $selling = 0;
+                } else {
+                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
+                    array_push($stok, [
+                        'id' => $product->id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $product->penjualan,
+                        'pengiriman' => $product->pengiriman,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'scan_in' => $product->scan_in,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                }
+            }
+        } else {
+            if ($penjualan->getNumRows() > 0) {
+                
+            }
+        }
+        $date = date('m-d-Y H:i:s');
+        $fileName = "Data Stok Opname {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Produk');
+		$sheet->setCellValue('C1', 'Sisa Stok');
+        $sheet->setCellValue('D1', 'Scan SO');
+        $sheet->setCellValue('E1', 'Selisih');
+        $i = 2;
+        $no = 1;
+        foreach($stok as $product) {
+            $selisih = $product['sisa'] - $product['scan_in'];
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $product['product_name'].' '.$product['model_name'].' '.$product['color'].' '.$product['size']);
+            $sheet->setCellValue('C' . $i, $product['sisa']);            
+            $sheet->setCellValue('D' . $i, $product['scan_in'] > 0 ? $product['scan_in'] : '-');
+            $sheet->setCellValue('E' . $i, $selisih > 0 ? $selisih : '-');
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save("file/". $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize("file/". $fileName));
+		flush();
+		readfile("file/". $fileName);
+		exit;
+    }
+
+    public function exportRetur() {
+        $productsRetur = $this->productModel->productsRetur();
+        $date = date('m-d-Y H:i:s');
+        $fileName = "Data Produk Retur  {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Tanggal');
+		$sheet->setCellValue('C1', 'Produk');
+        $sheet->setCellValue('D1', 'Qty');
+        $i = 2;
+        $no = 1;
+        foreach($productsRetur->getResultArray() as $product) {            
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $product['created_at']);            
+            $sheet->setCellValue('C' . $i, $product['product_name'].' '.$product['model_name'].' '.$product['color'].' '.$product['size']);
+            $sheet->setCellValue('D' . $i, $product['qty']);                        
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save("file/". $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize("file/". $fileName));
+		flush();
+		readfile("file/". $fileName);
+		exit;
+    }
+
+    public function exportProdukMasuk() {
+        $productsIn = $this->productModel
+            ->select('model_name, jenis as product_name, color, size, COUNT(product_barcodes.id) as stok, products.updated_at')
+            ->join('models', 'models.id = products.model_id')
+            ->join('colors', 'colors.id = products.color_id')
+            ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+            ->where('product_barcodes.status', '2')
+            ->orWhere('product_barcodes.status', '3')
+            ->orWhere('product_barcodes.status', '5')
+            
+            ->groupBy('product_barcodes.product_id')   
+            ->get();
+        $date = date('m-d-Y H:i:s');
+        $fileName = "Data Produk Retur  {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Produk');
+		$sheet->setCellValue('C1', 'Tanggal Masuk');
+        $sheet->setCellValue('D1', 'Stok');
+        $i = 2;
+        $no = 1;
+        foreach($productsIn->getResultArray() as $product) {            
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $product['product_name'].' '.$product['model_name'].' '.$product['color'].' '.$product['size']);
+            $sheet->setCellValue('C' . $i, $product['updated_at']);                        
+            $sheet->setCellValue('D' . $i, $product['stok']);                        
+            
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save("file/". $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize("file/". $fileName));
+		flush();
+		readfile("file/". $fileName);
+		exit;
+    }
+
+    public function exportProdukKeluar() {
+        $productsExp = $this->productModel
+                ->select('products.id, size, models.jenis as product_name, model_name, color, k.updated_at')
+                ->join('models', 'models.id = products.model_id')
+                ->join('colors', 'colors.id = products.color_id')
+                ->join('(SELECT product_barcodes.product_id, product_barcodes.updated_at FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id WHERE product_logs.status = 3 OR product_logs.status = 5) as k', 'k.product_id = products.id')
+                ->get();
+        $date = date('m-d-Y H:i:s');
+        $fileName = "Data Produk Keluar  {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Produk');
+		$sheet->setCellValue('C1', 'Tanggal Keluar');
+        $sheet->setCellValue('D1', 'Qty');
+        $i = 2;
+        $no = 1;
+        foreach($productsExp->getResultArray() as $product) {            
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $product['product_name'].' '.$product['model_name'].' '.$product['color'].' '.$product['size']);
+            $sheet->setCellValue('C' . $i, $product['updated_at']);                        
+            $sheet->setCellValue('D' . $i, '1');                        
+            
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save("file/". $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize("file/". $fileName));
+		flush();
+		readfile("file/". $fileName);
+		exit;
+    }
+
+    public function exportStokGudang() {
+        $sisaStok = $this->productModel
+                ->select('models.hpp, products.id, products.hpp_jual, products.model_id, products.color_id, products.size, models.jenis as product_name, model_name, color, products.size, product_barcodes.updated_at, stok_masuk, penjualan, stok_retur, pengiriman, (IFNULL(stok_masuk, 0) + IFNULL(stok, 0) + IFNULL(stok_retur, 0) - (IFNULL(penjualan, 0) + IFNULL(pengiriman, 0)) ) as sisa, stok')
+                ->join('models', 'models.id = products.model_id')
+                ->join('colors', 'colors.id = products.color_id')
+                ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                ->join('(SELECT id, SUM(qty) as stok FROM products WHERE status= 2 GROUP BY model_id, color_id, size) as a','products.id = a.id', 'left') 
+                ->join('(SELECT product_barcodes.product_id, COUNT(product_barcodes.id) as stok_masuk FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE product_barcodes.status != "0" AND product_barcodes.status != "1" GROUP BY model_id, color_id, size) as m', 'm.product_id = products.id', 'left')
+                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as penjualan FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id WHERE product_logs.status = 3 GROUP BY model_id, color_id, size) as k', 'k.product_id = products.id', 'left')                
+                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as stok_retur FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 4 GROUP BY model_id, color_id, size) as r', 'r.product_id = products.id', 'left')
+                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as pengiriman FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 5 GROUP BY model_id, color_id, size) as s', 's.product_id = products.id', 'left')
+                ->groupBy('models.id, colors.id, products.size')
+                ->get();
+        $penjualan = $this->sellingModel
+            ->select('sellings.*')
+            ->join('models', 'models.id = sellings.model_id')
+            ->join('colors', 'colors.id = sellings.color_id')            
+            ->get();       
+        $stok = array();
+        $selling = 0;        
+        $totalNilaiBarang = 0;
+        $totalNilaiBarangJual = 0;
+        
+        if ($sisaStok->getNumRows() > 0) {
+            foreach ($sisaStok->getResultObject() as $product) {                
+                if ($penjualan->getNumRows() > 0) {
+                    foreach ($penjualan->getResultObject() as $sell) {                                        
+                        if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
+                            $selling = $selling + $sell->qty;                         
+                        }
+                    }        
+                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
+                    array_push($stok, [
+                        'id' => $product->id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $selling + $product->penjualan,
+                        'pengiriman' => $product->pengiriman,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                    $selling = 0;
+                } else {
+                    $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
+                    array_push($stok, [
+                        'id' => $product->id,
+                        'model_id' => $product->model_id,
+                        'product_name' => $product->product_name,
+                        'model_name' => $product->model_name,
+                        'color' => $product->color,
+                        'size' => $product->size,
+                        'stok' => $product->stok,
+                        'stok_masuk' => $product->stok_masuk,
+                        'penjualan' => $product->penjualan,
+                        'pengiriman' => $product->pengiriman,
+                        'stok_retur' => $product->stok_retur,
+                        'sisa' => $sisa,
+                        'hpp' => $product->hpp,
+                        'hpp_jual' => $product->hpp_jual,
+                    ]);
+                }                
+            }
+        } else {
+            if ($penjualan->getNumRows() > 0) {
+                
+            }
+        }
+        $date = date('m-d-Y H:i:s');
+        $fileName = "Data Stok Gudang {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Produk');
+		$sheet->setCellValue('C1', 'Sisa Stok');
+        $i = 2;
+        $no = 1;
+        foreach($stok as $product) {            
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $product['product_name'].' '.$product['model_name'].' '.$product['color'].' '.$product['size']);
+            $sheet->setCellValue('C' . $i, $product['sisa']);                        
+
+            
+            $i++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save("file/". $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+
+		header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length:' . filesize("file/". $fileName));
+		flush();
+		readfile("file/". $fileName);
+		exit;
+    }
+
+    public function exportProdukMasukGesit($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $productsOut = $this->productModel->getAllProductOut();    
+        } else {
+            $productsOut = $this->productModel->getAllProductOut($date1, $date2);    
+        }
+        $date = date('m-d-Y H:i:s');
+        $fileName = "Data Produk Masuk dari Gesit  {$date}.xlsx";  
+        $spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Produk');
+		$sheet->setCellValue('C1', 'Tanggal Masuk');
+        $sheet->setCellValue('D1', 'Qty');
+        $i = 2;
+        $no = 1;
+        foreach($productsOut->getResultArray() as $product) {            
+            $sheet->setCellValue('A' . $i, $no++);
+            $sheet->setCellValue('B' . $i, $product['product_name'].' '.$product['model_name'].' '.$product['color']);
+            $sheet->setCellValue('C' . $i, $product['created_at']);                        
+            $sheet->setCellValue('D' . $i, '1');                        
+            
             $i++;
         }
         

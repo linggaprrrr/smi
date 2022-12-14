@@ -170,7 +170,7 @@ class Materials extends BaseController
         } else {
             $materials = $this->materialModel->getAllMaterial($date1, $date2);
         }
-        $date = time();
+        $date = date('m-d-Y H.i.s');
         $fileName = "Data Kain Masuk {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -213,7 +213,7 @@ class Materials extends BaseController
         } else {
             $materials = $this->materialModel->getAllMaterialRetur($date1, $date2);
         }
-        $date = time();
+        $date = date('m-d-Y H.i.s');
         $fileName = "Data Kain Retur {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -252,7 +252,7 @@ class Materials extends BaseController
 
     public function exportDataStok() {       
         $materials = $this->materialModel->getStokMaterialIn(); 
-        $date = time();
+        $date = date('m-d-Y H.i.s');
         $fileName = "Data Stok Kain {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -552,7 +552,7 @@ class Materials extends BaseController
             $materials = $this->materialModel->getAllPolaIn($date1, $date2);
         }
         
-        $date = time(); 
+        $date = date('m-d-Y H.i.s'); 
         $fileName = "Data Pola In {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -620,7 +620,7 @@ class Materials extends BaseController
             $materials = $this->materialModel->getAllPolaOut($date1, $date2);
         }
         
-        $date = time();
+        $date = date('m-d-Y H.i.s');
         $fileName = "Data Pola Out {$date}.xlsx";  
         
         $spreadsheet = new Spreadsheet();
@@ -687,7 +687,7 @@ class Materials extends BaseController
         } else {
             $cutting = $this->materialModel->getAllCuttingData($date1, $date2);
         }
-        $date = time();
+        $date = date('m-d-Y H.i.s');
         $fileName = "Data Cutting {$date}.xlsx";  
         
         $spreadsheet = new Spreadsheet();

@@ -9,10 +9,10 @@
                     <div class="form-group">
                         <label for="">Date Range: </label>
                         <?php if (is_null($date1)) : ?>
-                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= date('m/d/Y H:i') ?> - <?= date('m/d/Y H:i') ?>" readonly />            
+                            <input type="text" name="dates" class="form-control text-center daterange" readonly />            
                         <?php else : ?>
-                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?> - <?= $date2 ?>" readonly />            
-                        <?php endif ?>
+                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?>" readonly />            
+                        <?php endif ?> 
                     </div>    
                 </form>
             </div>
@@ -52,19 +52,20 @@
                                     <th class="text-center">Stok Retur</th>
                                     <th class="text-center">Penjualan Langsung</th>
                                     <th class="text-center">Pengiriman</th>
-                                    <th class="text-center">Sisa Stok</th>
+                                    <th class="text-center">Sisa Stok Penjualan</th>
+                                    <th class="text-center">Sisa Stok Gudang</th>
                                     <th class="text-center">HPP Gesit</th>
                                     <th class="text-center">HPP Jual</th>
                                     <th class="text-center">Nilai Barang</th>
                                     <th class="text-center">Nilai Jual</th>
-                                    <th class="text-center">Margin Tetap</th>
+                                    <th class="text-center">Pendapatan HPP</th>
                                 </tr>
                             </thead>
                             
                             <tbody>
                                 <?php $no = 1; ?>
-                                <?php if ($stokProduk->getNumRows() > 0) : ?>
-                                    <?php foreach ($stokProduk->getResultArray() as $product) : ?>     
+                                <?php if (count($stokProduk) > 0) : ?>
+                                    <?php foreach ($stokProduk as $product) : ?>     
                                         <?php 
                                             $alert = 0;
                                             $stok = $product['stok'] + $product['stok_masuk'];
@@ -94,10 +95,11 @@
                                             <?php elseif ($alert >= 0 && $alert < 20) : ?>
                                                 <td class="text-center align-middle table-danger"><?= $product['sisa'] ?></td>
                                             <?php else : ?>
-                                              <td class="text-center align-middle table-danger"><?= $product['sisa'] ?></td>      
+                                            <td class="text-center align-middle table-danger"><?= $product['sisa'] ?></td>      
                                             <?php endif ?>
+                                            <td class="text-center align-middle table-warning"><?= $product['sisa_gudang'] ?></td>   
                                             <td class="text-center align-middle">Rp <?= number_format($product['hpp'], 0) ?></td>
-                                            <td class="text-center align-middle">Rp <?= number_format($product['hpp_jual'], 0) ?></td>
+                                            <td class="text-center align-middle"><input type="text" name="hpp-jual" data-id="<?= $product['id'] ?>" data-model="<?= $product['model_id'] ?>" data-size="<?= $product['size'] ?>" class="form-control hpp-jual" value="<?= $product['hpp_jual'] ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                             <td class="text-center align-middle">Rp <?= number_format(($product['hpp'] * $product['sisa']), 0) ?></td>                            
                                             <td class="text-center align-middle">Rp <?= number_format(($product['hpp_jual'] * $product['sisa']), 0) ?></td>
                                             <td class="text-center align-middle"><mark>Rp <?= number_format(($product['hpp_jual'] * $product['sisa']) - ($product['hpp'] * $product['sisa']), 0) ?></mark></td>
@@ -231,8 +233,7 @@
     $('.daterange').daterangepicker({
         timePicker: true,
         timePicker24Hour: true,
-        startDate: moment().startOf('hour'),
-        endDate: moment().startOf('hour').add(32, 'hour'),
+        
         locale: {
             format: 'M/D/YYYY HH:MM'
         }
