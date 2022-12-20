@@ -82,9 +82,25 @@ class Api extends BaseController {
                 if ($check->getNumRows() > 0) {
                     $status = '1';
                     $data = $this->produkModel->saveReject($qr[0], 'permanent');  
-                    $this->logModel->saveHistoryStok($data);    
+                    $this->logModel->saveHistoryStok($data);   
+
                 } else {
-                    $this->produkModel->rejectPermanent($qr[0]);
+                    $getProduct = $this->produkModel
+                        ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                        ->join('reject', 'reject.barcode_id = product_barcodes.id')
+                        ->where('reject.barcode_id', $qr[0])
+                        ->get();
+
+                    if ($getProduct->getNumRows() > 0) {
+                        $data = $getProduct->getResultObject();                        
+                        if (strpos($data[0]->category, "permanent") !== false) {
+                            $status = '0';
+                        } else {
+                            $status = '1';
+                            $this->produkModel->rejectPermanent($qr[0]);
+                        }
+                    }
+                    
                 }
                 break;
             case "penjualan-reject" : 
@@ -168,8 +184,23 @@ class Api extends BaseController {
                 }
                 break;
             case "perbaikan" : 
-                    $this->produkModel->rejectIn($qr[0]);
-                    $status = '1';
+                    $getProduct = $this->produkModel
+                        ->join('product_barcodes', 'product_barcodes.product_id = products.id')
+                        ->join('reject', 'reject.barcode_id = product_barcodes.id')
+                        ->where('reject.barcode_id', $qr[0])
+                        ->get();
+
+                    if ($getProduct->getNumRows() > 0) {
+                        $data = $getProduct->getResultObject();                        
+                        if (strpos($data[0]->category, "permanent") !== false) {
+                            $status = '0';
+                        } else {
+                            $this->produkModel->rejectIn($qr[0]);
+                            $status = '1';
+                        }
+                    }
+
+                    
                 break;
         }
 

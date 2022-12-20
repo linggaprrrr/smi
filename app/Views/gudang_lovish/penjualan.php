@@ -23,7 +23,7 @@
         </div>
     
         <?php if (!is_null($date1)) : ?>
-            <a class="btn btn-success float-right" href="<?= base_url('/export-penjualan/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+            <a class="btn btn-success float-right" href="<?= base_url('/export-penjualan/'. date('Y-m-d H:i:s', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
         <?php else : ?>
             <a class="btn btn-success float-right" href="<?= base_url('/export-penjualan') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
         <?php endif ?>
@@ -35,7 +35,7 @@
                     <form action="<?= base_url('/import-penjualan') ?>" method="post" enctype="multipart/form-data">                    
                     <?php csrf_field() ?>
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Import Penjuelan</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Import Penjualan</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>

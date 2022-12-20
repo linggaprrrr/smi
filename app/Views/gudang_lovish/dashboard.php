@@ -26,7 +26,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Stok Masuk </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalStokMasuk) ? "0" : $totalStokMasuk['stok']) ?></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalStokMasuk['stok']) ? "0" : $totalStokMasuk['stok']) ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -113,12 +113,12 @@
     <div class="col-lg-12">
         <div class="float-right">
             <form method="GET" action="<?= base_url('/operasional/dashboard') ?>" id="date" >
-                <div class="form-group" style="width: 250px;">
+                <div class="form-group" style="width: 280px;">
                     <label for="">Date Range: </label>    
                     <?php if (is_null($date1)) : ?>
-                        <input type="text" name="dates" class="form-control text-center daterange" readonly />            
+                        <input type="text" name="dates" value="<?= date('m/d/Y 07:00') ?> - <?= date('m/d/Y 17:00') ?>" class="form-control text-center daterange" readonly />                    
                     <?php else : ?>
-                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?>" readonly />            
+                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $dates ?>" readonly />            
                     <?php endif ?> 
                 </div>    
             </form>
@@ -129,7 +129,11 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Stok Gudang</h6>
                 <div>
+                <?php if (!is_null($date1)) : ?>
+                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-stok-gudang/'. date('Y-m-d H:i:s', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                <?php else : ?>
                     <a class="btn btn-success float-right" href="<?= base_url('/export-dash-stok-gudang') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                <?php endif ?>
                 </div>
             </div>
             <div class="card-body">
@@ -157,12 +161,12 @@
                                         <td><?= $product['model_name'] ?></td>
                                         <td><?= $product['color'] ?></td>
                                         <td class="text-center"><?= is_null($product['size']) ? '-' : $product['size'] ?></td>
-                                    <?php if ($product['sisa'] > 20) : ?>
-                                        <td class="text-center"><?= $product['sisa'] ?></td>                                        
-                                    <?php elseif ($product['sisa'] > 10 && $product['sisa'] < 20): ?>
-                                        <td class="text-center table-warning"><?= $product['sisa']  ?></td>                                                                                
+                                    <?php if ($product['sisa_gudang'] > 20) : ?>
+                                        <td class="text-center"><?= $product['sisa_gudang'] ?></td>                                        
+                                    <?php elseif ($product['sisa_gudang'] > 10 && $product['sisa_gudang'] < 20): ?>
+                                        <td class="text-center table-warning"><?= $product['sisa_gudang']  ?></td>                                                                                
                                     <?php else : ?>
-                                        <td class="text-center table-danger"><?= $product['sisa']  ?></td>                                        
+                                        <td class="text-center table-danger"><?= $product['sisa_gudang']  ?></td>                                        
                                     <?php endif ?>
                                     </tr>
                                 <?php endforeach ?>
@@ -178,7 +182,12 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Total Produk Keluar</h6>
                 <div>
-                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-keluar') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php if (!is_null($date1)) : ?>
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-keluar/'. date('Y-m-d H:i:s', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                    <?php else : ?>
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-keluar') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php endif ?>
+                    
                 </div>
             </div>
             <div class="card-body">
@@ -227,7 +236,12 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Produk Masuk</h6>
                 <div>
-                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-masuk') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php if (!is_null($date1)) : ?>
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-masuk/'. date('Y-m-d H:i:s', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                    <?php else : ?>
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-masuk') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php endif ?>
+                    
                 </div>
             </div>
             <div class="card-body">
@@ -271,7 +285,12 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Produk Retur</h6>
                 <div>
-                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-retur') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php if (!is_null($date1)) : ?>
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-retur/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                    <?php else : ?>
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-dash-produk-retur') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php endif ?>
+                    
                 </div>
             </div>
             <div class="card-body">
@@ -430,7 +449,12 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">Data Pengiriman</h6>
                 <div>
-                    <a class="btn btn-success float-right" href="<?= base_url('/export-dash-pengiriman') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php if (!is_null($date1)) : ?>
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-dash-pengiriman/'. date('Y-m-d H:i:s', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                    <?php else : ?>
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-dash-pengiriman') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php endif ?>
+                    
                 </div>
             </div>
             <div class="card-body">
@@ -547,11 +571,10 @@
             });
             $('.bd-example-modal-lg-produk-detail').modal('show');
         });
-        $('.daterange').daterangepicker({
-            timePicker: true,
-            timePicker24Hour: true,            
+         $('.daterange').daterangepicker({
+            timePicker: true,        
             locale: {
-                format: 'M/D/YYYY HH:MM'
+                format: 'M/DD/YYYY hh:mm A'
             }
         });      
 

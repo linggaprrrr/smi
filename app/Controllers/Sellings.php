@@ -80,22 +80,39 @@
     
                     $getProductType = $this->productModel->getProductType($temp[0]);
                     if (is_null($getProductType)) {
-                        $productTypeID = $this->productModel->saveProductType($temp[0]);                    
+                        $productTypeID = NULL;                    
                     }  else {
                         $productTypeID = $getProductType->id;
                     }                       
     
-                    $getModel = $this->designModel->where(['model_name' => $temp[1]])->first();                                
-                    if (is_null($getModel)) {
-                        $model = [
-                            'model_name' => $temp[1],                        
-                        ];
-                        $this->designModel->save($model); 
-                        $modelID = $this->designModel->getInsertID();
+
+
+                    if (count($temp) == 2) { 
+                        $getModel = $this->designModel->where(['model_name' => $temp[0]])->first();                                
+                        if (is_null($getModel)) {
+                            $model = [
+                                'model_name' => $temp[0],                        
+                            ];
+                            $this->designModel->save($model); 
+                            $modelID = $this->designModel->getInsertID();
+                        } else {
+                            $modelID = $getModel['id'];
+                            $hpp = $getModel['hpp'];
+                        }
                     } else {
-                        $modelID = $getModel['id'];
-                        $hpp = $getModel['hpp'];
+                        $getModel = $this->designModel->where(['model_name' => $temp[1]])->first();                                
+                        if (is_null($getModel)) {
+                            $model = [
+                                'model_name' => $temp[1],                        
+                            ];
+                            $this->designModel->save($model); 
+                            $modelID = $this->designModel->getInsertID();
+                        } else {
+                            $modelID = $getModel['id'];
+                            $hpp = $getModel['hpp'];
+                        }
                     }
+                    
                     
                     if (count($temp) == 3) {
                         if (strpos($row[1], 'REG') !== false) {
@@ -118,6 +135,16 @@
                         } else {
                             $color = trim($temp[2]. ' '. $temp[3]);
                         }                        
+                    } else {
+                        if (strpos($row[0], 'REG') !== false) {
+                            $size = "REG";
+                            $color = trim($temp[1], $size);
+                        } else if (strpos($row[0], 'JUMBO') !== false || strpos($row[0], 'JUM') !== false) {
+                            $size = "JUMBO";
+                            $color = trim($temp[1], $size);
+                        } else {
+                            $color = trim($temp[1]);
+                        }
                     }
     
                     $getColor = $this->materialModel->getColorByName($color);
@@ -159,7 +186,7 @@
             } else {
                 $penjualan = $this->productModel->penjualan($date1, $date2);                       
             }
-            $date = date('m-d-Y H:i:s');
+            $date = date('m-d-Y H.i.s');
         $fileName = "Data Penjualan {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();

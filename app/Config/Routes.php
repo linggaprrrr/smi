@@ -168,6 +168,7 @@ $routes->get('export-data-pola-out', 'Materials::exportDataPolaOut');
 $routes->get('export-data-pola-out/(:any)/(:any)', 'Materials::exportDataPolaOut/$1/$2');
 $routes->get('export-produk-gesit', 'Products::exportDataGesit');
 $routes->get('export-produk-penjualan-reject', 'Products::exportDataPenjualanReject');
+$routes->get('export-produk-penjualan-reject/(:any)/(:any)', 'Products::exportDataPenjualanReject/$1/$2');
 $routes->get('export-produk-gesit/(:any)/(:any)', 'Products::exportDataGesit/$1/$2');
 $routes->get('export-produk-masuk-lovish', 'Products::exportDataLovishIn');
 $routes->get('export-produk-masuk-lovish/(:any)/(:any)', 'Products::exportDataLovishIn/$1/$2');
@@ -275,10 +276,15 @@ $routes->post('/reject-permanent', 'Products::rejectPermanent');
 $routes->post('/update-harga-jual', 'Products::updateHargaJualReject');
 
 $routes->get('/export-dash-pengiriman', 'Shippings::exportShipments');
+$routes->get('/export-dash-pengiriman/(:any)/(:any)', 'Shippings::exportShipments/$1/$2');
 $routes->get('/export-dash-produk-retur', 'Products::exportRetur');
+$routes->get('/export-dash-produk-retur/(:any)/(:any)', 'Products::exportRetur/$1/$2');
 $routes->get('/export-dash-produk-masuk', 'Products::exportProdukMasuk');
+$routes->get('/export-dash-produk-masuk/(:any)/(:any)', 'Products::exportProdukMasuk/$1/$2');
 $routes->get('/export-dash-produk-keluar', 'Products::exportProdukKeluar');
+$routes->get('/export-dash-produk-keluar/(:any)/(:any)', 'Products::exportProdukKeluar/$1/$2');
 $routes->get('/export-dash-stok-gudang', 'Products::exportStokGudang');
+$routes->get('/export-dash-stok-gudang/(:any)/(:any)', 'Products::exportStokGudang/$1/$2');
 $routes->get('/export-produk-masuk-gudang', 'Products::exportProdukMasukGesit');
 $routes->get('/export-produk-masuk-gudang/(:any)/(:any)', 'Products::exportProdukMasukGesit/$1/$2');
 

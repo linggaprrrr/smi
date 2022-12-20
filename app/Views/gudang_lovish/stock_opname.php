@@ -31,12 +31,12 @@
                     <?php if (count($products) > 0) : ?>
                         <?php foreach ($products as $product) : ?>    
                             <?php 
-                                $selisih = $product['sisa'] - $product['scan_in'];
+                                $selisih = $product['sisa_gudang'] - $product['scan_in'];
                                 ?>                                                
                             <tr>
                                 <td class="text-center align-middle"><?= $no++ ?></td>
                                 <td><?= $product['product_name'] ?> <?= $product['model_name'] ?> <?= $product['color'] ?></td>
-                                <td class="text-center align-middle"><?= $product['sisa'] ?></td>                                                                        
+                                <td class="text-center align-middle"><?= $product['sisa_gudang'] ?></td>                                                                        
                                 <td class="text-center align-middle"><?= $product['scan_in'] > 0 ? $product['scan_in'] : '-' ?></td>
                                 <?php if ($selisih > 0) :  ?>
                                     <td class="text-center align-middle table-warning"><?= $selisih > 0 ? $selisih : '-' ?></td>

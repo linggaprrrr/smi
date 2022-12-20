@@ -8,8 +8,8 @@
                 <form method="GET" action="<?= base_url('/operasional/laporan') ?>" id="date" >
                     <div class="form-group">
                         <label for="">Date Range: </label>
-                        <?php if (is_null($date1)) : ?>
-                            <input type="text" name="dates" class="form-control text-center daterange" readonly />            
+                        <?php if (is_null($date1)) : ?>                        
+                            <input type="text" name="dates" value="<?= date('m/d/Y 07:00') ?> - <?= date('m/d/Y 17:00') ?>" class="form-control text-center daterange" readonly />            
                         <?php else : ?>
                             <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?>" readonly />            
                         <?php endif ?> 
@@ -118,9 +118,9 @@
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary float-left">Data Pengiriman</h6>
                          <?php if (!is_null($date1)) : ?>
-                            <a class="btn btn-success float-right" href="<?= base_url('/export-pengiriman/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-dash-pengiriman/'. date('Y-m-d H:i:s', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
                         <?php else : ?>
-                            <a class="btn btn-success float-right" href="<?= base_url('/export-pengiriman') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                            <a class="btn btn-success float-right" href="<?= base_url('/export-dash-pengiriman') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
                         <?php endif ?>
                     </div>
                     <div class="card-body">
@@ -231,13 +231,11 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
     $('.daterange').daterangepicker({
-        timePicker: true,
-        timePicker24Hour: true,
-        
+        timePicker: true,        
         locale: {
-            format: 'M/D/YYYY HH:MM'
+            format: 'M/DD/YYYY hh:mm A'
         }
-    });      
+    });       
 
     $('.daterange').change(function() {
         $('#date').submit();

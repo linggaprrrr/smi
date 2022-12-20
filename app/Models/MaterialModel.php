@@ -40,14 +40,15 @@ class MaterialModel extends Model
     public function getAllMaterialRetur($date1 = null, $date2 = null) {
         if (!is_null($date1)) {
             $query =  $this->db->table('materials')
-            ->select('materials.* material_vendors.vendor, material_types.type, colors.color')
+            ->select('materials.*, material_vendors.vendor, material_types.type, colors.color')
             ->join('material_types', 'material_types.id = materials.material_type')
             ->join('colors', 'colors.id = materials.color_id')
             ->join('gudang', 'gudang.id = materials.gudang_id')
             ->join('material_vendors', 'material_vendors.id = materials.vendor_id')            
             ->where('status', '0')
-            ->where('created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')
-            ->orderBy('created_at', 'desc')->get(); 
+            ->where('materials.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')
+            ->orderBy('materials.created_at', 'DESC')
+            ->get(); 
         } else {
             $query =  $this->db->table('materials')
             ->select('materials.*, material_vendors.vendor, material_types.type, colors.color')
@@ -56,7 +57,8 @@ class MaterialModel extends Model
             ->join('gudang', 'gudang.id = materials.gudang_id')
             ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
             ->where('status', '0')
-            ->orderBy('created_at', 'desc')->get();
+            ->orderBy('materials.created_at', 'desc')
+            ->get();
         }
         return $query;
     }

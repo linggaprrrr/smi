@@ -30,9 +30,9 @@ class ShippingModel extends Model
             ->join('products', 'products.id = product_barcodes.product_id')
             ->join('models', 'models.id = products.model_id')            
             ->join('colors', 'colors.id = products.color_id')
-            ->groupBy('models.id, colors.id, size')            
             ->where('shipping_id', $id)
-            ->where('product_barcodes.status', '5')            
+               
+            ->groupBy('models.id, colors.id, size')
             ->get();
         return $query;
     }
@@ -61,8 +61,9 @@ class ShippingModel extends Model
             ->join('products', 'products.id = product_barcodes.product_id')
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
-            ->where('product_barcodes.status', '5')
             ->where('shippings.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+            ->where('product_barcodes.status', '5')
+            
             ->groupBy('shipping_details.shipping_id')
             ->groupBy('models.id')
             ->groupBy('colors.id')

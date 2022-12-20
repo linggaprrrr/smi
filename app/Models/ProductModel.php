@@ -58,7 +58,7 @@ class ProductModel extends Model
     public function getAllProductGesit($date1 = null, $date2=null) {
         if (is_null($date1)) {
             $query = $this->db->table('products')
-            ->select('products.*, model_name, jenis as product_name, color, name, price, IFNULL((products.qty - stok_keluar), 0) as stok')
+            ->select('products.*, model_name, jenis as product_name, color, name, price, (products.qty - IFNULL(stok_keluar, 0)) as stok')
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
@@ -104,9 +104,7 @@ class ProductModel extends Model
             ->join('models', 'models.id = products.model_id')            
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
-            ->join('product_logs', 'product_logs.product_id = products.id')
-            ->where('products.status', 2)
-            // ->orderBy('product_logs.created_at', 'desc')
+            ->where('products.status', 2)            
             ->get();
         return $query;
     }
@@ -229,11 +227,12 @@ class ProductModel extends Model
             ->join('users', 'users.id = products.user_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
+            ->where('product_logs.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')
             ->where('product_logs.status','2')
             ->where('product_logs.qty !=','0')
             ->where('product_barcodes.status != ','1')
             ->where('product_barcodes.status != ','0')
-            ->where('product_logs.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ')
+            
             ->orderBy('created_at', 'desc')
             ->get();
         }
@@ -602,8 +601,6 @@ class ProductModel extends Model
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
             ->where('product_logs.status','4')
-            ->where('MONTH(product_logs.created_at) = MONTH(CURRENT_DATE())')
-            ->where('YEAR(product_logs.created_at) = YEAR(CURRENT_DATE())')
             ->orderBy('created_at', 'desc')
             ->get();
         } else {
@@ -614,9 +611,8 @@ class ProductModel extends Model
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
             ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
             ->where('product_logs.status','4')
-            ->where('product_logs.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
-            ->where('MONTH(product_logs.created_at) = MONTH(CURRENT_DATE())')
-            ->where('YEAR(product_logs.created_at) = YEAR(CURRENT_DATE())')
+            ->where('product_logs.updated_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+            
             ->orderBy('created_at', 'desc')
             ->get();
         }
@@ -832,7 +828,6 @@ class ProductModel extends Model
                 if ($model == $stok->model_id && $color == $stok->color_id) {                    
                     if ($stok->jenis == 'in') {
                         $stokMasuk = $stokMasuk + $stok->total;
-                        echo ($stokMasuk);
                     } elseif ($stok->jenis == 'pengiriman') {
                         $pengiriman = $stok->total;
                     } elseif ($stok->jenis == 'penjualan') {
@@ -840,6 +835,9 @@ class ProductModel extends Model
                     } elseif ($stok->jenis == 'retur') {
                         $retur = $stok->total;
                     }                    
+                    $this->db->query("UPDATE history_stok SET status = '1' WHERE model_id='$model' AND color_id='$color' ");
+                    $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisa', 'sisa_penjualan') ");
+                    $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisagudang', 'sisa_pengiriman') ");
                 } else {                    
                     $sisa = $stokMasuk + $retur - $penjualan;
                     $sisagudang = $stokMasuk + $retur - $pengiriman;
@@ -875,6 +873,24 @@ class ProductModel extends Model
     
     public function resetSO() {
         $this->db->query("DELETE FROM scan_so");
+    }
+
+    public function getTotalProdukMasuk($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $totalStokMasuk = $this->db->table('history_stok')
+                ->select('SUM(history_stok.qty) as stok')                
+                ->where('history_stok.jenis = "in" ')
+                ->where('history_stok.status = 0')
+                ->get();
+        } else {
+            $totalStokMasuk = $this->db->table('history_stok')
+            ->select('SUM(history_stok.qty) as stok')                
+            ->where('history_stok.jenis = "in" ')
+            ->where('history_stok.status = 0')            
+            ->where('history_stok.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+            ->get();
+        }
+        return $totalStokMasuk;
     }
 
 }   

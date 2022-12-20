@@ -277,38 +277,27 @@ class Home extends BaseController
             $totalGudang = 0;
             
             $sisaStok = $this->productModel
-                ->select('models.hpp, products.id, products.hpp_jual, products.model_id, products.color_id, products.size, models.jenis as product_name, model_name, color, products.size, product_barcodes.updated_at, stok_masuk, penjualan, stok_retur, pengiriman, (IFNULL(stok_masuk, 0) + IFNULL(stok, 0) + IFNULL(stok_retur, 0) - (IFNULL(penjualan, 0) + IFNULL(pengiriman, 0)) ) as sisa, stok')
+                ->select('models.hpp, products.id, products.hpp_jual, products.model_id, products.color_id, products.size, models.jenis as product_name, model_name, color, products.size, product_barcodes.updated_at, stok_masuk, penjualan, stok_retur, pengiriman, stok')
                 ->join('models', 'models.id = products.model_id')
                 ->join('colors', 'colors.id = products.color_id')
                 ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                ->join('(SELECT id, SUM(qty) as stok FROM products WHERE status= 2 GROUP BY model_id, color_id, size) as a','products.id = a.id', 'left') 
-                ->join('(SELECT product_barcodes.product_id, COUNT(product_barcodes.id) as stok_masuk FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE product_barcodes.status != "0" AND product_barcodes.status != "1" GROUP BY model_id, color_id, size) as m', 'm.product_id = products.id', 'left')
-                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as penjualan FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id WHERE product_logs.status = 3 GROUP BY model_id, color_id, size) as k', 'k.product_id = products.id', 'left')                
-                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as stok_retur FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 4 GROUP BY model_id, color_id, size) as r', 'r.product_id = products.id', 'left')
-                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as pengiriman FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 5 GROUP BY model_id, color_id, size) as s', 's.product_id = products.id', 'left')
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok FROM history_stok WHERE jenis="sisa_pengiriman" AND status = 0 GROUP BY model_id, color_id, size) as a','products.model_id = a.model_id AND a.color_id = products.color_id', 'left') 
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok_masuk FROM history_stok WHERE jenis="in" AND status = 0 GROUP BY model_id, color_id, size) as m', 'm.model_id = products.model_id AND m.color_id = products.color_id', 'left')
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as penjualan FROM history_stok WHERE jenis="penjualan" AND status = 0 GROUP BY model_id, color_id, size) as k', 'k.model_id = products.model_id AND k.color_id = products.color_id', 'left')                
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok_retur FROM history_stok WHERE jenis="retur" AND status = 0 GROUP BY model_id, color_id, size) as r', 'r.model_id = products.model_id AND r.color_id = products.color_id', 'left')
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as pengiriman FROM history_stok WHERE jenis="pengiriman" AND status = 0 GROUP BY model_id, color_id, size) as s', 's.model_id = products.model_id AND s.color_id = products.color_id', 'left')
                 ->groupBy('models.id, colors.id, products.size')
-                ->get();
-            $totalStokMasuk = $this->productModel
-                ->select('COUNT(product_barcodes.id) as stok')
-                ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                ->where('product_barcodes.status', '2')
-                ->orWhere('product_barcodes.status', '3')
-                ->where('MONTH(product_barcodes.updated_at) = MONTH(CURRENT_DATE())')
-                ->where('YEAR(product_barcodes.updated_at) = YEAR(CURRENT_DATE())')
-                ->first();
+                ->get();   
+            $totalStokMasuk = $this->productModel->getTotalProdukMasuk();
+            $totalStokMasuk = $totalStokMasuk->getResultArray();
+            $totalStokMasuk = $totalStokMasuk[0];
             $stokKeluar = $this->productModel                
-                ->select('SUM(product_logs.qty) as stok')
-                ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
-                ->where('product_logs.status', '3')
-                ->orWhere('product_logs.status', '5')
+                ->select('(SELECT SUM(qty) FROM history_stok WHERE status = 0 AND jenis = "pengiriman" ) as stok')                
                 ->first();
             $stokRetur = $this->productModel
-                ->select('SUM(product_logs.qty) as stok')
-                ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
-                ->where('product_logs.status', '4')
+                ->select('(SELECT SUM(qty) FROM history_stok WHERE status = 0 AND jenis = "retur" ) as stok')                
                 ->first();
+            
             $productsIn = $this->productModel
                 ->select('model_name, jenis as product_name, color, size, COUNT(product_barcodes.id) as stok, products.updated_at')
                 ->join('models', 'models.id = products.model_id')
@@ -337,15 +326,21 @@ class Home extends BaseController
             $selling = 0;        
             $totalNilaiBarang = 0;
             $totalNilaiBarangJual = 0;
+            $stokIn = $this->productModel
+                ->where('status', '2')
+                ->get();
+            $toIn = 0;
             if ($sisaStok->getNumRows() > 0) {
                 foreach ($sisaStok->getResultObject() as $product) {                
-                    if ($penjualan->getNumRows() > 0) {
-                        foreach ($penjualan->getResultObject() as $sell) {                                        
-                            if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
-                                $selling = $selling + $sell->qty;                         
-                            }
-                        }        
-                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
+                    if ($penjualan->getNumRows() > 0) {                          
+                        foreach ($stokIn->getResultObject() as $in) {                                        
+                            if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
+                                $toIn = $toIn + $in->qty;                         
+                            }    
+                        }
+                        
+                        $sisa = ($toIn + $product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling)) ;
+                        $sisa_gudang = ($toIn + $product->stok + $product->stok_masuk + $product->stok_retur - $product->pengiriman) ;                                                            
                         array_push($stok, [
                             'id' => $product->id,
                             'model_id' => $product->model_id,
@@ -353,18 +348,30 @@ class Home extends BaseController
                             'model_name' => $product->model_name,
                             'color' => $product->color,
                             'size' => $product->size,
-                            'stok' => $product->stok,
+                            'stok' => ($product->stok + $toIn),
                             'stok_masuk' => $product->stok_masuk,
                             'penjualan' => $selling + $product->penjualan,
                             'pengiriman' => $product->pengiriman,
                             'stok_retur' => $product->stok_retur,
                             'sisa' => $sisa,
+                            'sisa_gudang' => $sisa_gudang,
                             'hpp' => $product->hpp,
                             'hpp_jual' => $product->hpp_jual,
                         ]);
                         $selling = 0;
+                        $toIn = 0;
+                        $totalGudang = $totalGudang + ($sisa_gudang);
+                        $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa_gudang);
+                        $totalNilaiBarangJual = $totalNilaiBarangJual + ($product->hpp_jual * $sisa_gudang);
                     } else {
-                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
+                        
+                        foreach ($stokIn->getResultObject() as $in) {                                        
+                            if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
+                                $toIn = $toIn + $in->qty;                         
+                            }    
+                        }
+                        $sisa = ($toIn + $product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling)) ;
+                        $sisa_gudang = ($toIn + $product->stok + $product->stok_masuk + $product->stok_retur - $product->pengiriman) ;                                                            
                         array_push($stok, [
                             'id' => $product->id,
                             'model_id' => $product->model_id,
@@ -372,30 +379,54 @@ class Home extends BaseController
                             'model_name' => $product->model_name,
                             'color' => $product->color,
                             'size' => $product->size,
-                            'stok' => $product->stok,
+                            'stok' => ($product->stok + $toIn),
                             'stok_masuk' => $product->stok_masuk,
                             'penjualan' => $product->penjualan,
                             'pengiriman' => $product->pengiriman,
                             'stok_retur' => $product->stok_retur,
                             'sisa' => $sisa,
+                            'sisa_gudang' => $sisa_gudang,
                             'hpp' => $product->hpp,
                             'hpp_jual' => $product->hpp_jual,
                         ]);
+                        $toIn = 0;
+                        $totalGudang = $totalGudang + ($sisa_gudang);
+                        $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa_gudang);
+                        $totalNilaiBarangJual = $totalNilaiBarangJual + ($product->hpp_jual * $sisa_gudang);
                     }
-                    $totalGudang = $totalGudang + $sisa;
-                    $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa);
-                    $totalNilaiBarangJual = $totalNilaiBarangJual + ($product->hpp_jual * $sisa);
                 }
             } else {
                 if ($penjualan->getNumRows() > 0) {
                     
                 }
             }
+            
+            $data = array(
+                'title' => 'Dashboard',
+                'totalGudang' => $totalGudang,
+                'totalStokMasuk' => $totalStokMasuk,
+                'stokKeluar' => $stokKeluar,
+                'stokRetur' => $stokRetur,
+                'productsIn' => $productsIn,
+                'productsOut' => $productsOut,
+                'productsExp' => $productsExp,
+                'productLovish' => $stok,
+                'productsRetur' => $productsRetur,
+                'shippings' => $shippings,
+                'totalNilaiBarang' => $totalNilaiBarang,
+                'totalNilaiBarangJual' => $totalNilaiBarangJual,
+                'top10Lovish' => $top10Lovish,
+                'top10Odelia' => $top10Odelia,
+                'top10Basundari' => $top10Basundari,
+                'dates' => $dates,
+                'date1' =>$date1,
+                'date2' =>$date2,
+            );
          
         } else {
             $date = explode("-",$date);   
-            $date1 = date('Y-m-d 00:00:00', strtotime($date[0]));
-            $date2 = date('Y-m-d 00:00:00', strtotime($date[1]));
+            $date1 = date('Y-m-d H:i:s', strtotime($date[0]));
+            $date2 = date('Y-m-d H:i:s', strtotime($date[1]));
             
             $productsOut = $this->productModel->getStokProductOut($date1, $date2);
             $productsRetur = $this->productModel->productsRetur($date1, $date2);
@@ -410,34 +441,27 @@ class Home extends BaseController
             $top10Odelia = $this->productModel->getTop10Odelia($date1, $date2);
             $top10Basundari = $this->productModel->getTop10Basundari($date1, $date2);
             $totalGudang = 0;
-            
             $sisaStok = $this->productModel
-                ->select('models.hpp, products.id, products.hpp_jual, products.model_id, products.color_id, products.size, models.jenis as product_name, model_name, color, products.size, product_barcodes.updated_at, stok_masuk, penjualan, stok_retur, pengiriman, (IFNULL(stok_masuk, 0) + IFNULL(stok, 0) + IFNULL(stok_retur, 0) - (IFNULL(penjualan, 0) + IFNULL(pengiriman, 0)) ) as sisa, stok')
+                ->select('models.hpp, products.id, products.hpp_jual, products.model_id, products.color_id, products.size, models.jenis as product_name, model_name, color, products.size, product_barcodes.updated_at, stok_masuk, penjualan, stok_retur, pengiriman, stok')
                 ->join('models', 'models.id = products.model_id')
                 ->join('colors', 'colors.id = products.color_id')
                 ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                ->join('(SELECT id, SUM(qty) as stok FROM products WHERE status= 2 GROUP BY model_id, color_id, size) as a','products.id = a.id', 'left') 
-                ->join('(SELECT product_barcodes.product_id, COUNT(product_barcodes.id) as stok_masuk FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE product_barcodes.status != "0" AND product_barcodes.status != "1" GROUP BY model_id, color_id, size) as m', 'm.product_id = products.id', 'left')
-                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as penjualan FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id WHERE product_logs.status = 3 GROUP BY model_id, color_id, size) as k', 'k.product_id = products.id', 'left')                
-                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as stok_retur FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 4 GROUP BY model_id, color_id, size) as r', 'r.product_id = products.id', 'left')
-                ->join('(SELECT product_barcodes.product_id, SUM(product_logs.qty) as pengiriman FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id  WHERE product_logs.status = 5 GROUP BY model_id, color_id, size) as s', 's.product_id = products.id', 'left')
-                ->where('products.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok FROM history_stok WHERE jenis="sisa_pengiriman" AND status = 0 AND (history_stok.created_at BETWEEN "'.$date1.'" AND "'.$date2.'") GROUP BY model_id, color_id, size) as a','products.model_id = a.model_id AND a.color_id = products.color_id', 'left') 
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok_masuk FROM history_stok WHERE jenis="in" AND status = 0 AND (history_stok.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ) GROUP BY model_id, color_id, size) as m', 'm.model_id = products.model_id AND m.color_id = products.color_id', 'left')
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as penjualan FROM history_stok WHERE jenis="penjualan" AND status = 0 AND (history_stok.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ) GROUP BY model_id, color_id, size) as k', 'k.model_id = products.model_id AND k.color_id = products.color_id', 'left')                
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok_retur FROM history_stok WHERE jenis="retur" AND status = 0 AND (history_stok.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ) GROUP BY model_id, color_id, size) as r', 'r.model_id = products.model_id AND r.color_id = products.color_id', 'left')
+                ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as pengiriman FROM history_stok WHERE jenis="pengiriman" AND status = 0 AND (history_stok.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" ) GROUP BY model_id, color_id, size) as s', 's.model_id = products.model_id AND s.color_id = products.color_id', 'left')                
                 ->groupBy('models.id, colors.id, products.size')
-                ->get();
-            $totalStokMasuk = $this->productModel
-                ->select('COUNT(product_barcodes.id) as stok')
-                ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                ->where('product_barcodes.status <> ', '1')                
-                ->where('products.updated_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
-                ->first();
+                ->get();   
+         
+            $totalStokMasuk = $this->productModel->getTotalProdukMasuk($date1, $date2);
+            $totalStokMasuk = $totalStokMasuk->getResultArray();
+            $totalStokMasuk = $totalStokMasuk[0];
             $stokKeluar = $this->productModel
-                ->select('(SELECT COUNT(*) FROM product_barcodes WHERE product_barcodes.status = 3 OR product_barcodes.status = 5) as stok')                
+                ->select('(SELECT SUM(qty) FROM history_stok WHERE status = 0 AND jenis = "pengiriman" AND (history_stok.created_at BETWEEN "'.$date1.'" AND "'.$date2.'") ) as stok')                
                 ->first();
             $stokRetur = $this->productModel
-                ->select('SUM(product_logs.qty) as stok')
-                ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                ->join('product_logs', 'product_logs.product_id = product_barcodes.id')
-                ->where('product_logs.status', '4')                
+                ->select('(SELECT SUM(qty) FROM history_stok WHERE status = 0 AND jenis = "retur" AND (history_stok.created_at BETWEEN "'.$date1.'" AND "'.$date2.'") ) as stok')                
                 ->first();
             $productsIn = $this->productModel
                 ->select('model_name, jenis as product_name, color, size, COUNT(product_barcodes.id) as stok, products.updated_at')
@@ -460,21 +484,28 @@ class Home extends BaseController
             $penjualan = $this->sellingModel
                 ->select('sellings.*')
                 ->join('models', 'models.id = sellings.model_id')
-                ->join('colors', 'colors.id = sellings.color_id')            
+                ->join('colors', 'colors.id = sellings.color_id')   
+                ->where('created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
                 ->get();     
             $stok = array();
-            $selling = 0;        
+            $selling = 0;   
+            $stokIn = $this->productModel
+                ->where('status', '2')
+                ->where('created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+                ->get();     
+            $toIn = 0;
             $totalNilaiBarang = 0;
             $totalNilaiBarangJual = 0;
             if ($sisaStok->getNumRows() > 0) {
                 foreach ($sisaStok->getResultObject() as $product) {                
-                    if ($penjualan->getNumRows() > 0) {
-                        foreach ($penjualan->getResultObject() as $sell) {                                        
-                            if (($sell->model_id == $product->model_id) && ($sell->color_id == $product->color_id) && ($sell->size == $product->size)) {
-                                $selling = $selling + $sell->qty;                         
-                            }
-                        }        
-                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
+                    if ($penjualan->getNumRows() > 0) {                          
+                        foreach ($stokIn->getResultObject() as $in) {                                        
+                            if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
+                                $toIn = $toIn + $in->qty;   
+                            }    
+                        }
+                        $sisa = ($toIn + $product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling)) ;
+                        $sisa_gudang = ($toIn + $product->stok + $product->stok_masuk + $product->stok_retur - $product->pengiriman) ;                                                            
                         array_push($stok, [
                             'id' => $product->id,
                             'model_id' => $product->model_id,
@@ -482,18 +513,30 @@ class Home extends BaseController
                             'model_name' => $product->model_name,
                             'color' => $product->color,
                             'size' => $product->size,
-                            'stok' => $product->stok,
+                            'stok' => ($product->stok + $toIn),
                             'stok_masuk' => $product->stok_masuk,
                             'penjualan' => $selling + $product->penjualan,
                             'pengiriman' => $product->pengiriman,
                             'stok_retur' => $product->stok_retur,
                             'sisa' => $sisa,
+                            'sisa_gudang' => $sisa_gudang,
                             'hpp' => $product->hpp,
                             'hpp_jual' => $product->hpp_jual,
                         ]);
                         $selling = 0;
+                        $toIn = 0;
+                        $totalGudang = $totalGudang + ($sisa_gudang);
+                        $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa_gudang);
+                        $totalNilaiBarangJual = $totalNilaiBarangJual + ($product->hpp_jual * $sisa_gudang);
                     } else {
-                        $sisa = ($product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling) - $product->pengiriman) ;                                                            
+                        
+                        foreach ($stokIn->getResultObject() as $in) {                                        
+                            if (($in->model_id == $product->model_id) && ($in->color_id == $product->color_id) && ($in->size == $product->size)) {
+                                $toIn = $toIn + $product->stok + 1;                         
+                            }    
+                        }
+                        $sisa = ($toIn + $product->stok + $product->stok_masuk + $product->stok_retur - ($product->penjualan + $selling)) ;
+                        $sisa_gudang = ($toIn + $product->stok + $product->stok_masuk + $product->stok_retur - $product->pengiriman) ;                                                            
                         array_push($stok, [
                             'id' => $product->id,
                             'model_id' => $product->model_id,
@@ -501,47 +544,53 @@ class Home extends BaseController
                             'model_name' => $product->model_name,
                             'color' => $product->color,
                             'size' => $product->size,
-                            'stok' => $product->stok,
+                            'stok' => $toIn,
                             'stok_masuk' => $product->stok_masuk,
                             'penjualan' => $product->penjualan,
                             'pengiriman' => $product->pengiriman,
                             'stok_retur' => $product->stok_retur,
                             'sisa' => $sisa,
+                            'sisa_gudang' => $sisa_gudang,
                             'hpp' => $product->hpp,
-                            'hpp_jual' => $product->hpp_jual,                            
+                            'hpp_jual' => $product->hpp_jual,
                         ]);
+                        $totalGudang = $totalGudang + ($sisa_gudang);
+                        $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa_gudang);
+                        $totalNilaiBarangJual = $totalNilaiBarangJual + ($product->hpp_jual * $sisa_gudang);
+                        $toIn = 0;
                     }
-                    $totalGudang = $totalGudang + $sisa;
-                    $totalNilaiBarang = $totalNilaiBarang + ($product->hpp * $sisa);
-                    $totalNilaiBarangJual = $totalNilaiBarangJual + ($product->hpp_jual * $sisa);
                 }
             } else {
                 if ($penjualan->getNumRows() > 0) {
                     
                 }
-            }              
+            }
+            
+            $data = array(
+                'title' => 'Dashboard',
+                'totalGudang' => $totalGudang,
+                'totalStokMasuk' => $totalStokMasuk,
+                'stokKeluar' => $stokKeluar,
+                'stokRetur' => $stokRetur,
+                'productsIn' => $productsIn,
+                'productsOut' => $productsOut,
+                'productsExp' => $productsExp,
+                'productLovish' => $stok,
+                'productsRetur' => $productsRetur,
+                'shippings' => $shippings,
+                'totalNilaiBarang' => $totalNilaiBarang,
+                'totalNilaiBarangJual' => $totalNilaiBarangJual,
+                'top10Lovish' => $top10Lovish,
+                'top10Odelia' => $top10Odelia,
+                'top10Basundari' => $top10Basundari,
+                'dates' => $dates,
+                'date1' =>$date1,
+                'date2' =>$date2,
+            );
         }
      
 
-        $data = array(
-            'title' => 'Dashboard',
-            'totalGudang' => $totalGudang,
-            'totalStokMasuk' => $totalStokMasuk,
-            'stokKeluar' => $stokKeluar,
-            'stokRetur' => $stokRetur,
-            'productsIn' => $productsIn,
-            'productsOut' => $productsOut,
-            'productsExp' => $productsExp,
-            'productLovish' => $stok,
-            'productsRetur' => $productsRetur,
-            'shippings' => $shippings,
-            'totalNilaiBarang' => $totalNilaiBarang,
-            'totalNilaiBarangJual' => $totalNilaiBarangJual,
-            'top10Lovish' => $top10Lovish,
-            'top10Odelia' => $top10Odelia,
-            'top10Basundari' => $top10Basundari,
-            'date1' => $dates
-        );
+       
         return view('gudang_lovish/dashboard', $data);
     }
 

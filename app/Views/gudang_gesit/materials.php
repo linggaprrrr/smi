@@ -271,7 +271,7 @@
                                                     <input type="text" class="form-control text-center qty-cutting" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                 </td>
                                                 <td class="text-center align-middle">
-                                                    <input type="text" class="form-control text-center berat-cutting" name="berat" data-id='<?= $cutting->id ?>' data-material='<?= $cutting->material_id ?>'  value="<?= number_format($cutting->berat, 2) ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    <input type="text" class="form-control text-center berat-cutting" name="berat" data-id='<?= $cutting->id ?>' data-material='<?= $cutting->material_id ?>'  value="<?= number_format($cutting->berat, 1) ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                 </td>
                                                 <td class="text-center align-middle">                                
                                                     <select name="gelar1" data-id="<?= $cutting->id ?>" class="form-control gelar1">
@@ -359,10 +359,10 @@
                                                 </td>
                                                 <td class="text-center align-middle"><?= $cutting->color ?></td>
                                                 <td class="text-center align-middle">
-                                                    <input type="text" class="form-control text-center qty-cutting-pola" id="qty_edit_<?= $cutting->id ?>" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled>
+                                                    <input type="text" class="form-control text-center qty-cutting-pola" id="qty_edit_<?= $cutting->id ?>" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" >
                                                 </td>
                                                 <td class="text-center align-middle">
-                                                    <input type="text" class="form-control text-center berat-cutting" name="berat" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->berat ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled>
+                                                    <input type="text" class="form-control text-center berat-cutting" name="berat" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= number_format($cutting->berat, 1) ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled>
                                                 </td>
                                                 <td class="text-center align-middle">                                
                                                     <select name="gelar1" id="" class="form-control" disabled>

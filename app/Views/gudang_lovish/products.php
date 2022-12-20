@@ -8,21 +8,24 @@
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">        
-        
         <?php if (!is_null($date1)) : ?>
-            <a class="btn btn-success float-left" href="<?= base_url('/export-produk-masuk-gudang/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
+            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-masuk-gudang/'. date('Y-m-d', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>                            
         <?php else : ?>
-            <a class="btn btn-success float-left" href="<?= base_url('/export-produk-masuk-gudang') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+            <a class="btn btn-success float-right" href="<?= base_url('/export-produk-masuk-gudang') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
         <?php endif ?>
-        <div class="float-right">
+        <div class="float-left">
             <form method="GET" action="<?= base_url('/operasional/produk') ?>" id="date" >
-                <div class="form-group" style="width: 250px;">
-                    <label for="">Date Range: </label>                       
-                    <?php if (is_null($date1)) : ?>
-                        <input type="text" name="dates" class="form-control text-center daterange" readonly />            
-                    <?php else : ?>
-                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?> - <?= $date2 ?>" readonly />            
-                    <?php endif ?> 
+                <div class="form-group" style="width: 280px;">
+                       
+                    <div class="form-group">
+                        <label for="">Date Range: </label>
+                        <?php if (is_null($date1)) : ?>                        
+                            <input type="text" name="dates" value="<?= date('m/d/Y 07:00') ?> - <?= date('m/d/Y 17:00') ?>" class="form-control text-center daterange" readonly />            
+                        <?php else : ?>
+                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?>" readonly />            
+                        <?php endif ?> 
+                    </div>                  
+                    
                 </div>    
             </form>
         </div>
@@ -69,7 +72,7 @@
 </div>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Data Produk</h6>
+        <h6 class="m-0 font-weight-bold text-primary float-left">Data Stok Gudang Lama</h6>
         
         <button class="btn btn-success float-right mr-2" data-toggle="modal" data-target=".export-produk"><i class="fa fa-file-excel mr-2"></i>Import</button>
         <div class="modal fade export-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -247,14 +250,12 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
     $(document).ready(function() {
-
         $('.daterange').daterangepicker({
-            timePicker: true,
-            timePicker24Hour: true,        
+            timePicker: true,        
             locale: {
-                format: 'M/D/YYYY HH:MM'
+                format: 'M/DD/YYYY hh:mm A'
             }
-        });      
+        });  
 
         $('.daterange').change(function() {
             $('#date').submit();
