@@ -198,9 +198,11 @@ class Products extends BaseController
     public function saveModel() {
         $post = $this->request->getVar();
         $model = [
+            'jenis' => $post['jenis'],
             'model_name' => $post['nama_model'],
             'harga_jahit' => $post['jahit'],
-            'hpp' => $post['hpp']
+            'hpp' => $post['hpp'],
+            'brand' => $post['brand']
         ];
         $this->designModel->save($model);
         return redirect()->back()->with('create', 'Model berhasil ditambahkan');
@@ -210,9 +212,11 @@ class Products extends BaseController
         $post = $this->request->getVar();
         $model = [
             'id' => $post['id'],
+            'jenis' => $post['jenis'],
             'model_name' => $post['nama_model'],
             'harga_jahit' => $post['jahit'],
             'hpp' => $post['hpp'],
+            'brand' => $post['brand'],
         ];
         $this->designModel->save($model);
         return redirect()->back()->with('update', 'Model berhasil ditambahkan');
@@ -892,34 +896,83 @@ class Products extends BaseController
             $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         }
         $spreadsheet = $render->load($file);
-        $data = $spreadsheet->getActiveSheet()->toArray();     
-        // dd($data);   
+        $data = $spreadsheet->getActiveSheet()->toArray();   
         foreach ($data as $idx => $row) {
-            if ($idx > 0) {
+            if ($idx > 0 && !is_null($row[0])) {
                 $temp = explode(' ', $row[1]);  
                 $modelID = "";
                 $productTypeID = "";
                 $colorID = "";
                 $size = NULL;
                 $hpp = 0;
-      
 
-                $getModel = $this->designModel->where(['model_name' => $temp[1]])->first();                                
-                if (is_null($getModel)) {
-                    $model = [
-                        'model_name' => $temp[1],                        
-                    ];
-                    $this->designModel->save($model); 
-                    $modelID = $this->designModel->getInsertID();
+                $getProductType = $this->productModel->getProductType($temp[0]);
+                if (is_null($getProductType)) {
+                    $productTypeID = NULL;                    
+                }  else {
+                    $productTypeID = $getProductType->id;
+                }                       
+
+
+
+                if (count($temp) == 2) { 
+                    $getModel = $this->designModel->where(['model_name' => $temp[0]])->first();                                
+                    if (is_null($getModel)) {
+                        $model = [
+                            'model_name' => $temp[0],                        
+                        ];
+                        $this->designModel->save($model); 
+                        $modelID = $this->designModel->getInsertID();
+                    } else {
+                        $modelID = $getModel['id'];
+                        $hpp = $getModel['hpp'];
+                    }
                 } else {
-                    $modelID = $getModel['id'];
-                    $hpp = $getModel['hpp'];
+                    $getModel = $this->designModel->where(['model_name' => $temp[1]])->first();                                
+                    if (is_null($getModel)) {
+                        $model = [
+                            'model_name' => $temp[1],                        
+                        ];
+                        $this->designModel->save($model); 
+                        $modelID = $this->designModel->getInsertID();
+                    } else {
+                        $modelID = $getModel['id'];
+                        $hpp = $getModel['hpp'];
+                    }
                 }
                 
+                
                 if (count($temp) == 3) {
-                    $color = $temp[2];
+                    if (strpos($row[1], 'REG') !== false) {
+                        $size = "REG";
+                        $color = trim($temp[2], $size);
+                    } else if (strpos($row[1], 'JUMBO') !== false || strpos($row[1], 'JUM') !== false) {
+                        $size = "JUMBO";
+                        $color = trim($temp[2], $size);
+                    } else {
+                        $color = trim($temp[2]);
+                    }
+                    
                 } else if (count($temp) > 3) {
-                    $color = $temp[2]. ' '. $temp[3];
+                    if (strpos($row[1], 'REG') !== false) {
+                        $size = "REG";
+                        $color = trim($temp[2]. ' '. $temp[3], $size);
+                    } else if (strpos($row[1], 'JUMBO') !== false || strpos($row[1], 'JUM') !== false) {
+                        $size = "JUMBO";
+                        $color = trim($temp[2]. ' '. $temp[3], $size);
+                    } else {
+                        $color = trim($temp[2]. ' '. $temp[3]);
+                    }                        
+                } else {
+                    if (strpos($row[0], 'REG') !== false) {
+                        $size = "REG";
+                        $color = trim($temp[1], $size);
+                    } else if (strpos($row[0], 'JUMBO') !== false || strpos($row[0], 'JUM') !== false) {
+                        $size = "JUMBO";
+                        $color = trim($temp[1], $size);
+                    } else {
+                        $color = trim($temp[1]);
+                    }
                 }
 
                 $getColor = $this->materialModel->getColorByName($color);
@@ -930,13 +983,11 @@ class Products extends BaseController
                 }
 
 
-                if (strpos($row[1], 'REG') !== false) {
-                    $size = "REG";
-                } else if (strpos($row[1], 'JUMBO') !== false) {
-                    $size = "JUMBO";
-                }
+                
 
 
+              
+                
                 $this->productModel->save([
                     'model_id' => $modelID,
                     'color_id' => $colorID,
@@ -950,9 +1001,12 @@ class Products extends BaseController
                 for ($i=0; $i < $row[2]; $i++) {
                     $temp = $this->productModel->createBarcode($productId);
                     $this->productModel->createLog($temp, '0', '2');
-                }                       
+                }        
+                                 
             }
         }
+        
+        
         return redirect()->back()->with('create', 'Produk berhasil ditambahkan');
     }
 

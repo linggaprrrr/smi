@@ -59,6 +59,15 @@
                                                 <label class="custom-control-label" for="customCheck">Remember Me</label>
                                             </div>
                                         </div>
+                                        <?php if (session()->getFlashdata('error')) : ?>
+                                            <div class="alert alert-danger alert-dismissible show fade">
+                                                <div class="alert-body">
+
+                                                    <b>Error !</b>
+                                                    <?= session()->getFlashdata('error') ?>
+                                                </div>
+                                            </div>
+                                        <?php endif ?>
                                         <button type="submit" class="btn btn-primary btn-user btn-block">Login</button>                                
                                     </form>
                                     <hr>

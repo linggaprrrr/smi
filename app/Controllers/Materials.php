@@ -112,7 +112,7 @@ class Materials extends BaseController
 
     public function updateMaterial() {
         $post = $this->request->getVar();
-        $this->materialModel->updateMaterialType($post['id'], strtoupper($post['jenis']));
+        $this->materialModel->updateMaterialType($post['id'], strtoupper($post['jenis']), $post['harga']);
         return redirect()->back()->with('update', 'Kain berhasil ditambahkan');
     }
 
@@ -250,8 +250,12 @@ class Materials extends BaseController
 		exit;
     }
 
-    public function exportDataStok() {       
-        $materials = $this->materialModel->getStokMaterialIn(); 
+    public function exportDataStok($date1 = null, $date2 = null) {       
+        if (is_null($date1)) {
+            $materials = $this->materialModel->getStokMaterialIn(); 
+        } else {
+            $materials = $this->materialModel->getStokMaterialIn($date1, $date2); 
+        }
         $date = date('m-d-Y H.i.s');
         $fileName = "Data Stok Kain {$date}.xlsx";  
         $spreadsheet = new Spreadsheet();
@@ -307,9 +311,9 @@ class Materials extends BaseController
         $vendorPola = $this->materialModel->getAllVendorPola();
         $cuttings = $this->materialModel->getAllCuttingData2();    
         $polaOut = $this->materialModel->getAllPolaOut();  
-        
+        // d($polaOut->getResultObject());
         $polaIn = $this->materialModel->getAllPolaIn();
-        
+        // dd($polaIn->getResultObject());
         $models = $this->designModel->getAllModel();
         $data = array(
             'title' => 'Kain',
@@ -870,7 +874,7 @@ class Materials extends BaseController
             $this->materialModel->updateStatusCutting($id, $remain, $status);
         }
 
-        $tgl = date('Y-m-d', strtotime($tgl));
+        $tgl = date('Y-m-d H:i:s', strtotime($tgl));
         $this->materialModel->savePolaOut($id, $tgl, $jumlah, $vendor, $berat, $material);
         return redirect()->back()->with('input', 'Pola berhasil diinput');
     }
@@ -882,9 +886,9 @@ class Materials extends BaseController
             'cuttingID' => $post['cutting-id'],
             'vendorID' => $post['vendor-id'],
             'vendorID' => $post['vendor-id'],
-            'tglAmbil' => date('Y-m-d', strtotime($post['tgl-ambil'])),
+            'tglAmbil' => date('Y-m-d H:i:s', strtotime($post['tgl-ambil'])),
             'jumlahPola' => $post['jumlah'],
-            'tglSetor'=> date('Y-m-d', strtotime($post['tgl-setor'])),
+            'tglSetor'=> date('Y-m-d H:i:s', strtotime($post['tgl-setor'])),
             'jumlahSetor' => $post['jumlah-setor'],
             'reject' => $post['reject'],
             'sisa' => $post['jumlah'] - $post['jumlah-setor'] - $post['reject'],
@@ -956,6 +960,32 @@ class Materials extends BaseController
         $data = $this->materialModel->editCOA($id);
         echo json_encode($data);
     }
+
+    public function getGelar() {
+        $id = $this->request->getVar('id');
+        $data = $this->materialModel->editGelar($id);
+        echo json_encode($data);
+    }
+
+    public function updateGelar() {
+        $id = $this->request->getVar('id');
+        $name = $this->request->getVar('name');
+        $this->materialModel->updateGelar($id, $name);   
+        return redirect()->back()->with('create', 'Tim berhasil diinput');
+    }
+
+    public function getTimCutting() {
+        $id = $this->request->getVar('id');        
+        $data = $this->materialModel->editTimCutting($id);
+        echo json_encode($data);
+    }
+
+    public function updateTimCutting() {
+        $id = $this->request->getVar('id');
+        $name = $this->request->getVar('name');
+        $this->materialModel->updateTimCutting($id, $name);   
+        return redirect()->back()->with('create', 'Tim berhasil diinput');
+    }
     
     public function updateCOA() {
         $id = $this->request->getVar('id');
@@ -971,6 +1001,11 @@ class Materials extends BaseController
         $this->materialModel->deleteCuttingPola($cutting);
     }
 
+    public function getSizeCutting() {
+        $id = $this->request->getVar('id');
+        $data = $this->materialModel->getSizeCutting($id);
+        echo json_encode($data);
+    }
 
 
 }

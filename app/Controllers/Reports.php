@@ -429,14 +429,18 @@ class Reports extends BaseController
             $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         }
         $spreadsheet = $render->load($file);
-        $data = $spreadsheet->getActiveSheet()->toArray();
+        $data = $spreadsheet->getActiveSheet()->toArray();        
         foreach ($data as $idx => $row) {
             if ($idx > 0) {       
                 $brand = $row[1];
                 $jenis = $row[2];         
                 $data = $row[3];
-                $jahit = $row[4];
-                $hpp = $row[5];
+                $temp = str_replace('Rp', '', trim($row[4]));
+                $temp = str_replace(',', '', $temp);
+                $jahit = $temp;
+                $temp = str_replace('Rp', '', trim($row[5]));
+                $temp = str_replace(',', '', $temp);
+                $hpp = $temp;
                 $this->materialModel->importModel($brand, $jenis, $data, $jahit, $hpp);
             }
         } 

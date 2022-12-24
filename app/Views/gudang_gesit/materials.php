@@ -239,13 +239,14 @@
                                     <th class="text-center">Tanggal</th>
                                     <th class="text-center">Produk</th>
                                     <th class="text-center">Warna</th>
+                                    <th class="text-center">Size</th>
                                     <th class="text-center" style="width: 5%;">Qty</th>
                                     <th class="text-center">Berat (Kg)/Yard</th>
                                     <th class="text-center">Gelar 1</th>
                                     <th class="text-center">Gelar 2</th>                        
                                     <th class="text-center">PIC</th>
                                     <th class="text-center">Total</th>
-                                    <th class="text-right" style="width: 7%"><i class="fa fa-ellipsis-v"></i></th>
+                                    <th class="text-center">Ket COA</th>
                                 </tr>
                             </thead>
                             
@@ -267,6 +268,7 @@
                                                     </select>
                                                 </td>
                                                 <td class="text-center align-middle"><?= $cutting->color ?></td>
+                                                <td class="text-center align-middle"><button class="btn btn-success btn-sm set-size" data-id="<?= $cutting->id ?>">Set Size</button></td>
                                                 <td class="text-center align-middle">
                                                     <input type="text" class="form-control text-center qty-cutting" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                 </td>
@@ -348,7 +350,7 @@
                                             <?php endif ?>
                                                 <td class="text-center align-middle"><?= $no++ ?></td>
                                                 <td class="text-center font-weight-bold align-middle"><?= $cutting->mid ?></td>
-                                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($cutting->tgl)) ?></td>
+                                                <td class="text-center align-middle"><?= date('m/d/Y h:i A', strtotime($cutting->tgl)) ?></td>
                                                 <td class="text-center align-middle">
                                                     <select class="form-control jenis-produk-pola" name="nama_produk" data-id='<?= $cutting->id ?>' id="produk_edit_<?= $cutting->id ?>" disabled>
                                                         <option value='0'>-</option>
@@ -358,11 +360,12 @@
                                                     </select>
                                                 </td>
                                                 <td class="text-center align-middle"><?= $cutting->color ?></td>
+                                                <td class="text-center align-middle"><button class="btn btn-secondary btn-sm" disabled data-id="<?= $cutting->id ?>">Set Size</button></td>
                                                 <td class="text-center align-middle">
-                                                    <input type="text" class="form-control text-center qty-cutting-pola" id="qty_edit_<?= $cutting->id ?>" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" >
+                                                    <input type="text" class="form-control text-center qty-cutting-pola" disabled id="qty_edit_<?= $cutting->id ?>" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" >
                                                 </td>
                                                 <td class="text-center align-middle">
-                                                    <input type="text" class="form-control text-center berat-cutting" name="berat" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= number_format($cutting->berat, 1) ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled>
+                                                    <input type="text" class="form-control text-center berat-cutting" id="berat_edit_<?= $cutting->id ?>" name="berat" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= number_format($cutting->berat, 1) ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled>
                                                 </td>
                                                 <td class="text-center align-middle">                                
                                                     <select name="gelar1" id="" class="form-control" disabled>
@@ -393,7 +396,7 @@
                                                 <td class="text-center font-weight-bold align-middle" id="total_<?= $cutting->id ?>">Rp <?= number_format($cutting->total) ?></td>  
                                                 <td class="text-center align-middle">
                                                     <a href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-info-circle fa-lg mr-2"></i></a>
-                                                    <!-- <a href="" data-toggle="modal" class="editable-cutting" data-id="<?= $cutting->id ?>"><i class="fa fa-edit fa-lg text-secondary"></i></a> -->
+                                                    <a href="" data-toggle="modal" class="editable-cutting" data-id="<?= $cutting->id ?>"><i class="fa fa-edit fa-lg text-secondary"></i></a>
                                                     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="diaxlog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                                             <div class="modal-content">
@@ -449,7 +452,7 @@
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for="">Tanggal Ambil</label>
-                                                <input type="text" name="tgl-pola" value="<?= date("m/d/Y") ?>"  class="form-control tgl-pola" readonly>                                    
+                                                <input type="text" name="tgl-pola" value="<?= date("m/d/Y h:i A") ?>"  class="form-control tgl-pola" readonly>                                    
                                             </div>
                                             <div class="form-group">
                                                 <label for="">Jumlah Pola</label>
@@ -516,12 +519,12 @@
                                         <?php $temp = $pola->cutting_id ?>
                                         
                                     <?php endif ?>
-                                    <?php if ($pola->status == '1') : ?>
+                                    <?php if ($pola->jum == '1') : ?>
                                         <tr id="td_pola_<?= $pola->id ?>">                                 
                                             <td class="text-center align-middle"><?= $no++ ?></td>
                                             <td class="text-center align-middle font-weight-bold"><?= $pola->material_id ?></td>
-                                            <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>
-                                            <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl)) ?></td>
+                                            <td class="text-center align-middle"><?= date('m/d/Y h:i A', strtotime($pola->tgl_ambil)) ?></td>
+                                            <td class="text-center align-middle"><?= date('m/d/Y h:i A', strtotime($pola->tgl)) ?></td>
                                             <td class="text-center align-middle" id="pola_out_produk_<?= $pola->cutting_id ?>"><?= $pola->model_name ?></td>
                                             <td class="text-center align-middle"><?= $pola->color ?></td>
                                             <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->cutting_id ?>" value="<?= $pola->jumlah_pola ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->jumlah_pola ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
@@ -541,8 +544,8 @@
                                             <tr class="table-active" id="td_pola_<?= $pola->id ?>">
                                                 <td class="text-center align-middle"><?= $no++ ?></td>
                                                 <td class="text-center align-middle font-weight-bold"><?= $pola->material_id ?></td>
-                                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>
-                                                <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl)) ?></td>
+                                                <td class="text-center align-middle"><?= date('m/d/Y h:i A', strtotime($pola->tgl_ambil)) ?></td>
+                                                <td class="text-center align-middle"><?= date('m/d/Y h:i A', strtotime($pola->tgl)) ?></td>
                                                 <td class="text-center align-middle" id="pola_out_produk_<?= $pola->cutting_id ?>"><?= $pola->model_name ?></td>
                                                 <td class="text-center align-middle"><?= $pola->color ?></td>
                                                 <td class="text-center align-middle"><input type="text" id="pola_out_jumlah_<?= $pola->cutting_id ?>" value="<?= $pola->sisa ?>" data-id="<?= $pola->cutting_id ?>" data-jum="<?= $pola->sisa ?>" class="form-control text-center pola-out-jumlah-edit" disabled></td>
@@ -586,7 +589,7 @@
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label for="">Tanggal Setor</label>
-                                        <input type="text" name="tgl-setor" value="<?= date("m/d/Y") ?>"  class="form-control tgl-pola" readonly>                                    
+                                        <input type="text" name="tgl-setor" value="<?= date("m/d/Y h:i A") ?>"  class="form-control tgl-pola" readonly>                                    
                                     </div>
                                     <div class="form-group">
                                         <label for="">Jumlah Setor <small>(Jumlah ambil: <b id="jumlah-ambil">0</b>)</small></label>
@@ -648,20 +651,20 @@
                                         <?php endif ?>
                                             <td class="text-center align-middle"><?= $no++ ?></td>
                                             <td class="text-center align-middle" font-weight-bold"><?= $pola->material_id ?></td>
-                                            <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_ambil)) ?></td>                                
+                                            <td class="text-center align-middle"><?= date('m/d/Y h:i A', strtotime($pola->tgl_ambil)) ?></td>                                
                                             <td class="text-center align-middle" id="pola_in_produk_<?= $pola->id ?>"><?= $pola->model_name ?></td>
                                             <td class="text-center align-middle"><?= $pola->color ?></td>
                                             <td class="text-center align-middle" id="pola_in_jumlah_<?= $pola->cutting_id ?>"><?= $pola->jumlah_pola ?></td>
                                             <td class="text-center align-middle"><?= $pola->type ?></td>
                                             <td class="text-center align-middle" id="pola_in_vendor_<?= $pola->cutting_id ?>"><?= $pola->name ?></td>
-                                            <td class="text-center align-middle"><?= date('m/d/Y', strtotime($pola->tgl_setor)) ?></td>                                
+                                            <td class="text-center align-middle"><?= date('m/d/Y h:i A', strtotime($pola->tgl_setor)) ?></td>                                
                                             <td class="text-center align-middle">
                                                 <input type="text" class="form-control text-center pola-in-jumlah-setor" id="pola_in_jumlah_setor_<?= $pola->id ?>" data-id="<?= $pola->id ?>" value="<?= $pola->jumlah_setor ?>" disabled>
                                             </td>
                                             <td class="text-center align-middle">
                                                 <input type="text" class="form-control text-center pola-in-reject" id="pola_in_reject_<?= $pola->id ?>" data-id="<?= $pola->id ?>" value="<?= $pola->reject ?>" disabled>
                                             </td>
-                                            <td class="text-center align-middle" id="pola_in_sisa_<?= $pola->id ?>"><?= $pola->sisa ?></td>
+                                            <td class="text-center align-middle" id="pola_in_sisa_<?= $pola->id ?>"><?= ($pola->jumlah_pola - ($pola->jumlah_setor + $pola->reject) ) ?></td>
                                             <td class="text-center align-middle" id="pola_in_sisa_<?= $pola->id ?>"><?= $pola->harga_jahit ?></td>
                                             <td class="text-center align-middle">Rp <?= number_format($pola->hpp, 0) ?></td>
                                             <td class="text-center align-middle">Rp <?= number_format($pola->hpp * $pola->jumlah_setor, 0) ?></td>
@@ -737,7 +740,17 @@
 
     $(document).on('click', '.btn-edit', function() {
         const id = $(this).data('id');
-        $.get('/get-kain-detail', {material_id: id})
+        $.get('/get-size-cutting', {material_id: id})
+            .done(function(data) {
+                const size = JSON.parse(data);
+                
+            });
+        $('.').modal('show');
+    });
+
+    $(document).on('click', '.btn-edit', function() {
+        const id = $(this).data('id');
+        $.get('/get-kain-detail', {id: id})
             .done(function(data) {
                 const kain = JSON.parse(data);
                 
@@ -1080,6 +1093,7 @@
                 const res = JSON.parse(data);
                 $('#pola_in_sisa_'+id).html(res['sisa']);
                 $.notify('Jumlah Setor Pola berhasil diubah', "success"); 
+                setTimeout(location.reload.bind(location), 1000);  
             });
     });
 
@@ -1092,6 +1106,7 @@
                 const res = JSON.parse(data);
                 console.log(res);
                 $.notify('Jumlah Reject berhasil diubah', "success"); 
+                setTimeout(location.reload.bind(location), 1000);  
             });
     });
 
@@ -1105,8 +1120,12 @@
             $('#td_'+id).removeClass('table-active');
             $('#produk_edit_'+id).prop('disabled', false);
             $('#qty_edit_'+id).prop('disabled', false);
+            $('#berat_edit_'+id).prop('disabled', false);
         } else {
             $('#td_'+id).addClass('table-active');
+            $('#produk_edit_'+id).prop('disabled', true);
+            $('#qty_edit_'+id).prop('disabled', true);
+            $('#berat_edit_'+id).prop('disabled', true);
         }
     });
 
@@ -1114,7 +1133,7 @@
         const id = $(this).data('id');        
         if ($('#td_pola_'+id).hasClass('table-active')) {
             $('#td_pola_'+id).removeClass('table-active');
-            $('#pola_out_jumlah_'+id).prop('disabled', false);
+            
             $('#pola_out_vendor_'+id).prop('disabled', false);
         } else {
             $('#td_pola_'+id).addClass('table-active');

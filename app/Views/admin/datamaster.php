@@ -134,7 +134,7 @@
                                     </div> 
                                     <div class="form-group">
                                         <label for="">Harga Kain*</label>                                        
-                                        <input type="text" class="form-control" name="harga" id="harga-kain" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>                                
+                                        <input type="text" class="form-control" name="harga" id="harga-material" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>                                
                                     </div> 
                                 </div>
                                 <div class="modal-footer">
@@ -199,7 +199,11 @@
                                     <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
+                                <div class="modal-body">    
+                                <div class="form-group">
+                                        <label for="">Jenis*</label>
+                                        <input type="text" class="form-control" name="jenis" id="tambah-jenis-model" placeholder="Masukkan Jenis Model" required>                                        
+                                    </div>                              
                                     <div class="form-group">
                                         <label for="">Nama Model*</label>
                                         <input type="text" class="form-control" name="nama_model" id="tambah-model" placeholder="Masukkan Nama Model" required>
@@ -214,6 +218,11 @@
                                         <label for="">HPP</label>
                                         <input type="text" class="form-control set-hpp" name="hpp" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
                                     
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Brand*</label>
+                                        <input type="text" class="form-control" name="brand" id="tambah-brand" placeholder="Masukkan Nama Brand" required>
+                                        
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -230,7 +239,7 @@
                     <table class="table table-bordered" id="dataTable12" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th class="text-center" style="width: 5%">No</th>
+                                <th class="text-center" style="width: 5%">No</th>                                
                                 <th class="text-center">Jenis</th>
                                 <th class="text-center">Nama Model</th>
                                 <th class="text-center">Harga Jahit</th>
@@ -245,7 +254,7 @@
                             <?php if ($models->getNumRows() > 0) : ?>
                                 <?php foreach ($models->getResultObject() as $model) : ?>
                                     <tr>
-                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td class="text-center"><?= $no++ ?></td>                                        
                                         <td class=""><?= $model->jenis ?></td>
                                         <td class=""><?= $model->model_name ?></td>
                                         <td class=""><?= $model->harga_jahit ?></td>
@@ -282,6 +291,10 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
+                                        <label for="">Jenis Model*</label>
+                                        <input type="text" class="form-control" name="jenis" id="nama-jenis-model" placeholder="Masukkan Jenis Model" required>                                        
+                                    </div>
+                                    <div class="form-group">
                                         <label for="">Nama Model*</label>
                                         <input type="hidden" name="id" id="id-model" >
                                         <input type="text" class="form-control" name="nama_model" id="nama-model" placeholder="Masukkan Nama Model" required>
@@ -297,7 +310,10 @@
                                         <input type="text" class="form-control" id="set-hpp" name="hpp" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="0">
                                     
                                     </div>
-                                    
+                                    <div class="form-group">
+                                        <label for="">Brand*</label>
+                                        <input type="text" class="form-control" name="brand" id="set-brand" placeholder="" required>                                        
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -500,10 +516,7 @@
                                         <label for="">Vendor*</label>
                                         <input type="text" class="form-control" name="vendor" placeholder="Masukkan vendor" required>                                
                                     </div>
-                                    <div class="form-group">
-                                        <label for="">Harga Kain</label>
-                                        <input type="text" class="form-control harga-kain-edit" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="..." required>                                
-                                    </div>
+                                    
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -521,7 +534,7 @@
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
                                 <th class="text-center">Vendor</th>
-                                <th class="text-center">Harga</th>
+                                
                                 
                                 <th class="text-right" style="width: 20%;"><i class="fa fa-fas fa-angle-down"></i></th>
                             </tr>
@@ -534,7 +547,6 @@
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= $vendor->vendor ?></td>
-                                        <td><?= $vendor->harga ?></td>
                                         <td class="text-center">
                                             <a href="" data-toggle="modal" class="btn btn-warning btn-icon-split btn-sm btn-edit-vendorsupplier" data-id='<?= $vendor->id ?>'>
                                                 <span class="icon text-white-25">
@@ -913,6 +925,33 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal fade bd-example-modal-lg-gelar-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= base_url('/update-gelar') ?>" method="post">
+                            <?php csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Tim Gelar</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="">Nama*</label>
+                                        <input type="hidden" class="id-gelar" name="id">
+                                        <input type="text" class="form-control gelar-nama" name="name" required>                                
+                                    </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -950,32 +989,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="modal fade bd-example-modal-lg-gelar-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <form action="<?= base_url('/update-gelar') ?>" method="post">
-                                <?= csrf_field() ?>
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Edit Tim Gelar</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="">Nama*</label>
-                                        <input type="hidden" name="id" id="id-pola">
-                                        <input type="text" class="form-control" id="vendor-pola" name="name" required>                                
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
         <div class="card shadow mb-4">
@@ -1083,7 +1097,7 @@
                 <div class="modal fade bd-example-modal-lg-cutting-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
-                            <form action="<?= base_url('/update-gelar') ?>" method="post">
+                            <form action="<?= base_url('/update-tim-cutting') ?>" method="post">
                                 <?= csrf_field() ?>
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Edit Tim Cutting</h5>
@@ -1094,8 +1108,8 @@
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label for="">Nama*</label>
-                                        <input type="hidden" name="id" id="id-pola">
-                                        <input type="text" class="form-control" id="vendor-pola" name="name" required>                                
+                                        <input type="hidden" name="id" id="id-tim-cutting">
+                                        <input type="text" class="form-control" id="tim-cutting" name="name" required>                                
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -1203,7 +1217,9 @@
             $.post('/simpan-model', $('form#form-model').serialize())
                 .done(function(data) {
                     setTimeout(location.reload.bind(location), 1); 
-                    $('#tambah-model').val("");                   
+                    $('#tambah-model').val(""); 
+                    $('#tambah-jenis-model').val("");     
+                    $('#tambah-brand').val("");                                       
                 });
         });
 
@@ -1217,8 +1233,11 @@
         $.get('/get-kain', {material_id: id})
             .done(function(data) {
                 const kain = JSON.parse(data);
+                console.log(kain);
                 $('#id-kain').val(kain['id']);
                 $('#jenis').val(kain['type']);
+                $('#harga-material').val(kain['harga']);
+                
             });
         $('.bd-example-modal-lg-kain-edit').modal('show');
     });
@@ -1242,8 +1261,10 @@
                 const model = JSON.parse(data);
                 $('#id-model').val(model['id']);
                 $('#nama-model').val(model['model_name']);
+                $('#nama-jenis-model').val(model['jenis']);
                 $('#set-jahit').val(model['harga_jahit']);
                 $('#set-hpp').val(model['hpp']);
+                $('#set-brand').val(model['brand']);
         });
     });
 
@@ -1304,6 +1325,31 @@
                 $('#biaya').val(model['biaya']);
         });
     });
+
+    $('.btn-edit-gelar').click(function(){
+        const id = $(this).data('id');
+        $('.bd-example-modal-lg-gelar-edit').modal('show');
+        $.get('/get-tim-gelar', {id: id})
+            .done(function(data) {
+                const model = JSON.parse(data);
+                console.log(model);
+                $('.id-gelar').val(model['id']);
+                $('.gelar-nama').val(model['name']);
+        });
+    });
+
+    $('.btn-edit-cutting').click(function(){
+        const id = $(this).data('id');
+        $('.bd-example-modal-lg-cutting-edit').modal('show');
+        $.get('/get-tim-cutting', {id: id})
+            .done(function(data) {
+                const model = JSON.parse(data);
+                console.log(model);
+                $('#id-tim-cutting').val(model['id']);
+                $('#tim-cutting').val(model['name']);
+        });
+    });
+   
 
     
 

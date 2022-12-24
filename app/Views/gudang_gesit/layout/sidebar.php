@@ -13,8 +13,8 @@
 <hr class="sidebar-divider my-0">
 
 <!-- Nav Item - Dashboard -->
-<li class="nav-item active">
-    <a class="nav-link" href="<?= base_url('/gudang-gesit/dashboard') ?>">
+<li class="nav-item">
+    <a class="nav-link" id="dashboard" href="<?= base_url('/gudang-gesit/dashboard') ?>">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Dashboard</span></a>
 </li>
@@ -31,7 +31,7 @@
                 case "1": 
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-gesit/kain') ?>">
+                            <a class="nav-link" id="kain"  href="<?= base_url('/gudang-gesit/kain') ?>">
                                 <i class="fas fa-fw fa-boxes"></i>
                                 <span>Kain</span></a>
                         </li>
@@ -112,4 +112,5 @@
 
 
 </ul>
+
 <!-- End of Sidebar -->

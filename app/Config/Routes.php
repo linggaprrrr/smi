@@ -84,6 +84,7 @@ $routes->get('/export-data-kain/(:any)/(:any)', 'Materials::exportData/$1/$2');
 $routes->get('/export-data-kain-retur', 'Materials::exportDataRetur');
 $routes->get('/export-data-kain-retur/(:any)/(:any)', 'Materials::exportDataRetur/$1/$2');
 $routes->get('/export-data-stok-kain', 'Materials::exportDataStok');
+$routes->get('/export-data-stok-kain/(:any)/(:any)', 'Materials::exportDataStok/$1/$2');
 $routes->get('/export-penjualan', 'Sellings::exportPenjualan');
 $routes->get('/export-penjualan/(:any)/(:any)', 'Sellings::exportData/$1/$2');
 $routes->get('/export-produk-reject', 'Products::exportProductReject');
@@ -142,6 +143,10 @@ $routes->get('/get-pengiriman-detail', 'Shippings::getShippingDetail');
 $routes->get('/get-vendor-kain', 'Materials::getVendor');
 $routes->post('/update-coa', 'Materials::updateCOA');
 $routes->get('/get-coa', 'Materials::getCOA');
+$routes->get('/get-tim-gelar', 'Materials::getGelar');
+$routes->get('/update-gelar', 'Materials::updateGelar');
+$routes->get('/get-tim-cutting', 'Materials::getTimCutting');
+$routes->post('/update-tim-cutting', 'Materials::updateTimCutting');
 
 
 
@@ -189,6 +194,7 @@ $routes->get('get-hpp-product', 'Products::getHPP');
 $routes->get('/get-jenis-kain', 'Materials::getJenisKain');
 $routes->post('/simpan-reject', 'Products::simpanReject');
 $routes->post('/jual-reject', 'Products::jualReject');
+$routes->post('/get-size-cutting', 'Materials::getSizeCutting');
 
 $routes->post('/on-change-cutting-product-type', 'Materials::onChangeCuttingProductType');
 $routes->post('/on-change-cutting-product-type-pola', 'Materials::onChangeCuttingProductTypePola');

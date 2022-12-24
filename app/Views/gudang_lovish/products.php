@@ -187,7 +187,7 @@
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">No</th>
-                        <th class="text-center">Jenis Produk</th>
+                        <th class="text-center">Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
                         <th class="text-center">Qty</th>
@@ -218,7 +218,7 @@
                                         <?php endforeach ?>
                                     </select>      
                                 </td>                                
-                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>        
+                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled></td>        
                                 
                                 <td class="text-center align-middle"><?= $product->created_at ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>

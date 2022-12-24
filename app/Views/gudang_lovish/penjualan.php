@@ -11,12 +11,12 @@
     <div class="card-header py-3">
         <div class="float-left">
             <form method="GET" action="<?= base_url('/operasional/penjualan') ?>" id="date" >
-                <div class="form-group" style="width: 250px;">
-                    <label for="">Date Range: </label>                       
-                    <?php if (is_null($date1)) : ?>
-                        <input type="text" name="dates" class="form-control text-center daterange" readonly />            
+                <div class="form-group" style="width: 280px;">
+                    <label for="">Date Range: </label>                               
+                    <?php if (is_null($date1)) : ?>                        
+                        <input type="text" name="dates" value="<?= date('m/d/Y 07:00') ?> - <?= date('m/d/Y 17:00') ?>" class="form-control text-center daterange" readonly />            
                     <?php else : ?>
-                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?> - <?= $date2 ?>" readonly />            
+                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?>" readonly />            
                     <?php endif ?> 
                 </div>    
             </form>
@@ -70,8 +70,7 @@
                         <th class="text-center">Tanggal</th>                        
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
-                        <th class="text-center">Warna</th>  
-                        <th class="text-center">Size</th>  
+                        <th class="text-center">Warna</th> 
                         <th class="text-center">Qty</th>   
                         <th class="text-center">Brand</th>             
                     </tr>
@@ -87,7 +86,6 @@
                                 <td class="text-center"><?= $product->product_name ?></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td class="text-center"><?= $product->color ?></td>
-                                <td class="text-center"><?= $product->size ?></td>
                                 <td class="text-center"><?= $product->qty ?></td>
                                 <td class="text-center"><?= $product->brand ?></td>
                             </tr>
@@ -112,9 +110,8 @@
     $(document).ready(function() {
         $('.daterange').daterangepicker({
             timePicker: true,
-            timePicker24Hour: true,        
             locale: {
-                format: 'M/D/YYYY HH:MM'
+                format: 'M/DD/YYYY hh:mm A'
             }
         });      
 

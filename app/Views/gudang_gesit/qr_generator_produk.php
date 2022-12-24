@@ -310,9 +310,11 @@
 
         $('form#generate-qr-gudang').on('submit', function (e) {
             e.preventDefault();
+            console.log("TEST"); 
             $.post('/generate-qr-produk', $('form#generate-qr-gudang').serialize(), function(data) {
                 const qr = JSON.parse(data);
-                var id = 1;                                                
+                var id = 1;            
+                console.log(qr);                                    
                 $('#qr-handler').html("");
                 for (var i = 0; i < qr.length; i++) {                    
                     $('#qr-handler').append('<tr>');

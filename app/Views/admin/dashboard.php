@@ -35,7 +35,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        Total Kain Masuk <mark>(<?= date('F') ?>)</mark></div>
+                                        Total Kain Masuk </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalKainGesitMonth) ? "0" : $totalKainGesitMonth) ?></div>
                                 </div>
                                 <div class="col-auto">
@@ -51,7 +51,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Total Cutting <mark>(<?= date('F') ?>)</mark></div>
+                                        Total Cutting </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalCutting) ? "0" : $totalCutting) ?></div>
                                 </div>
                                 <div class="col-auto">
@@ -67,7 +67,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        Total Pola Keluar / Masuk <mark>(<?= date('F') ?>)</mark></div>
+                                        Total Pola Keluar / Masuk </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalPolaKeluar) ? "0" : $totalPolaKeluar) ?> / <?= (is_null($totalPolaMasuk) ? "0" : $totalPolaMasuk) ?></div>
                                 </div>
                                 <div class="col-auto">
@@ -83,7 +83,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                        Total Produk Gesit <mark>(<?= date('F') ?>)</mark></div>
+                                        Total Produk Gesit </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalGesit) ? "0" : $totalGesit) ?></div>
                                 </div>
                                 <div class="col-auto">
@@ -99,7 +99,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                        Kain Retur / Pola Reject <mark>(<?= date('F') ?>)</mark></div>
+                                        Kain Retur / Pola Reject </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalKainRetur) ? "0" : $totalKainRetur) ?> / <?= (is_null($polaReject) ? "0" : $polaReject) ?> </div>
                                 </div>
                                 <div class="col-auto">
@@ -222,14 +222,13 @@
                                         <?php $no = 1; ?>
                                         <?php if ($materials->getNumRows() > 0) : ?>
                                             <?php foreach ($materials->getResultObject() as $kain) : ?>
-                                                <?php 
-                                                    $total = $kain->stok + $kain->stok_masuk - ($kain->stok_retur + $kain->stok_habis);                                    
+                                                <?php                                     
+                                                    $total = $kain->stok_masuk - ($kain->stok_retur + $kain->stok_habis);                                    
                                                 ?>
                                                 <tr>
                                                     <td class="text-center"><?= $no++ ?></td>
                                                     <td><?= $kain->type ?></td>
                                                     <td><?= $kain->color ?></td>
-                                                    <td class="text-center"><?= $kain->stok ?></td>
                                                     <td class="text-center"><?= $kain->stok_masuk ?></td>
                                                     <td class="text-center text-danger"><?= $kain->stok_retur ?></td>
                                                     <td class="text-center text-danger"><?= $kain->stok_habis ?></td>                                        
@@ -332,7 +331,7 @@
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
                                         Stok Gudang</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalGudang['stok']) ? "0" : $totalGudang['stok']) ?></div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalGudang) ? "0" : $totalGudang) ?></div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -347,7 +346,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        Stok Masuk <mark>(<?= date('F') ?>)</mark></div>
+                                        Stok Masuk </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalStokMasuk['stok']) ? "0" : $totalStokMasuk['stok']) ?></div>
                                 </div>
                                 <div class="col-auto">
@@ -365,7 +364,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        Total Keluar <mark>(<?= date('F') ?>)</mark></div>
+                                        Total Keluar </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokKeluar['stok']) ? "0" : ($stokKeluar['stok'])) ?></div>
                                 </div>
                                 <div class="col-auto">
@@ -383,7 +382,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                        Produk Retur <mark>(<?= date('F') ?>)</mark></div>
+                                        Produk Retur </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokRetur['stok']) ? "0" : $stokRetur['stok']) ?></div>
                                 </div>
                                 <div class="col-auto"> 
@@ -404,7 +403,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Total Nilai Barang <mark>(<?= date('F') ?>)</mark></div>
+                                        Total Nilai Barang </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">Rp. <?= (is_null($totalNilaiBarang) ? "0" : number_format($totalNilaiBarang, 0, ',', '.')) ?></div>
                                 </div>
                                 <div class="col-auto"> 
@@ -420,7 +419,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Total Nilai Barang Jual <mark>(<?= date('F') ?>)</mark></div>
+                                        Total Nilai Barang Jual </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">Rp. <?= (is_null($totalNilaiBarangJual) ? "0" : number_format($totalNilaiBarangJual, 0, ',', '.')) ?></div>
                                 </div>
                                 <div class="col-auto"> 

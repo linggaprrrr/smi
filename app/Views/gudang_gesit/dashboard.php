@@ -24,7 +24,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Total Kain Masuk <mark>(<?= date('F') ?>)</mark></div>
+                            Total Kain Masuk </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalKainGesitMonth) ? "0" : $totalKainGesitMonth) ?></div>
                     </div>
                     <div class="col-auto">
@@ -40,7 +40,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Total Cutting <mark>(<?= date('F') ?>)</mark></div>
+                            Total Cutting </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalCutting) ? "0" : $totalCutting) ?></div>
                     </div>
                     <div class="col-auto">
@@ -56,7 +56,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Total Pola Keluar / Masuk / Reject<mark>(<?= date('F') ?>)</mark></div>
+                            Total Pola Keluar / Masuk / Reject</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalPolaKeluar) ? "0" : $totalPolaKeluar) ?> / <?= (is_null($totalPolaMasuk) ? "0" : $totalPolaMasuk) ?> / <?= (is_null($polaReject) ? "0" : $polaReject) ?></div>
                     </div>
                     <div class="col-auto">
@@ -72,7 +72,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Total Produk Gesit <mark>(<?= date('F') ?>)</mark></div>
+                            Total Produk Gesit </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalGesit) ? "0" : $totalGesit) ?></div>
                     </div>
                     <div class="col-auto">
@@ -88,7 +88,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Kain Retur <mark>(<?= date('F') ?>)</mark></div>
+                            Kain Retur </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($totalKainRetur) ? "0" : $totalKainRetur) ?>  </div>
                     </div>
                     <div class="col-auto">
@@ -100,12 +100,31 @@
     </div>
 </div>
 <div class="row">
+    <div class="col-lg-12">
+        <div class="float-right">
+            <form method="GET" action="<?= base_url('/gudang-gesit/dashboard') ?>" id="date" >
+                <div class="form-group" style="width: 280px;">
+                    <label for="">Date Range: </label>    
+                    <?php if (is_null($date1)) : ?>
+                        <input type="text" name="dates" value="<?= date('m/d/Y 07:00') ?> - <?= date('m/d/Y 17:00') ?>" class="form-control text-center daterange" readonly />                    
+                    <?php else : ?>
+                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $dates ?>" readonly />            
+                    <?php endif ?> 
+                </div>    
+            </form>
+        </div>
+    </div>
     <div class="col-lg-6">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary float-left">History Stok Kain Masuk</h6>
                 <div>
-                    <a class="btn btn-success float-right" href="<?= base_url('/export-data-stok-kain') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php if (is_null($date1)) : ?>
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-data-stok-kain') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php else : ?>                        
+                        <a class="btn btn-success float-right" href="<?= base_url('/export-data-stok-kain/'. date('Y-m-d H:i:s', strtotime($date1)) . '/'. date('Y-m-d H:i:s', strtotime($date2))) ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>
+                    <?php endif ?>
+                    
                 </div>
             </div>
             <div class="card-body">
@@ -314,4 +333,22 @@
     </div>
     
 </div>
+<?= $this->endSection() ?>
+<?= $this->section('js') ?>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script>
+   $('.daterange').daterangepicker({
+        timePicker: true,        
+        locale: {
+            format: 'M/DD/YYYY hh:mm A'
+        }
+    });      
+
+    $('.daterange').change(function() {
+        $('#date').submit();
+    })
+    
+</script>
 <?= $this->endSection() ?>

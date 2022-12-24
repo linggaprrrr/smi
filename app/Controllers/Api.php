@@ -26,7 +26,7 @@ class Api extends BaseController {
     public function kirimQR() {
         $post = $this->request->getVar();
         $jenis = $post['jenis'];
-        $status = '0';
+        $status = '1';
         $resi = $post['qr'];
         $qr = explode('-', $post['qr']);
         
@@ -37,10 +37,9 @@ class Api extends BaseController {
                     $status = '1';
                     $getCOA = $this->materialModel->getCOA();
                     $this->materialModel->insertCutting($qr[0], $getCOA[0]->biaya, $getCOA[1]->biaya);
-                    $this->materialModel->save([
-                        'id' => $qr[0],
-                        'tgl_cutting' => date('Y-m-d')
-                    ]);
+                    
+                } else {
+                    $status = '0';
                 }
                 break;
             case "produk-keluar" : 
@@ -76,31 +75,20 @@ class Api extends BaseController {
                 }
                 break;
             case "reject-permanent" : 
-                $check = $this->produkModel->findProductReject($qr[0]);
-                $status = 0;
+                $check = $this->produkModel->findProductRejectPermanent($qr[0]);
+                $status = '0';                
                 
                 if ($check->getNumRows() > 0) {
-                    $status = '1';
-                    $data = $this->produkModel->saveReject($qr[0], 'permanent');  
-                    $this->logModel->saveHistoryStok($data);   
-
-                } else {
-                    $getProduct = $this->produkModel
-                        ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                        ->join('reject', 'reject.barcode_id = product_barcodes.id')
-                        ->where('reject.barcode_id', $qr[0])
-                        ->get();
-
-                    if ($getProduct->getNumRows() > 0) {
-                        $data = $getProduct->getResultObject();                        
-                        if (strpos($data[0]->category, "permanent") !== false) {
-                            $status = '0';
-                        } else {
-                            $status = '1';
-                            $this->produkModel->rejectPermanent($qr[0]);
-                        }
-                    }
+                    $data = $check->getResultObject(); 
+                                                 
+                    if ($data[0]->status == '1') {                        
+                        $this->produkModel->rejectPermanent($qr[0]);                        
+                        $status = '1';             
+                    } 
                     
+                } else {
+                    $temp = $this->produkModel->saveReject($qr[0], 'permanent');  
+                    $this->logModel->saveHistoryStok($temp);   
                 }
                 break;
             case "penjualan-reject" : 
@@ -184,15 +172,12 @@ class Api extends BaseController {
                 }
                 break;
             case "perbaikan" : 
-                    $getProduct = $this->produkModel
-                        ->join('product_barcodes', 'product_barcodes.product_id = products.id')
-                        ->join('reject', 'reject.barcode_id = product_barcodes.id')
-                        ->where('reject.barcode_id', $qr[0])
-                        ->get();
+                    $check = $this->produkModel->findProductRejectPermanent($qr[0]);
+                    $status = '0';      
 
-                    if ($getProduct->getNumRows() > 0) {
-                        $data = $getProduct->getResultObject();                        
-                        if (strpos($data[0]->category, "permanent") !== false) {
+                    if ($check->getNumRows() > 0) {
+                        $data = $check->getResultObject();                        
+                        if ($data[0]->status != '1') { 
                             $status = '0';
                         } else {
                             $this->produkModel->rejectIn($qr[0]);

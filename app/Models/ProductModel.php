@@ -185,14 +185,14 @@ class ProductModel extends Model
     public function penjualan($date1 = null, $date2 = null) {
         if (is_null($date1)) {
             $query = $this->db->table('sellings')
-            ->select('sellings.*, model_name, jenis as product_name, color, SUM(qty) as penjualan')            
+            ->select('sellings.created_at, sellings.qty, sellings.brand, model_name, jenis as product_name, color, SUM(qty) as penjualan')            
             ->join('models', 'models.id = sellings.model_id')            
             ->join('colors', 'colors.id = sellings.color_id')
             ->groupBy('sellings.id') 
             ->get();
         } else {
             $query = $this->db->table('sellings')
-            ->select('sellings.*, model_name, jenis as product_name, color, SUM(qty) as penjualan')            
+            ->select('sellings.created_at, sellings.qty, sellings.brand, model_name, jenis as product_name, color, SUM(qty) as penjualan')            
             ->join('models', 'models.id = sellings.model_id')            
             ->join('colors', 'colors.id = sellings.color_id')            
             ->where('sellings.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')                       
@@ -270,17 +270,29 @@ class ProductModel extends Model
         return $query;
     }
 
-    public function getStokProductIn() {
-        $query = $this->db->table('products')
-            ->select('products.*, model_name, jenis as product_name, color, name, price, SUM(products.qty - IFNULL(k.stok_keluar,0) - IFNULL(r.stok_reject,0)) as stok')
+    public function getStokProductIn($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $query = $this->db->table('products')
+            ->select('products.*, model_name, jenis as product_name, color, price, SUM(IFNULL(k.stok_keluar,0)) as stok')
             ->join('models', 'models.id = products.model_id')
-            ->join('colors', 'colors.id = products.color_id')
-            ->join('users', 'users.id = products.user_id')
-            ->join('(SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b JOIN products p ON p.id = b.product_id WHERE b.status = "2" GROUP BY model_id, color_id, size) as k','products.id = k.product_id', 'left')
-            ->join('(SELECT b.product_id, COUNT(b.id) as stok_reject FROM product_barcodes b JOIN products p ON p.id = b.product_id WHERE b.status = "0" GROUP BY model_id, color_id, size) as r','products.id = r.product_id', 'left')
+            ->join('colors', 'colors.id = products.color_id')            
+            ->join('(SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b JOIN products p ON p.id = b.product_id WHERE b.status = "1" AND p.status = "1" GROUP BY model_id, color_id, size) as k','products.id = k.product_id', 'left')
+            ->where('products.status', '1')
             ->groupBy('models.id, colors.id, products.size ')
             ->orderBy('created_at', 'desc')
             ->get();  
+        } else {
+            $query = $this->db->table('products')
+            ->select('products.*, model_name, jenis as product_name, color, price, SUM(IFNULL(k.stok_keluar,0)) as stok')
+            ->join('models', 'models.id = products.model_id')
+            ->join('colors', 'colors.id = products.color_id')            
+            ->join('(SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b JOIN products p ON p.id = b.product_id WHERE b.status = "1" AND p.status = "1" AND p.created_at BETWEEN "'.$date1.'" AND "'.$date2.'" GROUP BY model_id, color_id, size) as k','products.id = k.product_id', 'left')            
+            ->where('products.status', '1')
+            ->where('products.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+            ->groupBy('models.id, colors.id, products.size ')
+            ->orderBy('created_at', 'desc')
+            ->get();  
+        }
         return $query;
     }
 
@@ -318,17 +330,29 @@ class ProductModel extends Model
         return $query;
     }
 
-    public function totalGesit() {
-        $query = $this->db->table('products')
-            ->select('products.*, model_name, jenis as product_name, color, name, price, SUM((products.qty - IFNULL(k.stok_keluar, 0) - IFNULL(r.stok_reject, 0))) as stok')
+    public function totalGesit($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $query = $this->db->table('products')
+                ->select('products.*, model_name, jenis as product_name, color, price, SUM(IFNULL(k.stok_keluar,0)) as stok')
+                ->join('models', 'models.id = products.model_id')
+                ->join('colors', 'colors.id = products.color_id')            
+                ->join('(SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b JOIN products p ON p.id = b.product_id WHERE b.status = "1" AND p.status = "1" GROUP BY model_id, color_id, size) as k','products.id = k.product_id', 'left')
+                ->where('products.status', '1')
+                ->groupBy('models.id, colors.id, products.size ')
+                ->orderBy('created_at', 'desc')
+                ->get(); 
+        } else {
+            $query = $this->db->table('products')
+            ->select('products.*, model_name, jenis as product_name, color, price, SUM(IFNULL(k.stok_keluar,0)) as stok')
             ->join('models', 'models.id = products.model_id')
-            ->join('colors', 'colors.id = products.color_id')
-            ->join('users', 'users.id = products.user_id')
-             ->join('(SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b JOIN products p ON p.id = b.product_id WHERE b.status = "2" GROUP BY model_id, color_id, size) as k','products.id = k.product_id', 'left')
-            ->join('(SELECT b.product_id, COUNT(b.id) as stok_reject FROM product_barcodes b JOIN products p ON p.id = b.product_id WHERE b.status = "0" GROUP BY model_id, color_id, size) as r','products.id = r.product_id', 'left')
-            ->groupBy('models.id, colors.id, size')
+            ->join('colors', 'colors.id = products.color_id')            
+            ->join('(SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b JOIN products p ON p.id = b.product_id WHERE b.status = "1" AND p.status = "1" GROUP BY model_id, color_id, size) as k','products.id = k.product_id', 'left')
+            ->where('products.status', '1')
+            ->where('created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+            ->groupBy('models.id, colors.id, products.size ')
             ->orderBy('created_at', 'desc')
             ->get(); 
+        }
         return $query;
     }
     
@@ -430,6 +454,13 @@ class ProductModel extends Model
         $query = $this->db->table('product_barcodes')            
             ->where('id', $id)
             ->where('status', '1')
+            ->get();
+        return $query;    
+    }
+
+    public function findProductRejectPermanent($id) {
+        $query = $this->db->table('reject')            
+            ->where('barcode_id', $id)            
             ->get();
         return $query;    
     }
@@ -885,8 +916,7 @@ class ProductModel extends Model
         } else {
             $totalStokMasuk = $this->db->table('history_stok')
             ->select('SUM(history_stok.qty) as stok')                
-            ->where('history_stok.jenis = "in" ')
-            ->where('history_stok.status = 0')            
+            ->where('history_stok.jenis = "in" ')                      
             ->where('history_stok.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
             ->get();
         }

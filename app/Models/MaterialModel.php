@@ -63,27 +63,53 @@ class MaterialModel extends Model
         return $query;
     }
 
-    public function getStokMaterialIn() {
+    public function getStokMaterialIn($date1 = null, $date2 = null) {
 
-        $query =  $this->db->table('materials')
-        ->select('material_types.type, colors.color, stok_masuk, stok_retur, stok_habis, materials.created_at, weight')
-        ->join('material_types', 'material_types.id = materials.material_type')
-        ->join('colors', 'colors.id = materials.color_id')
-        ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
-        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_masuk FROM materials GROUP BY material_type, color_id) as s', 's.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
-        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_retur FROM materials WHERE materials.status = 0 AND status = 0 GROUP BY material_type, color_id) as sr', 'sr.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
-        ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_habis FROM materials LEFT JOIN (SELECT cutting.material_id, SUM(berat) as total_berat FROM cutting GROUP BY cutting.material_id) as ct ON ct.material_id = materials.id WHERE (materials.weight - IFNULL(ct.total_berat, 0)) <= 0 GROUP BY material_type, color_id) as ct', 'ct.material_type = materials.material_type AND ct.color_id = materials.color_id', 'left')           
-        ->groupBy('materials.material_type, materials.color_id')
-        ->orderBy('materials.created_at', 'desc')->get();
+        if (is_null($date1)) {
+            $query =  $this->db->table('materials')
+                ->select('material_types.type, colors.color, stok_masuk, stok_retur, stok_habis, materials.created_at, weight')
+                ->join('material_types', 'material_types.id = materials.material_type')
+                ->join('colors', 'colors.id = materials.color_id')
+                ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
+                ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_masuk FROM materials GROUP BY material_type, color_id) as s', 's.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+                ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_retur FROM materials WHERE materials.status = 0 AND status = 0 GROUP BY material_type, color_id) as sr', 'sr.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+                ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_habis FROM materials LEFT JOIN (SELECT cutting.material_id, SUM(berat) as total_berat FROM cutting GROUP BY cutting.material_id) as ct ON ct.material_id = materials.id WHERE (materials.weight - IFNULL(ct.total_berat, 0)) <= 0 GROUP BY material_type, color_id) as ct', 'ct.material_type = materials.material_type AND ct.color_id = materials.color_id', 'left')           
+                ->groupBy('materials.material_type, materials.color_id')
+                ->orderBy('materials.created_at', 'desc')
+                ->get();
+        } else {
+            $query =  $this->db->table('materials')
+                ->select('material_types.type, colors.color, stok_masuk, stok_retur, stok_habis, materials.created_at, weight')
+                ->join('material_types', 'material_types.id = materials.material_type')
+                ->join('colors', 'colors.id = materials.color_id')
+                ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
+                ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_masuk FROM materials WHERE created_at BETWEEN "'.$date1.'" AND "'.$date2.'" GROUP BY material_type, color_id) as s', 's.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+                ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_retur FROM materials WHERE materials.status = 0 AND status = 0 AND created_at BETWEEN "'.$date1.'" AND "'.$date2.'" GROUP BY material_type, color_id) as sr', 'sr.material_type = materials.material_type AND s.color_id = materials.color_id', 'left')
+                ->join('(SELECT materials.material_type, materials.color_id, COUNT(*) as stok_habis FROM materials LEFT JOIN (SELECT cutting.material_id, SUM(berat) as total_berat FROM cutting WHERE tgl BETWEEN "'.$date1.'" AND "'.$date2.'" GROUP BY cutting.material_id) as ct ON ct.material_id = materials.id WHERE (materials.weight - IFNULL(ct.total_berat, 0)) <= 0 AND created_at BETWEEN "'.$date1.'" AND "'.$date2.'" GROUP BY material_type, color_id) as ct', 'ct.material_type = materials.material_type AND ct.color_id = materials.color_id', 'left')           
+                ->groupBy('materials.material_type, materials.color_id')
+                ->orderBy('materials.created_at', 'desc')
+                ->get();
+        }
         return $query;
     }
     
-    public function getMaterialIn() {
-        $query = $this->db->table('materials')
-        ->join('material_types', 'material_types.id = materials.material_type')
-        ->join('colors', 'colors.id = materials.color_id')
-        ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
-        ->orderBy('materials.created_at', 'DESC')->get();
+    public function getMaterialIn($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $query = $this->db->table('materials')
+                ->join('material_types', 'material_types.id = materials.material_type')
+                ->join('colors', 'colors.id = materials.color_id')
+                ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
+                ->orderBy('materials.created_at', 'DESC')
+                ->get();
+        } else {
+            $query = $this->db->table('materials')
+            ->join('material_types', 'material_types.id = materials.material_type')
+            ->join('colors', 'colors.id = materials.color_id')
+            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
+            ->where('created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+            ->orderBy('materials.created_at', 'DESC')
+            ->get();
+        }
         return $query;
     }
 
@@ -142,15 +168,27 @@ class MaterialModel extends Model
         return $query;
     }
 
-    public function getMaterialRetur() {
-        $query = $this->db->table('materials')
-            ->select('materials.material_id, material_types.type, vendor, colors.color,  materials.updated_at')
-            ->join('material_types', 'material_types.id = materials.material_type')
-            ->join('colors', 'colors.id = materials.color_id')
-            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')  
-            ->where('materials.status', '0')
-            ->orderBy('materials.updated_at', 'DESC')
-            ->get();
+    public function getMaterialRetur($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $query = $this->db->table('materials')
+                ->select('materials.material_id, material_types.type, vendor, colors.color,  materials.updated_at')
+                ->join('material_types', 'material_types.id = materials.material_type')
+                ->join('colors', 'colors.id = materials.color_id')
+                ->join('material_vendors', 'material_vendors.id = materials.vendor_id')  
+                ->where('materials.status', '0')
+                ->orderBy('materials.updated_at', 'DESC')
+                ->get();
+        } else {
+            $query = $this->db->table('materials')
+                ->select('materials.material_id, material_types.type, vendor, colors.color,  materials.updated_at')
+                ->join('material_types', 'material_types.id = materials.material_type')
+                ->join('colors', 'colors.id = materials.color_id')
+                ->join('material_vendors', 'material_vendors.id = materials.vendor_id')  
+                ->where('materials.status', '0')
+                ->where('updated_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
+                ->orderBy('materials.updated_at', 'DESC')
+                ->get();
+        }
         return $query;
     }
 
@@ -221,8 +259,8 @@ class MaterialModel extends Model
         $this->db->query("INSERT INTO material_types(type, harga) VALUES('$type', '$harga') ");
     }
 
-    public function updateMaterialType($id, $type) {
-        $this->db->query("UPDATE material_types SET type='$type' WHERE id='$id' ");
+    public function updateMaterialType($id, $type, $harga) {
+        $this->db->query("UPDATE material_types SET type='$type', harga = '$harga' WHERE id='$id' ");
     }
 
     public function deleteMaterialType($id) {
@@ -462,6 +500,28 @@ class MaterialModel extends Model
         return $query->getFirstRow();
     }
 
+    public function editGelar($id) {
+        $query = $this->db->table('tim_gelar')
+            ->where('id', $id)
+            ->get();
+        return $query->getFirstRow();
+    }
+
+    public function updateGelar($id, $name) {
+        $this->db->query("UPDATE tim_gelar SET name='$name' WHERE id='$id' ");
+    }
+
+    public function editTimCutting($id) {
+        $query = $this->db->table('tim_cutting')
+            ->where('id', $id)
+            ->get();
+        return $query->getFirstRow();
+    }
+
+    public function updateTimCutting($id, $name) {
+        $this->db->query("UPDATE tim_cutting SET name='$name' WHERE id='$id' ");
+    }
+
     public function updateCuttingProduct($id, $prod) {
         $this->db->query("UPDATE cutting SET model_id = '$prod' WHERE id = '$id' ");
     }
@@ -580,29 +640,23 @@ class MaterialModel extends Model
     public function getAllPolaOut($date1 = null, $date2 = null) {
         if (is_null($date1)) {
             $query = $this->db->table('materials as m')
-            ->select('m.material_id, ct.tgl, mt.type, md.model_name, c.color, g1.name as gelar1, g2.name as gelar2, tc.name as pic, p.*, vend.name, COUNT(p.id) as jum')
+            ->select('m.material_id, ct.tgl, mt.type, md.model_name, c.color, p.*, vend.name, COUNT(p.id) as jum')
             ->join('material_types as mt', 'mt.id = m.material_type')
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
             ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = ct.gelar1')
-            ->join('tim_gelar as g2', 'g2.id = ct.gelar2')
-            ->join('tim_cutting as tc', 'tc.id = ct.pic')
             ->join('pola as p', 'p.cutting_id = ct.id')
             ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
-            ->groupBy('p.id')
-            ->orderBy('p.id DESC')
+            ->groupBy('m.id')
+            ->orderBy('m.id DESC')
             ->get();
         } else {
             $query = $this->db->table('materials as m')
-            ->select('m.material_id, ct.tgl, mt.type, md.model_name, c.color, g1.name as gelar1, g2.name as gelar2, tc.name as pic, p.*, vend.name, COUNT(p.id) as jum')
+            ->select('m.material_id, ct.tgl, mt.type, md.model_name, c.color, p.*, vend.name, COUNT(p.id) as jum')
             ->join('material_types as mt', 'mt.id = m.material_type')
             ->join('colors as c', 'c.id = m.color_id')
             ->join('cutting as ct', 'ct.material_id = m.id')
-            ->join('models as md', 'md.id = ct.model_id', 'left')
-            ->join('tim_gelar as g1', 'g1.id = ct.gelar1')
-            ->join('tim_gelar as g2', 'g2.id = ct.gelar2')
-            ->join('tim_cutting as tc', 'tc.id = ct.pic')
+            ->join('models as md', 'md.id = ct.model_id', 'left')            
             ->join('pola as p', 'p.cutting_id = ct.id')
             ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
             ->where('p.tgl_ambil BETWEEN "'.$date1.'" AND "'.$date2.'"  ')
@@ -674,6 +728,12 @@ class MaterialModel extends Model
     public function updateBeratCutting($id, $berat, $material) {
         $this->db->query("UPDATE cutting SET berat = '$berat' WHERE id = '$id' ");
         
+    }
+
+    public function getSizeCutting($id) {
+        $query = $this->db->table('cutting')            
+            ->where('cutting.id', $id)
+            ->get();
     }
 
 }

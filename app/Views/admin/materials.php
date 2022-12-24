@@ -366,7 +366,7 @@
                                     </td>
                                     <td class="text-center align-middle"><?= $cutting->color ?></td>
                                     <td class="text-center align-middle">
-                                    <input type="text" class="form-control text-center qty-cutting-pola" id="qty_edit_<?= $cutting->id ?>" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled>
+                                        <input type="text" class="form-control text-center qty-cutting-pola" id="qty_edit_<?= $cutting->id ?>" name="qty" data-id='<?= $cutting->id ?>' data-gelar='<?= $cutting->harga_gelar ?>' data-cutting='<?= $cutting->harga_cutting ?>'  value="<?= $cutting->qty ?>"  disabled >
                                     </td>
                                     <td class="text-center align-middle">                                
                                         <?= $cutting->gelar1 ?>
@@ -1004,8 +1004,7 @@
     $('.editable-polaout').click(function() {
         const id = $(this).data('id');        
         if ($('#td_pola_'+id).hasClass('table-active')) {
-            $('#td_pola_'+id).removeClass('table-active');
-            $('#pola_out_jumlah_'+id).prop('disabled', false);
+            $('#td_pola_'+id).removeClass('table-active');            
             $('#pola_out_vendor_'+id).prop('disabled', false);
         } else {
             $('#td_pola_'+id).addClass('table-active');
