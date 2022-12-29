@@ -435,6 +435,115 @@
                                 <?php endif ?>
                             </tbody>
                         </table>
+                        <div class="modal fade" id="modalSize" tabindex="-1" role="diaxlog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <form id="form-size">
+                                        <input type="hidden" name="cutting_id" class="cutting_id">
+                                        <input type="hidden" class="total-qty">
+                                        <div class="modal-header">                                    
+                                            <h6><mark>Total Qty : <span id="total-qty"></span></mark></h6>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">S</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-s" name="s" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">M</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-m" name="m" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">L</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-l" name="l" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">XL</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-xl" name="xl" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">XXL</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-xxl" name="xxl" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                            
+                                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary submit-size">Simpan</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="modalSizeProduk" tabindex="-1" role="diaxlog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <form id="form-size-produk">
+                                        <input type="hidden" name="cutting_id" class="cutting_id">
+                                        <input type="hidden" class="total-qty-produk">
+                                        <div class="modal-header">                                    
+                                            <h6><mark>Jumlah Setor : <span id="total-qty"></span></mark></h6>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">                                            
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">S</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-s-produk" name="s" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">M</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-m-produk" name="m" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">L</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-l-produk" name="l" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">XL</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-xl-produk" name="xl" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">XXL</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control size-xxl-produk" name="xxl" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    </div>
+                                                </div>
+                                            
+                                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary submit-size">Create Produk</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                         <div class="modal fade" id="polaOutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <form class="pola-out" action="<?= base_url('/save-pola-keluar') ?>" method="post">
@@ -815,24 +924,47 @@
 
     $(document).on('click', '.create-produk', function() {
         const id = $(this).data('id');
-        swal({            
-            text: "Buat data produk?",
-            buttons: true,
-            dangerMode: true,
-        })
-        .then((willDelete) => {
-            if (willDelete) {
-                swal("Poof! Data produk berhasil dibuat!", {
-                icon: "success",
-                });
-                $.post('/create-produk', {pola: id})
-                    .done(function(data) {
-                        setTimeout(location.reload.bind(location), 1000);                           
-                    });
-            } else {
-                swal("Data Produk tidak jadi dibuat!");
-            }
-        });
+        $('#total-qty').html("");
+        $('.total-qty-produk').html("");
+        $('.size-s-produk').val("");
+        $('.size-m-produk').val("");
+        $('.size-l-produk').val("");
+        $('.size-xl-produk').val("");
+        $('.size-xxl-produk').val("");
+        $.get('/get-size-pola', {id: id} ,function(data) {
+            const res = JSON.parse(data);
+            $('#total-qty').html(res['qty']);
+            $('.total-qty-produk').val(res['qty']);
+            $('.cutting_id').val(id);
+            $('.size-s-produk').val(res['s']);
+            $('.size-m-produk').val(res['m']);
+            $('.size-l-produk').val(res['l']);
+            $('.size-xl-produk').val(res['xl']);
+            $('.size-xxl-produk').val(res['xxl']);
+            $('#modalSizeProduk').modal('show');
+        });        
+    });
+
+    $('form#form-size-produk').on('submit', function (e) {
+        e.preventDefault();
+        var s = $('.size-s-produk').val();
+        var m = $('.size-m-produk').val();
+        var l = $('.size-l-produk').val();
+        var xl = $('.size-xl-produk').val();
+        var xxl = $('.size-xxl-produk').val();
+        var qty = $('.total-qty-produk').val();
+
+        var total = (parseInt(s) + parseInt(m) + parseInt(l) + parseInt(xl) + parseInt(xxl));
+        console.log(qty);
+        if (qty != total) {
+            $.notify('Total size berbeda dengan jumlah setor', "error"); 
+        } else {
+            $.post('/create-produk', $('form#form-size-produk').serialize(), function(data) {            
+                $.notify('Size berhasil disimpan', "success"); 
+                $('#modalSize').modal('hide');
+            });
+        }
+        
     });
 
     $('.pola-out').on('click', function() {
@@ -1151,6 +1283,51 @@
             $('#pola_in_jumlah_setor_'+id).prop('disabled', true);
             $('#pola_in_reject_'+id).prop('disabled', true);
         }
+    });
+
+    $('.set-size').click(function() {
+        const id = $(this).data('id'); 
+        $('#total-qty').html("");
+        $('#total-qty').html("");
+        $('.size-s').val("");
+        $('.size-m').val("");
+        $('.size-l').val("");
+        $('.size-xl').val("");
+        $('.size-xxl').val("");
+        $.get('/get-size-cutting', {id: id} ,function(data) {
+            const res = JSON.parse(data);
+            $('#total-qty').html(res['qty']);
+            $('.total-qty').val(res['qty']);
+            $('.cutting_id').val(id);
+            $('.size-s').val(res['s']);
+            $('.size-m').val(res['m']);
+            $('.size-l').val(res['l']);
+            $('.size-xl').val(res['xl']);
+            $('.size-xxl').val(res['xxl']);
+            $('#modalSize').modal('show');
+        });
+    });
+
+    $('form#form-size').on('submit', function (e) {
+        e.preventDefault();
+        var s = parseInt($('.size-s').val()) || 0;
+        var m = parseInt($('.size-m').val()) || 0;
+        var l = parseInt($('.size-l').val()) || 0;
+        var xl = parseInt($('.size-xl').val()) || 0;
+        var xxl = parseInt($('.size-xxl').val()) || 0;
+        var qty = parseInt($('.total-qty').val()) || 0;
+
+        var total = (parseInt(s) + parseInt(m) + parseInt(l) + parseInt(xl) + parseInt(xxl));
+        
+        if (qty != total) {
+            $.notify('Total size berbeda dengan total Qty', "error"); 
+        } else {
+            $.post('/simpan-size', $('form#form-size').serialize(), function(data) {            
+                $.notify('Size berhasil disimpan', "success"); 
+                $('#modalSize').modal('hide');
+            });
+        }
+        
     });
 
 </script>

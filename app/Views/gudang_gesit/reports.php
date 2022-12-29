@@ -399,6 +399,7 @@
                                         <th class="text-center">Nama Produk</th>
                                         <th class="text-center">Model</th>
                                         <th class="text-center">Warna</th>
+                                        <th class="text-center">Size</th>
                                         <th class="text-center">Qty</th>
                                         <th class="text-center">Tanggal Masuk</th>
                                         
@@ -414,6 +415,7 @@
                                                 <td class="text-center"><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td class="text-center"><?= $product->color ?></td>
+                                                <td class="text-center"><?= $product->size ?></td>
                                                 <td class="text-center"><?= $product->qty ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
@@ -446,6 +448,7 @@
                                         <th class="text-center">Model</th>
                                         <th class="text-center">Warna</th>
                                         <th class="text-center">Harga</th>
+                                        <th class="text-center">Size</th>
                                         <th class="text-center">Tanggal</th>
                                     </tr>
                                 </thead>
@@ -459,6 +462,7 @@
                                                 <td><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
+                                                <td><?= $product->size ?></td>
                                                 <td>Rp <?= number_format($product->price, 0) ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
@@ -490,6 +494,7 @@
                                         <th class="text-center">Nama Produk</th>
                                         <th class="text-center">Model</th>
                                         <th class="text-center">Warna</th>
+                                        <th class="text-center">Size</th>
                                         <th class="text-center">Keterangan</th>
                                         <th class="text-center">Tanggal</th>
                                     </tr>
@@ -504,6 +509,7 @@
                                                 <td><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
+                                                <td><?= $product->size ?></td>
                                                 <td><?= strtoupper($product->category)?></td>
                                                 <td class="text-center"><?= $product->date ?></td>
                                                 
@@ -540,6 +546,7 @@
                                         <th class="text-center">Produk</th>   
                                         <th class="text-center">Model</th>   
                                         <th class="text-center">Warna</th>   
+                                        <th class="text-center">Size</th>   
                                         <th class="text-center">Jenis Reject</th>   
                                         <th class="text-center">Harga Jual</th>   
                                     </tr>
@@ -554,7 +561,8 @@
                                                 <td class="text-center"><?= $product->tanggal_jual ?></td> 
                                                 <td><div><?= $product->product_name ?></div></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>                                
-                                                <td class="text-center"><?= $product->color ?></td>                         
+                                                <td class="text-center"><?= $product->color ?></td>   
+                                                <td class="text-center"><?= $product->size ?></td>                         
                                                 <td class="text-center"><?= strtoupper($product->category) ?></td>                                                                                       
                                                 <td>Rp <?= number_format($product->hpp, 0) ?></td>
                                             </tr>

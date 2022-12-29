@@ -33,7 +33,7 @@
                                 <th class="text-center">Produk</th>
                                 <th class="text-center">Model</th>
                                 <th class="text-center">Warna</th>
-                                <th class="text-center">Berat (gr)</th>
+                                <th class="text-center">Size</th>
                                 <th class="text-center">Qty</th>
                                 <th class="text-center">Tanggal Masuk</th>
                                 <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all" /></th>
@@ -50,7 +50,7 @@
                                             <td class=""><?= $product->product_name ?></td>
                                             <td class=""><?= $product->model_name ?></td>
                                             <td><?= $product->color ?></td>
-                                            <td><?= $product->weight ?></td>                                    
+                                            <td><?= $product->size ?></td>                                    
                                             <td class="text-center"><?= $product->qty ?></td>
                                             <td class="text-center"><?= $product->created_at ?></td>
                                             <td class="text-center">
@@ -63,7 +63,7 @@
                                             <td class=""><?= $product->product_name ?></td>
                                             <td class=""><?= $product->model_name ?></td>
                                             <td><?= $product->color ?></td>
-                                            <td><?= $product->weight ?></td>    
+                                            <td><?= $product->size ?></td>    
                                             <td class="text-center"><?= $product->qty ?></td>                                
                                             <td class="text-center"><?= $product->created_at ?></td>
                                             <td class="text-center">
@@ -139,13 +139,14 @@
         </div>
         <div class="card-body">        
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataTable4" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
                                 <th class="text-center">Produk</th>
                                 <th class="text-center">Model</th>
                                 <th class="text-center">Warna</th>
+                                <th class="text-center">Size</th>
                                 <th class="text-center">Qty</th>
                                 <th class="text-center">Tanggal Masuk</th>
                                 <th class="text-center" style="width: 5%;"><input type="checkbox" id="select-all-gudang" /></th>
@@ -161,7 +162,8 @@
                                             <td class="text-center"><?= $no++ ?></td>
                                             <td class=""><?= $product->product_name ?></td>
                                             <td class=""><?= $product->model_name ?></td>
-                                            <td><?= $product->color ?></td>                         
+                                            <td><?= $product->color ?></td>              
+                                            <td><?= $product->size ?></td>                         
                                             <td class="text-center"><?= $product->qty ?></td>
                                             <td class="text-center"><?= $product->created_at ?></td>
                                             <td class="text-center">
@@ -174,6 +176,7 @@
                                             <td class=""><?= $product->product_name ?></td>
                                             <td class=""><?= $product->model_name ?></td>
                                             <td><?= $product->color ?></td>
+                                            <td><?= $product->size ?></td>              
                                             <td class="text-center"><?= $product->qty ?></td>                                
                                             <td class="text-center"><?= $product->created_at ?></td>
                                             <td class="text-center">
@@ -204,6 +207,7 @@
                                 <th class="text-center">Produk</th>
                                 <th class="text-center">Model</th>
                                 <th class="text-center">Warna</th>
+                                <th class="text-center">size</th>
                                 <th class="text-center">Qty</th>
                                 <th class="text-center">Reject</th>
                                 <th class="text-center">Tanggal Masuk</th>
@@ -221,6 +225,7 @@
                                             <td class=""><?= $product->product_name ?></td>
                                             <td class=""><?= $product->model_name ?></td>
                                             <td><?= $product->color ?></td>    
+                                            <td class="text-center"><?= $product->size ?></td>   
                                             <td class="text-center"><?= $product->qty ?></td>   
                                             <td class="text-center"><?= strtoupper($product->category) ?></td>                             
                                             <td class="text-center"><?= $product->date ?></td>

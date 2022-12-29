@@ -194,7 +194,9 @@ $routes->get('get-hpp-product', 'Products::getHPP');
 $routes->get('/get-jenis-kain', 'Materials::getJenisKain');
 $routes->post('/simpan-reject', 'Products::simpanReject');
 $routes->post('/jual-reject', 'Products::jualReject');
-$routes->post('/get-size-cutting', 'Materials::getSizeCutting');
+$routes->get('/get-size-cutting', 'Materials::getSizeCutting');
+$routes->get('/get-size-pola', 'Materials::getSizePola');
+$routes->post('/simpan-size', 'Materials::simpanSize');
 
 $routes->post('/on-change-cutting-product-type', 'Materials::onChangeCuttingProductType');
 $routes->post('/on-change-cutting-product-type-pola', 'Materials::onChangeCuttingProductTypePola');

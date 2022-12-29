@@ -23,6 +23,7 @@ class Auth extends BaseController
                 exit;
             }
         }
+        helper('cookie');   
         $this->userModel = new UserModel();
     }
 
@@ -33,7 +34,11 @@ class Auth extends BaseController
     public function loginProccess() {
         $username = $this->request->getVar('username');
         $password = $this->request->getVar('password');
-
+        $remember = $this->request->getVar('rememberme');
+        if (isset($remember)) {                      
+            setcookie("sw-username-smi", $username, time()+ (10 * 365 * 24 * 60 * 60));            
+            setcookie("sw-pw-smi", $password, time()+ (10 * 365 * 24 * 60 * 60));            
+        }
         $user = $this->userModel->getWhere(['username' => $username])->getRow();
         if ($user) {
             if (password_verify($password, $user->password)) {

@@ -158,7 +158,7 @@
                     });
                     $.post('/stok-masuk-to-awal', {product_id: id})
                         .done(function(data) {
-                            setTimeout(location.reload.bind(location), 1000);
+                            // setTimeout(location.reload.bind(location), 1000);
                         });
                 } else {
                     swal("Data tidak jadi dihapus!");

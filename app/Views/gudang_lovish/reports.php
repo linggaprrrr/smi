@@ -11,7 +11,7 @@
                         <?php if (is_null($date1)) : ?>                        
                             <input type="text" name="dates" value="<?= date('m/d/Y 07:00') ?> - <?= date('m/d/Y 17:00') ?>" class="form-control text-center daterange" readonly />            
                         <?php else : ?>
-                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?>" readonly />            
+                            <input type="text" name="dates" class="form-control text-center daterange" value="<?= $dates ?>" readonly />            
                         <?php endif ?> 
                     </div>    
                 </form>
@@ -251,7 +251,7 @@
                 for (var i = 0; i < product.length; i++) {
                     $('#detail-in').append('<tr>');
                     $('#detail-in').append('<td>'+ no++ +'</td>');
-                    $('#detail-in').append('<td>'+ product[i]['product_name'] +' '+ product[i]['model_name'] +' '+ product[i]['color'] +'</td>');
+                    $('#detail-in').append('<td>'+ product[i]['product_name'] +' '+ product[i]['model_name'] +' '+ product[i]['color'] +' '+ product[i]['size'] +'</td>');
                     $('#detail-in').append('<td class="text-center">'+ product[i]['qty'] +'</td>');
                     $('#detail-in').append('</tr>');
                 }

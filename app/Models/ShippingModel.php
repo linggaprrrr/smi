@@ -25,7 +25,7 @@ class ShippingModel extends Model
 
     public function getShippingDetail($id) {
         $query = $this->db->table('shipping_details')
-            ->select('shipping_details.*, models.jenis as product_name, model_name, color, COUNT(product_barcodes.id) as qty')
+            ->select('shipping_details.*, models.jenis as product_name, model_name, color, products.size, COUNT(product_barcodes.id) as qty')
             ->join('product_barcodes', 'product_barcodes.id = shipping_details.product_id')                        
             ->join('products', 'products.id = product_barcodes.product_id')
             ->join('models', 'models.id = products.model_id')            

@@ -47,15 +47,15 @@
                                         <div class="form-group">
                                             <input type="text" name="username" class="form-control form-control-user"
                                                 id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Enter Username...">
+                                                placeholder="Enter Username..." value="<?= (isset($_COOKIE["sw-username-smi"])) ? $_COOKIE["sw-username-smi"] : '' ?>">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password">
+                                                id="exampleInputPassword" placeholder="Password" value="<?= (isset($_COOKIE["sw-pw-smi"])) ? $_COOKIE["sw-pw-smi"] : '' ?>">
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
+                                                <input type="checkbox" name="rememberme" class="custom-control-input" id="customCheck">
                                                 <label class="custom-control-label" for="customCheck">Remember Me</label>
                                             </div>
                                         </div>

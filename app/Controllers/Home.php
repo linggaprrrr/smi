@@ -278,7 +278,7 @@ class Home extends BaseController
                 ->join('(SELECT product_barcodes.product_id, product_barcodes.updated_at FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id WHERE product_logs.status = 3 OR product_logs.status = 5) as k', 'k.product_id = products.id')
                 ->get();
             $productLovish = $this->productModel->getAllStockProductLovish();
-            $top10Lovish = $this->productModel->getTop10Lovish();
+            $top10Lovish = $this->productModel->getTop10Lovish();            
             $top10Odelia = $this->productModel->getTop10Odelia();
             $top10Basundari = $this->productModel->getTop10Basundari();
             $totalGudang = 0;

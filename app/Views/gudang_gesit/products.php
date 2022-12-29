@@ -97,6 +97,7 @@
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
+                        <th class="text-center">Size</th>
                         <th class="text-center">Qty</th>
                         <th class="text-center">HPP</th>
                         <th class="text-center">Tanggal Masuk</th>
@@ -114,6 +115,7 @@
                                 <td><?= $product->product_name ?></td>
                                 <td><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
+                                <td><?= $product->size ?></td>
                                 
                                 <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->stok ?>" readonly></td>        
                                 <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->hpp_jual ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
@@ -150,6 +152,7 @@
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
+                        <th class="text-center">Size</th>
                         <th class="text-center">Qty</th>
                         <th class="text-center">Tanggal Keluar</th>
                         <th class="text-center">PIC</th>
@@ -166,6 +169,7 @@
                                 <td><div><?= $product->product_name ?></div></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
+                                <td><?= $product->size ?></td>
                                 <td class="text-center">1</td>
                                 <td class="text-center"><?= $product->created_at ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
@@ -192,6 +196,7 @@
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
+                        <th class="text-center">Size</th>
                         <th class="text-center">Reject</th>
                         <th class="text-center">Tanggal</th>
                     </tr>
@@ -205,7 +210,8 @@
                                 <td class="text-center"><?= $no++ ?></td>
                                 <td class="text-center"><div><?= $product->product_name ?></div></td>
                                 <td class="text-center"><?= $product->model_name ?></td>                                
-                                <td class="text-center"><?= $product->color ?></td>                         
+                                <td class="text-center"><?= $product->color ?></td>   
+                                <td class="text-center"><?= $product->size ?></td>                         
                                 <td class="text-center"><?= strtoupper($product->category) ?></td>       
                                 <td class="text-center"><?= $product->date ?></td>                                
 

@@ -166,6 +166,7 @@
                                             <th class="text-center">Jenis</th>
                                             <th class="text-center">Model</th>
                                             <th class="text-center">Warna</th>
+                                            <th class="text-center">Size</th>
                                             <th class="text-center">Stok</th>
                                         </tr>
                                     </thead>
@@ -179,6 +180,7 @@
                                                     <td><?= $product->product_name ?></td>
                                                     <td><?= $product->model_name ?></td>
                                                     <td><?= $product->color ?></td>
+                                                    <td><?= $product->size ?></td>
                                                     <?php if ($product->stok <= 5) :?>
                                                         <td class="text-center font-weight-bold table-danger"><?= $product->stok  ?></td>
                                                     <?php elseif($product->stok >= 5 || $product->stok <= 10) : ?>
@@ -262,6 +264,7 @@
                                             <th class="text-center">Jenis</th>
                                             <th class="text-center">Model</th>
                                             <th class="text-center">Warna</th>
+                                            <th class="text-center">Size</th>
                                             <th class="text-center">Stok</th>
                                         </tr>
                                     </thead>
@@ -275,6 +278,7 @@
                                                     <td><?= $product->product_name ?></td>
                                                     <td><?= $product->model_name ?></td>
                                                     <td><?= $product->color ?></td>
+                                                    <td><?= $product->size ?></td>
                                                     <td class="text-center"><?= $product->stok ?></td>
                                                 </tr>
                                             <?php endforeach ?>
@@ -831,7 +835,7 @@
                     for (var i = 0; i < product.length; i++) {
                         $('#detail-in').append('<tr>');
                         $('#detail-in').append('<td>'+ no++ +'</td>');
-                        $('#detail-in').append('<td>'+ product[i]['product_name'] +' '+ product[i]['model_name'] +' '+ product[i]['color'] +'</td>');
+                        $('#detail-in').append('<td>'+ product[i]['product_name'] +' '+ product[i]['model_name'] +' '+ product[i]['color'] +' '+ product[i]['size'] +'</td>');
                         $('#detail-in').append('<td class="text-center">'+ product[i]['qty'] +'</td>');
                         $('#detail-in').append('</tr>');
                     }

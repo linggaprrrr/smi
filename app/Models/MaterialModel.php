@@ -483,6 +483,8 @@ class MaterialModel extends Model
 
     public function insertCutting($id, $gelar, $jahit) {        
         $this->db->query("INSERT INTO cutting(material_id, harga_gelar, harga_cutting) VALUES('$id','$gelar', '$jahit') ");
+
+        return $this->db->insertID();
     }
 
     public function getCOA() {
@@ -731,9 +733,37 @@ class MaterialModel extends Model
     }
 
     public function getSizeCutting($id) {
-        $query = $this->db->table('cutting')            
+        $query = $this->db->table('cutting')  
+            ->select('size.*, cutting.qty')          
+            ->join('size', 'size.cutting_id = cutting.id')
             ->where('cutting.id', $id)
             ->get();
+        return $query->getFirstRow();
+    }
+
+    public function getSizePola($id) {
+        $query = $this->db->table('cutting')  
+            ->select('size.*, jumlah_setor as qty')          
+            ->join('pola', 'pola.cutting_id = cutting.id')
+            ->join('size', 'size.cutting_id = cutting.id')
+            ->where('pola.id', $id)
+            ->get();
+        return $query->getFirstRow();
+    }
+
+    public function simpanSize($data) {
+        $this->db->table('size')
+            ->set('s', $data['s'])
+            ->set('m', $data['m'])
+            ->set('l', $data['l'])
+            ->set('xl', $data['xl'])
+            ->set('xxl', $data['xxl'])
+            ->where('cutting_id', $data['cutting_id'])
+            ->update($data);
+    }
+
+    public function insertSize($id) {
+        $this->db->query("INSERT INTO size(cutting_id) VALUES('$id') ");
     }
 
 }

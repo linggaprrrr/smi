@@ -108,20 +108,127 @@ class Products extends BaseController
     }
     
     public function createProduct() {
-        $id = $this->request->getVar('pola');
-        $data = $this->productModel->findPola($id);
-        $product = [
-            'model_id'  => $data->id,            
-            'color_id' => $data->color,
-            'user_id' => session()->get('user_id'),
-            'hpp_jual' => $data->hpp,
-            'qty' => $data->jumlah_setor,                
-        ];
-        $this->productModel->save($product);
-        $productId = $this->productModel->insertID();        
-        for ($i=0; $i < $data->jumlah_setor; $i++) {
-            $temp = $this->productModel->createBarcode($productId);
-            $this->productModel->createLog($temp, '0', '2');
+        $post = $this->request->getVar();
+        
+        $data = $this->productModel->findPola($post['cutting_id']);
+        if (!is_null($post['s']) || $post['s'] > 0) {
+            $product = [
+                'model_id'  => $data->id,            
+                'color_id' => $data->color,
+                'size' => 'S',
+                'user_id' => session()->get('user_id'),
+                'hpp_jual' => $data->hpp,
+                'qty' => $post['s'],                
+            ];
+            $this->productModel->save($product);
+            $productId = $this->productModel->insertID();        
+            for ($i=0; $i < $post['s']; $i++) {
+                $temp = $this->productModel->createBarcode($productId);
+                $this->productModel->createLog($temp, '0', '2');
+            }
+            $this->logModel->saveHistoryStok([
+                'model_id' => $data->id,
+                'color_id' => $data->color,
+                'qty' => $post['s'],   
+                'size' => 'S',
+                'jenis' => 'create',                         
+            ]);
+        }
+
+        if (!is_null($post['m']) || $post['m'] > 0) {
+            $product = [
+                'model_id'  => $data->id,            
+                'color_id' => $data->color,
+                'size' => 'M',
+                'user_id' => session()->get('user_id'),
+                'hpp_jual' => $data->hpp,
+                'qty' => $post['m'],                
+            ];
+            $this->productModel->save($product);
+            $productId = $this->productModel->insertID();        
+            for ($i=0; $i < $post['m']; $i++) {
+                $temp = $this->productModel->createBarcode($productId);
+                $this->productModel->createLog($temp, '0', '2');
+            }
+            $this->logModel->saveHistoryStok([
+                'model_id' => $data->id,
+                'color_id' => $data->color,
+                'qty' => $post['m'],   
+                'size' => 'M',
+                'jenis' => 'create',                         
+            ]);
+        }
+
+        if (!is_null($post['l']) || $post['l'] > 0) {
+            $product = [
+                'model_id'  => $data->id,            
+                'color_id' => $data->color,
+                'size' => 'L',
+                'user_id' => session()->get('user_id'),
+                'hpp_jual' => $data->hpp,
+                'qty' => $post['l'],                
+            ];
+            $this->productModel->save($product);
+            $productId = $this->productModel->insertID();        
+            for ($i=0; $i < $post['l']; $i++) {
+                $temp = $this->productModel->createBarcode($productId);
+                $this->productModel->createLog($temp, '0', '2');
+            }
+            $this->logModel->saveHistoryStok([
+                'model_id' => $data->id,
+                'color_id' => $data->color,
+                'qty' => $post['l'],   
+                'size' => 'L',
+                'jenis' => 'create',                         
+            ]);
+        }
+
+        if (!is_null($post['xl']) || $post['xl'] > 0) {
+            $product = [
+                'model_id'  => $data->id,            
+                'color_id' => $data->color,
+                'size' => 'XL',
+                'user_id' => session()->get('user_id'),
+                'hpp_jual' => $data->hpp,
+                'qty' => $post['xl'],                
+            ];
+            $this->productModel->save($product);
+            $productId = $this->productModel->insertID();        
+            for ($i=0; $i < $post['xl']; $i++) {
+                $temp = $this->productModel->createBarcode($productId);
+                $this->productModel->createLog($temp, '0', '2');
+            }
+            $this->logModel->saveHistoryStok([
+                'model_id' => $data->id,
+                'color_id' => $data->color,
+                'qty' => $post['xl'],   
+                'size' => 'XL',
+                'jenis' => 'create',                         
+            ]);
+        }
+
+        if (!is_null($post['xxl']) || $post['xxl'] > 0) {
+            $product = [
+                'model_id'  => $data->id,            
+                'color_id' => $data->color,
+                'size' => 'XXL',
+                'user_id' => session()->get('user_id'),
+                'hpp_jual' => $data->hpp,
+                'qty' => $post['xxl'],                
+            ];
+            $this->productModel->save($product);
+            $productId = $this->productModel->insertID();        
+            for ($i=0; $i < $post['xxl']; $i++) {
+                $temp = $this->productModel->createBarcode($productId);
+                $this->productModel->createLog($temp, '0', '2');
+            }
+            $this->logModel->saveHistoryStok([
+                'model_id' => $data->id,
+                'color_id' => $data->color,
+                'qty' => $post['xxl'],   
+                'size' => 'XXL',
+                'jenis' => 'create',                         
+            ]);
         }
 
         $getProduct = $this->productModel
@@ -135,13 +242,7 @@ class Products extends BaseController
             'description' => 'Menambahkan produk baru ('.$getProduct['jenis'].' '.$getProduct['model_name'].' '.$getProduct['color'].') sebanyak '.$data->jumlah_setor.'. ',
             'user_id' =>  session()->get('user_id'),
         ]);
-        $this->logModel->saveHistoryStok([
-            'model_id' => $data->id,
-            'color_id' => $data->color,
-            'qty' => $data->jumlah_setor,   
-            'size' => 1,
-            'jenis' => 'create',                         
-        ]);
+       
 
     }
 
@@ -439,8 +540,9 @@ class Products extends BaseController
 		$sheet->setCellValue('B1', 'Nama Produk');
 		$sheet->setCellValue('C1', 'Model');
 		$sheet->setCellValue('D1', 'Warna');
-        $sheet->setCellValue('E1', 'Qty');
-		$sheet->setCellValue('F1', 'Tanggal Masuk');
+        $sheet->setCellValue('E1', 'Size');
+        $sheet->setCellValue('F1', 'Qty');
+		$sheet->setCellValue('G1', 'Tanggal Masuk');
         $i = 2;
         $no = 1;
         foreach($products->getResultObject() as $row) {
@@ -448,8 +550,9 @@ class Products extends BaseController
             $sheet->setCellValue('B' . $i, $row->product_name);
             $sheet->setCellValue('C' . $i, $row->model_name);
             $sheet->setCellValue('D' . $i, $row->color);
-            $sheet->setCellValue('E' . $i, $row->qty);
-            $sheet->setCellValue('F' . $i, $row->created_at);
+            $sheet->setCellValue('E' . $i, $row->size);
+            $sheet->setCellValue('F' . $i, $row->qty);
+            $sheet->setCellValue('G' . $i, $row->created_at);
             $i++;
         }
         
@@ -491,7 +594,7 @@ class Products extends BaseController
             $sheet->setCellValue('A' . $i, $no++);
             $sheet->setCellValue('B' . $i, $row->date);
             $sheet->setCellValue('C' . $i, $row->tanggal_jual);
-            $sheet->setCellValue('D' . $i, trim($row->product_name.' '.$row->model_name.' '.$row->color));
+            $sheet->setCellValue('D' . $i, trim($row->product_name.' '.$row->model_name.' '.$row->color.' '.$row->size));
             $sheet->setCellValue('E' . $i, strtoupper($row->category));
             $sheet->setCellValue('F' . $i, 'Rp '.number_format($row->hpp, 0));
             $i++;
@@ -524,11 +627,12 @@ class Products extends BaseController
         $spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
 		$sheet->setCellValue('A1', 'No');
-		$sheet->setCellValue('B1', 'Nama Produk');
+		$sheet->setCellValue('B1', 'Jenis');
 		$sheet->setCellValue('C1', 'Model');
 		$sheet->setCellValue('D1', 'Warna');
-		$sheet->setCellValue('E1', 'Harga');
-		$sheet->setCellValue('F1', 'Tanggal Masuk');
+        $sheet->setCellValue('E1', 'Size');
+		$sheet->setCellValue('F1', 'Harga');
+		$sheet->setCellValue('G1', 'Tanggal Masuk');
         $i = 2;
         $no = 1;
         foreach($products->getResultObject() as $row) {
@@ -536,8 +640,9 @@ class Products extends BaseController
             $sheet->setCellValue('B' . $i, $row->product_name);
             $sheet->setCellValue('C' . $i, $row->model_name);
             $sheet->setCellValue('D' . $i, $row->color);
-            $sheet->setCellValue('E' . $i, number_format($row->price, 0));
-            $sheet->setCellValue('F' . $i, $row->created_at);
+            $sheet->setCellValue('E' . $i, $row->size);
+            $sheet->setCellValue('F' . $i, number_format($row->price, 0));
+            $sheet->setCellValue('G' . $i, $row->created_at);
             $i++;
         }
         
@@ -1037,12 +1142,15 @@ class Products extends BaseController
                     ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as stok_retur FROM history_stok WHERE jenis="retur" AND status = 0 GROUP BY model_id, color_id, size) as r', 'r.model_id = products.model_id AND r.color_id = products.color_id', 'left')
                     ->join('(SELECT history_stok.model_id, history_stok.color_id, updated_at, SUM(history_stok.qty) as pengiriman FROM history_stok WHERE jenis="pengiriman" AND status = 0 GROUP BY model_id, color_id, size) as s', 's.model_id = products.model_id AND s.color_id = products.color_id', 'left')
                     ->groupBy('models.id, colors.id, products.size')
-                    ->get();                
-            $selling = 0;             
+                    ->get(); 
+            
+                    
+            $selling = 0;
             $stokIn = $this->productModel
                 ->where('status', '2')
                 ->get();
             $toIn = 0;
+            $tempAwal = 0;
             if ($sisaStok->getNumRows() > 0) {
                 foreach ($sisaStok->getResultObject() as $product) {                
                     if ($penjualan->getNumRows() > 0) {                          
@@ -1071,6 +1179,8 @@ class Products extends BaseController
                             'hpp' => $product->hpp,
                             'hpp_jual' => $product->hpp_jual,
                         ]);
+
+                        
                         $selling = 0;
                         $toIn = 0;
                     } else {
@@ -1391,7 +1501,7 @@ class Products extends BaseController
         foreach($products->getResultObject() as $row) {
             $sheet->setCellValue('A' . $i, $no++);
             $sheet->setCellValue('B' . $i, $row->date);
-            $sheet->setCellValue('C' . $i, $row->product_name .' '.$row->model_name.' '.$row->color);            
+            $sheet->setCellValue('C' . $i, $row->product_name .' '.$row->model_name.' '.$row->color.' '.$row->size);            
             $sheet->setCellValue('D' . $i, strtoupper($row->category));
             $i++;
         }

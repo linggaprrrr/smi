@@ -345,6 +345,9 @@
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold" data-toggle="tab" href="#basundari">BASUNDARI</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold" data-toggle="tab" href="#emika">EMIKA</a>
+                    </li>
                 </ul>
                 <div class="tab-content m-0">
                     <div id="lovish" class="tab-pane active"><br>  
@@ -408,6 +411,36 @@
                             </div>                        
                     </div>
                     <div id="basundari" class="tab-pane"><br>  
+                        <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable7" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="width: 5%">No</th>
+                                            <th class="text-center">Jenis</th>
+                                            <th class="text-center">Model</th>
+                                            <th class="text-center">Total Qty</th>
+                                            <th class="text-center">Brand</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        <?php $no = 1; ?>
+                                        <?php if ($top10Basundari->getNumRows() > 0) : ?>
+                                            <?php foreach ($top10Basundari->getResultObject() as $product) : ?>
+                                                <tr>
+                                                    <td class="text-center"><?= $no++ ?></td>
+                                                    <td><?= $product->product_name ?></td>
+                                                    <td><?= $product->model_name ?></td>                                                               
+                                                    <td class="text-center"><?= $product->total_qty ?></td>
+                                                    <td class="text-center"><?= $product->brand ?></td>
+                                                </tr>
+                                            <?php endforeach ?>
+                                        <?php endif ?>
+                                    </tbody>
+                                </table>
+                            </div>                        
+                    </div>
+                    <div id="emika" class="tab-pane"><br>  
                         <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable7" width="100%" cellspacing="0">
                                     <thead>
@@ -564,7 +597,7 @@
                     for (var i = 0; i < product.length; i++) {
                         $('#detail-in').append('<tr>');
                         $('#detail-in').append('<td>'+ no++ +'</td>');
-                        $('#detail-in').append('<td>'+ product[i]['product_name'] +' '+ product[i]['model_name'] +' '+ product[i]['color'] +'</td>');
+                        $('#detail-in').append('<td>'+ product[i]['product_name'] +' '+ product[i]['model_name'] +' '+ product[i]['color'] +' '+ product[i]['size'] +'</td>');
                         $('#detail-in').append('<td class="text-center">'+ product[i]['qty'] +'</td>');
                         $('#detail-in').append('</tr>');
                     }

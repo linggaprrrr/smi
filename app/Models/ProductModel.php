@@ -206,7 +206,7 @@ class ProductModel extends Model
     public function getAllProductOut($date1 = null, $date2 = null) {
         if (is_null($date1)) { 
             $query = $this->db->table('products')
-            ->select('product_logs.created_at, model_name,jenis as product_name, color, name, price, weight')
+            ->select('product_logs.created_at, model_name,jenis as product_name, products.size, color, name, price, weight')
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
@@ -221,7 +221,7 @@ class ProductModel extends Model
             ->get();
         } else {
             $query = $this->db->table('products')
-            ->select('SUM(product_logs.qty) as qtyy, product_logs.created_at, model_name, jenis as product_name, color, name, price, weight')
+            ->select('SUM(product_logs.qty) as qtyy, product_logs.created_at, size, model_name, jenis as product_name, color, name, price, weight')
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
@@ -273,7 +273,7 @@ class ProductModel extends Model
     public function getStokProductIn($date1 = null, $date2 = null) {
         if (is_null($date1)) {
             $query = $this->db->table('products')
-            ->select('products.*, model_name, jenis as product_name, color, price, SUM(IFNULL(k.stok_keluar,0)) as stok')
+            ->select('products.*, model_name, jenis as product_name, color, size, price, SUM(IFNULL(k.stok_keluar,0)) as stok')
             ->join('models', 'models.id = products.model_id')
             ->join('colors', 'colors.id = products.color_id')            
             ->join('(SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b JOIN products p ON p.id = b.product_id WHERE b.status = "1" AND p.status = "1" GROUP BY model_id, color_id, size) as k','products.id = k.product_id', 'left')
@@ -299,7 +299,7 @@ class ProductModel extends Model
     public function getStokProductOut($date1 = null, $date2 = null) {
         if (is_null($date1)) {
             $query =  $this->db->table('models')
-            ->select('products.id, jenis as product_name, model_name, color, weight, product_logs.status, products.created_at, products.qty, SUM(IFNULL(product_logs.qty, 0)) as stok')            
+            ->select('products.id, jenis as product_name, model_name, color, size, weight, product_logs.status, products.created_at, products.qty, SUM(IFNULL(product_logs.qty, 0)) as stok')            
             ->join('products', 'products.model_id = models.id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
@@ -313,7 +313,7 @@ class ProductModel extends Model
             ->get();  
         } else {
             $query =  $this->db->table('models')
-            ->select('products.id, jenis as product_name, model_name, color, weight, product_logs.status, products.created_at, products.qty, SUM(IFNULL(product_logs.qty, 0)) as stok')            
+            ->select('products.id, jenis as product_name, model_name, color, size, weight, product_logs.status, products.created_at, products.qty, SUM(IFNULL(product_logs.qty, 0)) as stok')            
             ->join('products', 'products.model_id = models.id')
             ->join('colors', 'colors.id = products.color_id')
             ->join('product_barcodes', 'product_barcodes.product_id = products.id')
@@ -682,7 +682,7 @@ class ProductModel extends Model
 
     public function rejectedProduct() {
         $query = $this->db->table('reject')
-            ->select('model_name, jenis as product_name, color, reject.category, reject.barcode_id, reject.date, reject.status, reject.id')
+            ->select('model_name, jenis as product_name, size, color, reject.category, reject.barcode_id, reject.date, reject.status, reject.id')
             ->join('product_barcodes', 'product_barcodes.id = reject.barcode_id')
             ->join('products', 'products.id = product_barcodes.product_id')
             ->join('models', 'models.id = products.model_id')
@@ -745,7 +745,7 @@ class ProductModel extends Model
     public function rejectedSold($date1 = null, $date2 = null) {
         if (is_null($date1)) {
             $query = $this->db->table('reject')
-            ->select('model_name, jenis as product_name, color, reject.category, reject.status, reject.barcode_id,  reject.date, reject.id, penjualan_reject.hpp, tanggal_jual, penjualan_reject.qr, penjualan_reject.status')
+            ->select('model_name, jenis as product_name, color, products.size, reject.category, reject.status, reject.barcode_id,  reject.date, reject.id, penjualan_reject.hpp, tanggal_jual, penjualan_reject.qr, penjualan_reject.status')
             ->join('product_barcodes', 'product_barcodes.id = reject.barcode_id')
             ->join('products', 'products.id = product_barcodes.product_id')
             ->join('models', 'models.id = products.model_id')
@@ -755,7 +755,7 @@ class ProductModel extends Model
             ->get();
         } else {
             $query = $this->db->table('reject')
-            ->select('model_name, jenis as product_name, color, reject.category, reject.status, reject.barcode_id,  reject.date, reject.id, penjualan_reject.hpp, tanggal_jual, penjualan_reject.qr, penjualan_reject.status')
+            ->select('model_name, jenis as product_name, color, products.size, reject.category, reject.status, reject.barcode_id,  reject.date, reject.id, penjualan_reject.hpp, tanggal_jual, penjualan_reject.qr, penjualan_reject.status')
             ->join('product_barcodes', 'product_barcodes.id = reject.barcode_id')
             ->join('products', 'products.id = product_barcodes.product_id')
             ->join('models', 'models.id = products.model_id')
@@ -789,9 +789,18 @@ class ProductModel extends Model
 
     public function getTop10Lovish($date1 = null, $date2 = null) {
         if (is_null($date1)) {
-            $query = $this->db->query("SELECT jenis as product_name, model_name, color, size, models.brand, COUNT(sellings.qty) as total_qty FROM sellings JOIN models ON models.id = sellings.model_id JOIN colors ON colors.id = sellings.color_id WHERE models.brand = 'LOVISH'  GROUP BY sellings.model_id, sellings.brand ORDER BY total_qty DESC LIMIT 10");
+            $query = $this->db->query("SELECT model_id, color_id, jenis as product_name, model_name, color, size, models.brand, COUNT(sellings.qty) as total_qty FROM sellings JOIN models ON models.id = sellings.model_id JOIN colors ON colors.id = sellings.color_id WHERE models.brand = 'LOVISH'  GROUP BY sellings.model_id, sellings.brand ORDER BY total_qty DESC LIMIT 10");
         } else {
-            $query = $this->db->query("SELECT jenis as product_name, model_name, color, size, models.brand, COUNT(sellings.qty) as total_qty FROM sellings JOIN models ON models.id = sellings.model_id JOIN colors ON colors.id = sellings.color_id WHERE models.brand = 'LOVISH' AND sellings.created_at BETWEEN '".$date1."' AND '".$date2."' GROUP BY sellings.model_id, sellings.brand ORDER BY total_qty DESC LIMIT 10");
+            $query = $this->db->query("SELECT model_id, color_id, jenis as product_name, model_name, color, size, models.brand, COUNT(sellings.qty) as total_qty FROM sellings JOIN models ON models.id = sellings.model_id JOIN colors ON colors.id = sellings.color_id WHERE models.brand = 'LOVISH' AND sellings.created_at BETWEEN '".$date1."' AND '".$date2."' GROUP BY sellings.model_id, sellings.brand ORDER BY total_qty DESC LIMIT 10");
+        }
+        return $query;
+    }
+
+    public function getTop10Lovish2($date1 = null, $date2 = null) {
+        if (is_null($date1)) {
+            $query = $this->db->query("SELECT products.model_id, products.color_id, models.jenis as product_name, models.model_name, COUNT(product_barcodes.id) as total_qty, models.brand FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id JOIN models ON models.id = products.model_id WHERE product_barcodes.status = '5' AND models.brand = 'LOVISH' GROUP BY products.model_id, products.color_id ORDER BY total_qty DESC LIMIT 10");
+        } else {
+            $query = $this->db->query("SELECT products.model_id, products.color_id, models.jenis as product_name, models.model_name, COUNT(product_barcodes.id) as total_qty, models.brand FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id JOIN models ON models.id = products.model_id WHERE product_barcodes.status = '5' AND models.brand = 'LOVISH' AND product_barcodes.updated_at BETWEEN '".$date1."' AND '".$date2."' GROUP BY products.model_id, products.color_id ORDER BY total_qty DESC LIMIT 10;");
         }
         return $query;
     }
@@ -817,7 +826,7 @@ class ProductModel extends Model
     public function getAllProductReject($date1 = null, $date2 = null) {
         if ($date1 == null) {
             $query = $this->db->table('reject')
-            ->select('model_name, jenis as  product_name, color, reject.category, reject.date, reject.id')
+            ->select('model_name, jenis as  product_name, color, products.size, reject.category, reject.date, reject.id')
             ->join('product_barcodes', 'product_barcodes.id = reject.barcode_id')
             ->join('products', 'products.id = product_barcodes.product_id')
             ->join('models', 'models.id = products.model_id')
@@ -826,7 +835,7 @@ class ProductModel extends Model
             ->get();
         } else {
             $query = $this->db->table('reject')
-            ->select('model_name, jenis as  product_name, color, reject.category, reject.date, reject.id')
+            ->select('model_name, jenis as  product_name, color, products.size, reject.category, reject.date, reject.id')
             ->join('product_barcodes', 'product_barcodes.id = reject.barcode_id')
             ->join('products', 'products.id = product_barcodes.product_id')
             ->join('models', 'models.id = products.model_id')
@@ -839,9 +848,10 @@ class ProductModel extends Model
     }
 
     public function setToStokAwal() {
-        $data = $this->db->query("SELECT *, SUM(qty) as total FROM history_stok GROUP BY model_id, color_id, jenis");
-        $jumModel = $this->db->query("SELECT model_id, color_id as jum FROM history_stok GROUP BY model_id, color_id");
+        $data = $this->db->query("SELECT *, SUM(qty) as total FROM history_stok GROUP BY model_id, color_id, jenis ORDER BY model_id");
+        
         $sisa = 0;
+        $sisagudang = 0;
         $stokMasuk = 0;
         $penjualan = 0;
         $pengiriman = 0;
@@ -849,57 +859,55 @@ class ProductModel extends Model
         $model = "";
         $color = "";
         $count = 0;
+        $produk = array();
+        $this->db->query("UPDATE history_stok SET status = '1' ");                        
+
         if ($data->getNumRows() > 0) {
             foreach($data->getResultObject() as $stok) {
-                if ($count == 0) {
-                    $model = $stok->model_id;
-                    $color = $stok->color_id;
-                }     
+                if ($stok->jenis == 'in') {
+                    $stokMasuk = $stok->total;
+                    // $this->db->query("UPDATE history_stok SET status = '1' WHERE id = '$stok->id' ");                        
+                } elseif ($stok->jenis == 'pengiriman') {
+                    $pengiriman = $stok->total;
+                    // $this->db->query("UPDATE history_stok SET status = '1' WHERE id = '$stok->id' ");                    
+                } elseif ($stok->jenis == 'penjualan') {
+                    $penjualan = $stok->total;
+                    // $this->db->query("UPDATE history_stok SET status = '1' WHERE id = '$stok->id' ");                        
+                } elseif ($stok->jenis == 'retur') {
+                    $retur = $stok->total;
+                    // $this->db->query("UPDATE history_stok SET status = '1' WHERE id = '$stok->id' ");                    
+                }              
+                                
 
-                if ($model == $stok->model_id && $color == $stok->color_id) {                    
-                    if ($stok->jenis == 'in') {
-                        $stokMasuk = $stokMasuk + $stok->total;
-                    } elseif ($stok->jenis == 'pengiriman') {
-                        $pengiriman = $stok->total;
-                    } elseif ($stok->jenis == 'penjualan') {
-                        $penjualan = $stok->total;
-                    } elseif ($stok->jenis == 'retur') {
-                        $retur = $stok->total;
-                    }                    
-                    $this->db->query("UPDATE history_stok SET status = '1' WHERE model_id='$model' AND color_id='$color' ");
-                    $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisa', 'sisa_penjualan') ");
-                    $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisagudang', 'sisa_pengiriman') ");
-                } else {                    
-                    $sisa = $stokMasuk + $retur - $penjualan;
-                    $sisagudang = $stokMasuk + $retur - $pengiriman;
-                    $this->db->query("UPDATE history_stok SET status = '1' WHERE model_id='$model' AND color_id='$color' ");
-                    $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisa', 'sisa_penjualan') ");
-                    $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisagudang', 'sisa_pengiriman') ");
-                    $model = $stok->model_id;
-                    $color = $stok->color_id;
-                    if ($stok->jenis == 'in') {
-                        $stokMasuk = $stok->total;
-                    } elseif ($stok->jenis == 'pengiriman') {
-                        $pengiriman = $stok->total;
-                    } elseif ($stok->jenis == 'penjualan') {
-                        $penjualan = $stok->total;
-                    } elseif ($stok->jenis == 'retur') {
-                        $retur = $stok->total;
-                    }
-                    
-                }
-
-                $count++;                
-            }
-            if ($jumModel->getNumRows() == 1) {
                 $sisa = $stokMasuk + $retur - $penjualan;
-                $sisagudang = $stokMasuk + $retur - $pengiriman;
-                $this->db->query("UPDATE history_stok SET status = '1' WHERE model_id='$model' AND color_id='$color' ");
-                $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisa', 'sisa_penjualan') ");
-                $this->db->query("INSERT INTO history_stok(model_id, color_id, qty, jenis) VALUES('$model', '$color', '$sisagudang', 'sisa_pengiriman') ");
-            }
+                $sisagudang = $stokMasuk + $retur - $pengiriman;               
+                $temp = [
+                    'model' => $stok->model_id,
+                    'color' => $stok->color_id,
+                    'sisa' => $sisa,
+                    'sisa_gudang' => $sisagudang
+                ];
+                array_push($produk, $temp);  
+
+                // $model = $stok->model_id;
+                // $color = $stok->color_id;
+                
+                $stokMasuk = 0;
+                $penjualan = 0;
+                $pengiriman = 0;
+                $retur = 0;
+                $count++;
+            }            
         }
-        // echo ($sisa);
+
+        print_r($produk);
+        
+        for ($i = 0; $i < count($produk); $i++) {
+            $m = $produk[$i]['model'];
+            $c = $produk[$i]['color'];
+            $s = $produk[$i]['sisa_gudang'];
+            $this->db->query("INSERT INTO history_stok(model_id, color_id, jenis, qty) VALUES('$m', '$c', 'sisa_pengiriman', '$s') ");                    
+        }
     }
     
     public function resetSO() {

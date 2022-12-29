@@ -293,7 +293,7 @@
                                         <th class="text-center">Nama Produk</th>
                                         <th class="text-center">Model</th>
                                         <th class="text-center">Warna</th>
-                                        <th class="text-center">Berat (gr)</th>
+                                        <th class="text-center">Size</th>
                                         <th class="text-center">Tanggal</th>
                                         
                                     </tr>
@@ -308,7 +308,7 @@
                                                 <td><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
-                                                <td><?= $product->weight ?></td>
+                                                <td><?= $product->size ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
                                             </tr>
@@ -334,7 +334,7 @@
                                         <th class="text-center">Nama Produk</th>
                                         <th class="text-center">Model</th>
                                         <th class="text-center">Warna</th>
-                                        <th class="text-center">Berat (gr)</th>
+                                        <th class="text-center">Size</th>
                                         <th class="text-center">Tanggal</th>
                                     </tr>
                                 </thead>
@@ -348,7 +348,7 @@
                                                 <td><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
-                                                <td><?= $product->weight ?></td>
+                                                <td><?= $product->size ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
                                             </tr>

@@ -36,8 +36,8 @@ class Api extends BaseController {
                 if ($getMaterial) {
                     $status = '1';
                     $getCOA = $this->materialModel->getCOA();
-                    $this->materialModel->insertCutting($qr[0], $getCOA[0]->biaya, $getCOA[1]->biaya);
-                    
+                    $cuttingID = $this->materialModel->insertCutting($qr[0], $getCOA[0]->biaya, $getCOA[1]->biaya);
+                    $this->materialModel->insertSize($cuttingID);
                 } else {
                     $status = '0';
                 }

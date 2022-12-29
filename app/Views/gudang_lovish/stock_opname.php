@@ -101,9 +101,9 @@
                     icon: "success",
                     });
                     $.post('/reset-so', {product_id: id})
-                        // .done(function(data) {
-                        //     setTimeout(location.reload.bind(location), 1000);
-                        // });
+                        .done(function(data) {
+                            setTimeout(location.reload.bind(location), 1000);
+                        });
                 } else {
                     swal("Data tidak jadi dihapus!");
                 }

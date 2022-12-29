@@ -32,6 +32,7 @@
 
         public function index() {     
             $date = $this->request->getVar('dates');
+            $dates=  $this->request->getVar('dates');
             $date1 = null;
             $date2 = null;
             if (is_null($date)) {
@@ -51,7 +52,8 @@
                     'title' => 'Penjualan',     
                     'sellings' => $penjualan,   
                     'date1' => $date[0],
-                    'date2' => $date[1],  
+                    'date2' => $date[1],
+                    'dates' => $dates,  
                 );     
             }
             

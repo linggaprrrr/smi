@@ -1007,5 +1007,15 @@ class Materials extends BaseController
         echo json_encode($data);
     }
 
+    public function simpanSize() {
+        $post = $this->request->getVar();
+        $this->materialModel->simpanSize($post);
+    }
+
+    public function getSizePola() {
+        $id = $this->request->getVar('id');
+        $data = $this->materialModel->getSizePola($id);
+        echo json_encode($data);
+    }
 
 }

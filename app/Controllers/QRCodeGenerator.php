@@ -139,7 +139,7 @@ class QRCodeGenerator extends BaseController
                 'qr' => ''
             );
             for ($i=0; $i < count($products); $i++) {
-                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, jenis as product_name, color')                    
+                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, products.size, jenis as product_name, color')                    
                     ->join('colors', 'colors.id = products.color_id')
                     ->join('models', 'products.model_id = models.id')                
                     ->join('product_barcodes', 'product_barcodes.product_id = products.id')
@@ -147,7 +147,7 @@ class QRCodeGenerator extends BaseController
                     ->get();
                 
                 foreach ($getProducts->getResultArray() as $row) {
-                    $data = $row['id'].'-'.$row['product_name'].'-'.$row['model_name'].'-'.$row['color'];                
+                    $data = $row['id'].'-'.$row['model_name'].'-'.$row['color'].'-'.$row['size'];                
                     $qr = QrCode::create($data);
                     $writer = new PngWriter();
                     $result = $writer->write($qr);    
@@ -171,7 +171,7 @@ class QRCodeGenerator extends BaseController
                 'qr' => ''
             );
             for ($i=0; $i < count($products); $i++) {
-                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, jenis as product_name, color')                    
+                $getProducts = $this->produkModel->select('product_barcodes.id, model_name, products.size, jenis as product_name, color')                    
                     ->join('colors', 'colors.id = products.color_id')
                     ->join('models', 'products.model_id = models.id')                
                     ->join('product_barcodes', 'product_barcodes.product_id = products.id')
@@ -180,7 +180,7 @@ class QRCodeGenerator extends BaseController
                     ->get();
                 
                 foreach ($getProducts->getResultArray() as $row) {
-                    $data = $row['id'].'-'.$row['product_name'].'-'.$row['model_name'].'-'.$row['color'];                
+                    $data = $row['id'].'-'.$row['model_name'].'-'.$row['color'].'-'.$row['size'];                
                     $qr = QrCode::create($data);
                     $writer = new PngWriter();
                     $result = $writer->write($qr);    

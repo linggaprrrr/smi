@@ -16,7 +16,7 @@
                     <?php if (is_null($date1)) : ?>                        
                         <input type="text" name="dates" value="<?= date('m/d/Y 07:00') ?> - <?= date('m/d/Y 17:00') ?>" class="form-control text-center daterange" readonly />            
                     <?php else : ?>
-                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $date1 ?>" readonly />            
+                        <input type="text" name="dates" class="form-control text-center daterange" value="<?= $dates ?>" readonly />            
                     <?php endif ?> 
                 </div>    
             </form>
