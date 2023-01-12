@@ -112,13 +112,12 @@
                         <?php foreach ($productsIn->getResultObject() as $product) : ?>
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
-                                <td><?= $product->product_name ?></td>
-                                <td><?= $product->model_name ?></td>
-                                <td><?= $product->color ?></td>
-                                <td><?= $product->size ?></td>
-                                
-                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->stok ?>" readonly></td>        
-                                <td><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->hpp_jual ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
+                                <td class="text-center"><?= $product->product_name ?></td>
+                                <td class="text-center"><?= $product->model_name ?></td>
+                                <td class="text-center"><?= $product->color ?></td>
+                                <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>                                
+                                <td class="text-center"><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->stok ?>" readonly></td>        
+                                <td class="text-center"><input type="text" class="form-control hpp" name="price" data-id='<?= $product->id ?>' value="<?= $product->hpp_jual ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>                                
                                 <td class="text-center align-middle"><?= $product->created_at ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>
                                 <td class="text-center">                                    
@@ -168,8 +167,8 @@
                                 <td class="text-center"><?= $no++ ?></td>
                                 <td><div><?= $product->product_name ?></div></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
-                                <td><?= $product->color ?></td>
-                                <td><?= $product->size ?></td>
+                                <td class="text-center"><?= $product->color ?></td>
+                                <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
                                 <td class="text-center">1</td>
                                 <td class="text-center"><?= $product->created_at ?></td>
                                 <td class="text-center"><?= $product->name ?></td>

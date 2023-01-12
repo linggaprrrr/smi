@@ -73,99 +73,51 @@
             
             foreach ($data as $idx => $row) {
                 if ($idx > 0 && !is_null($row[0])) {
-                    $temp = explode(' ', $row[1]);  
                     $modelID = "";
                     $productTypeID = "";
                     $colorID = "";
                     $size = NULL;
                     $hpp = 0;
     
-                    $getProductType = $this->productModel->getProductType($temp[0]);
+                    $getProductType = $this->productModel->getProductType($row[1]);
                     if (is_null($getProductType)) {
                         $productTypeID = NULL;                    
                     }  else {
                         $productTypeID = $getProductType->id;
                     }                       
     
-
-
-                    if (count($temp) == 2) { 
-                        $getModel = $this->designModel->where(['model_name' => $temp[0]])->first();                                
-                        if (is_null($getModel)) {
-                            $model = [
-                                'model_name' => $temp[0],                        
-                            ];
-                            $this->designModel->save($model); 
-                            $modelID = $this->designModel->getInsertID();
-                        } else {
-                            $modelID = $getModel['id'];
-                            $hpp = $getModel['hpp'];
-                        }
+                    $getModel = $this->designModel->where(['model_name' => $row[2]])->first();                                
+                    if (is_null($getModel)) {
+                        $model = [
+                            'model_name' => $$row[2],                        
+                        ];
+                        $this->designModel->save($model); 
+                        $modelID = $this->designModel->getInsertID();
                     } else {
-                        $getModel = $this->designModel->where(['model_name' => $temp[1]])->first();                                
-                        if (is_null($getModel)) {
-                            $model = [
-                                'model_name' => $temp[1],                        
-                            ];
-                            $this->designModel->save($model); 
-                            $modelID = $this->designModel->getInsertID();
-                        } else {
-                            $modelID = $getModel['id'];
-                            $hpp = $getModel['hpp'];
-                        }
-                    }
-                    
-                    
-                    if (count($temp) == 3) {
-                        if (strpos($row[1], 'REG') !== false) {
-                            $size = "REG";
-                            $color = trim($temp[2], $size);
-                        } else if (strpos($row[1], 'JUMBO') !== false || strpos($row[1], 'JUM') !== false) {
-                            $size = "JUMBO";
-                            $color = trim($temp[2], $size);
-                        } else {
-                            $color = trim($temp[2]);
-                        }
-                        
-                    } else if (count($temp) > 3) {
-                        if (strpos($row[1], 'REG') !== false) {
-                            $size = "REG";
-                            $color = trim($temp[2]. ' '. $temp[3], $size);
-                        } else if (strpos($row[1], 'JUMBO') !== false || strpos($row[1], 'JUM') !== false) {
-                            $size = "JUMBO";
-                            $color = trim($temp[2]. ' '. $temp[3], $size);
-                        } else {
-                            $color = trim($temp[2]. ' '. $temp[3]);
-                        }                        
-                    } else {
-                        if (strpos($row[0], 'REG') !== false) {
-                            $size = "REG";
-                            $color = trim($temp[1], $size);
-                        } else if (strpos($row[0], 'JUMBO') !== false || strpos($row[0], 'JUM') !== false) {
-                            $size = "JUMBO";
-                            $color = trim($temp[1], $size);
-                        } else {
-                            $color = trim($temp[1]);
-                        }
+                        $modelID = $getModel['id'];
+                        $hpp = $getModel['hpp'];
                     }
     
-                    $getColor = $this->materialModel->getColorByName($color);
+                    $getColor = $this->materialModel->getColorByName($row[3]);
                     if (is_null($getColor)) {
-                        $colorID = $this->materialModel->saveWarna($color);
+                        $colorID = $this->materialModel->saveWarna($row[3]);
                     } else {
                         $colorID = $getColor->id;
                     }
     
-    
-                    
+                    if (!is_null($row[4])) {
+                        $size = strtoupper($row[4]);
+                    } else {
+                        $size = NULL;
+                    }
     
     
                     $this->sellingModel->save([
                         'product_id' => $productTypeID,
                         'model_id' => $modelID,
                         'color_id' => $colorID,                        
-                        'qty' => $row[2],
-                        'brand' => $row[3],
+                        'qty' => $$row[5],
+                        'brand' => $row[6],
                         'size' => $size,
                         'status' => 3
                     ]);     

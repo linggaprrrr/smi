@@ -104,7 +104,8 @@ class ProductModel extends Model
             ->join('models', 'models.id = products.model_id')            
             ->join('colors', 'colors.id = products.color_id')
             ->join('users', 'users.id = products.user_id')
-            ->where('products.status', 2)            
+            ->where('products.status', 2)       
+            ->orderBy('products.id', 'DESC')     
             ->get();
         return $query;
     }
@@ -185,14 +186,14 @@ class ProductModel extends Model
     public function penjualan($date1 = null, $date2 = null) {
         if (is_null($date1)) {
             $query = $this->db->table('sellings')
-            ->select('sellings.created_at, sellings.qty, sellings.brand, model_name, jenis as product_name, color, SUM(qty) as penjualan')            
+            ->select('sellings.created_at, sellings.qty, sellings.brand, model_name, jenis as product_name, color, size, SUM(qty) as penjualan')            
             ->join('models', 'models.id = sellings.model_id')            
             ->join('colors', 'colors.id = sellings.color_id')
             ->groupBy('sellings.id') 
             ->get();
         } else {
             $query = $this->db->table('sellings')
-            ->select('sellings.created_at, sellings.qty, sellings.brand, model_name, jenis as product_name, color, SUM(qty) as penjualan')            
+            ->select('sellings.created_at, sellings.qty, sellings.brand, model_name, jenis as product_name, color, size, SUM(qty) as penjualan')            
             ->join('models', 'models.id = sellings.model_id')            
             ->join('colors', 'colors.id = sellings.color_id')            
             ->where('sellings.created_at BETWEEN "'.$date1.'" AND "'.$date2.'"  ')                       

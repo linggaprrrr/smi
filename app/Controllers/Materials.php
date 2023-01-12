@@ -1008,7 +1008,7 @@ class Materials extends BaseController
     }
 
     public function simpanSize() {
-        $post = $this->request->getVar();
+        $post = $this->request->getVar();        
         $this->materialModel->simpanSize($post);
     }
 

@@ -71,6 +71,7 @@
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th> 
+                        <th class="text-center">Size</th>
                         <th class="text-center">Qty</th>   
                         <th class="text-center">Brand</th>             
                     </tr>
@@ -86,6 +87,7 @@
                                 <td class="text-center"><?= $product->product_name ?></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td class="text-center"><?= $product->color ?></td>
+                                <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>                      
                                 <td class="text-center"><?= $product->qty ?></td>
                                 <td class="text-center"><?= $product->brand ?></td>
                             </tr>

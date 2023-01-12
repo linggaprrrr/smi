@@ -222,10 +222,10 @@
                                     <?php if ($product->category != 'permanent') : ?> 
                                         <tr class="table-secondary">
                                             <td class="text-center"><?= $no++ ?></td>
-                                            <td class=""><?= $product->product_name ?></td>
-                                            <td class=""><?= $product->model_name ?></td>
-                                            <td><?= $product->color ?></td>    
-                                            <td class="text-center"><?= $product->size ?></td>   
+                                            <td class="text-center"><?= $product->product_name ?></td>
+                                            <td class="text-center"><?= $product->model_name ?></td>
+                                            <td class="text-center"><?= $product->color ?></td>    
+                                            <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>                                
                                             <td class="text-center"><?= $product->qty ?></td>   
                                             <td class="text-center"><?= strtoupper($product->category) ?></td>                             
                                             <td class="text-center"><?= $product->date ?></td>

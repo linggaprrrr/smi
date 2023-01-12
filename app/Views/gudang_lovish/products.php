@@ -41,6 +41,7 @@
                         <th class="text-center">Jenis Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
+                        <th class="text-center">Size</th>
                         <th class="text-center">Qty</th>
                         <th class="text-center">Tanggal Masuk</th>
                         <th class="text-center">PIC</th>
@@ -57,6 +58,7 @@
                                 <td class="text-center"><div><?= $product->product_name ?></div></td>
                                 <td class="text-center"><?= $product->model_name ?></td>
                                 <td><?= $product->color ?></td>
+                                <td class="text-center align-middle"><?= (is_null($product->size) ? '-' : $product->size) ?></td>
                                 <td class="text-center">1</td>
                                 <td class="text-center"><?= $product->created_at ?></td>
                                 <td class="text-center"><?= $product->name ?></td>
@@ -75,6 +77,7 @@
         <h6 class="m-0 font-weight-bold text-primary float-left">Data Stok Gudang Lama</h6>
         
         <button class="btn btn-success float-right mr-2" data-toggle="modal" data-target=".export-produk"><i class="fa fa-file-excel mr-2"></i>Import</button>
+        <a class="btn float-right" href="<?= base_url('download/import produk gudang template.xlsx') ?>" download><i class="fa fa-download"></i> Template</a>
         <div class="modal fade export-produk" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -190,6 +193,7 @@
                         <th class="text-center">Produk</th>
                         <th class="text-center">Model</th>
                         <th class="text-center">Warna</th>
+                        <th class="text-center">Size</th>
                         <th class="text-center">Qty</th>
                         <th class="text-center">Tanggal Masuk</th>
                         <th class="text-center">PIC</th>
@@ -204,22 +208,10 @@
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
                                 <td class="text-center"><div><?= $product->product_name ?></div></td>
-                                <td class="text-center">
-                                    <select class="form-control model" name="model" data-id='<?= $product->id ?>'>
-                                        <?php foreach ($models->getResultObject() as $model) : ?>
-                                                <option value="<?= $model->id ?>" <?= $model->id == $product->model_id ? 'selected="selected"' : ''; ?> ><?= $model->model_name ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control warna" name="warna" data-id='<?= $product->id ?>'>
-                                        <?php foreach ($colors->getResultObject() as $color) : ?>
-                                            <option value="<?= $color->id ?>" <?= $color->id == $product->color_id ? 'selected="selected"' : ''; ?> ><?= $color->color ?></option>
-                                        <?php endforeach ?>
-                                    </select>      
-                                </td>                                
-                                <td><input type="text" class="form-control qty" name="qty" data-id='<?= $product->id ?>' value="<?= $product->qty ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" disabled></td>        
-                                
+                                <td class="text-center"><div><?= $product->model_name ?></div></td>
+                                <td class="text-center"><div><?= $product->color ?></div></td>
+                                <td class="text-center align-middle"><?= (is_null($product->size) ? '-' : $product->size) ?></td>                            
+                                <td class="text-center"><div><?= $product->qty ?></div></td>
                                 <td class="text-center align-middle"><?= $product->created_at ?></td>
                                 <td class="text-center align-middle"><?= $product->name ?></td>
                                 <td class="text-center">                                    

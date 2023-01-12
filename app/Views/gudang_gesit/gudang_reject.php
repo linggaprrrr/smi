@@ -55,6 +55,7 @@
                                         <th class="text-center">Produk</th>   
                                         <th class="text-center">Model</th>   
                                         <th class="text-center">Warna</th>   
+                                        <th class="text-center">Size</th>   
                                         <th class="text-center">Jenis Reject</th>   
                                         <th class="text-center">Harga Jual</th>                                       
                                     </tr>
@@ -71,7 +72,8 @@
                                                     <td class="text-center"><?= $product->tanggal_jual ?></td> 
                                                     <td><div><?= $product->product_name ?></div></td>
                                                     <td class="text-center"><?= $product->model_name ?></td>                                
-                                                    <td class="text-center"><?= $product->color ?></td>                         
+                                                    <td class="text-center"><?= $product->color ?></td>                 
+                                                    <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>                              
                                                     <td class="text-center"><?= strtoupper($product->category) ?></td>                                                                                       
                                                     <td><input type="text" name="hpp[]" class="form-control harga-jual" data-id='<?= $product->barcode_id ?>' value="<?= $product->hpp ?>" placeholder="Rp ..."></td>
                                                 </tr>
@@ -80,9 +82,10 @@
                                                     <td class="text-center"><?= $no++ ?></td>
                                                     <td class="text-center"><?= $product->date ?></td> 
                                                     <td class="text-center"><?= $product->tanggal_jual ?></td> 
-                                                    <td><div><?= $product->product_name ?></div></td>
+                                                    <td class="text-center"><div><?= $product->product_name ?></div></td>
                                                     <td class="text-center"><?= $product->model_name ?></td>                                
-                                                    <td class="text-center"><?= $product->color ?></td>                         
+                                                    <td class="text-center"><?= $product->color ?></td>        
+                                                    <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>                                       
                                                     <td class="text-center"><?= strtoupper($product->category) ?></td>                                                                                       
                                                     <td>Rp <?= number_format($product->hpp, 0) ?></td>
                                                 </tr>
@@ -109,7 +112,8 @@
                                         <th class="text-center">Tanggal Reject</th>   
                                         <th class="text-center">Jenis Produk</th>   
                                         <th class="text-center">Model</th>   
-                                        <th class="text-center">Warna</th>   
+                                        <th class="text-center">Warna</th>
+                                        <th class="text-center">Size</th>   
                                         <th class="text-center">Jenis Reject</th>   
                                     
                                     </tr>
@@ -125,7 +129,8 @@
                                                     <td class="text-center"><?= date('m/d/Y', strtotime($product->date)) ?></td> 
                                                     <td><div><?= $product->product_name ?></div></td>
                                                     <td class="text-center"><?= $product->model_name ?></td>                                
-                                                    <td class="text-center"><?= $product->color ?></td>                         
+                                                    <td class="text-center"><?= $product->color ?></td>   
+                                                    <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>                      
                                                     <td class="text-center"><?= strtoupper($product->category) ?></td>                                       
                                                 </tr>
                                             <?php endif ?>

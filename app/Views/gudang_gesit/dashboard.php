@@ -146,9 +146,9 @@
                                 <?php foreach ($materialsIn->getResultObject() as $kain) : ?>
                                      <tr>
                                             <td class="text-center"><?= $no++ ?></td>
-                                            <td><?= $kain->created_at ?></td>
-                                            <td><?= $kain->type ?></td>
-                                            <td><?= $kain->color ?></td>
+                                            <td class="text-center"><?= $kain->created_at ?></td>
+                                            <td class="text-center"><?= $kain->type ?></td>
+                                            <td class="text-center"><?= $kain->color ?></td>
                                             <td class="text-center"><?= 1 ?></td>
                                         </tr>
                                 <?php endforeach ?>
@@ -184,10 +184,10 @@
                                 <?php foreach ($productsIn->getResultObject() as $product) : ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $product->product_name ?></td>
-                                        <td><?= $product->model_name ?></td>
-                                        <td><?= $product->color ?></td>
-                                        <td><?= $product->size ?></td>
+                                        <td class="text-center"><?= $product->product_name ?></td>
+                                        <td class="text-center"><?= $product->model_name ?></td>
+                                        <td class="text-center"><?= $product->color ?></td>
+                                        <td class="text-center"><?= is_null($product->size) ? '-' : $product->size  ?></td>
                                         <?php if ($product->stok <= 5) :?>
                                             <td class="text-center font-weight-bold table-danger"><?= $product->stok  ?></td>
                                         <?php elseif($product->stok >= 5 || $product->stok <= 10) : ?>
@@ -236,8 +236,8 @@
                                     ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $kain->type ?></td>
-                                        <td><?= $kain->color ?></td>
+                                        <td class="text-center"><?= $kain->type ?></td>
+                                        <td class="text-center"><?= $kain->color ?></td>
                                         <td class="text-center"><?= $kain->stok_masuk ?></td>
                                         <td class="text-center text-danger"><?= $kain->stok_retur ?></td>
                                         <td class="text-center text-danger"><?= $kain->stok_habis ?></td>                                        
@@ -282,10 +282,10 @@
                                 <?php foreach ($productsOut->getResultObject() as $product) : ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
-                                        <td><?= $product->product_name ?></td>
-                                        <td><?= $product->model_name ?></td>
-                                        <td><?= $product->color ?></td>
-                                        <td><?= $product->size ?></td>
+                                        <td class="text-center"><?= $product->product_name ?></td>
+                                        <td class="text-center"><?= $product->model_name ?></td>
+                                        <td class="text-center"><?= $product->color ?></td>
+                                        <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
                                         <td class="text-center"><?= $product->stok ?></td>
                                     </tr>
                                 <?php endforeach ?>

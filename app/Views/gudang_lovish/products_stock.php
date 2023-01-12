@@ -85,7 +85,7 @@
                                 <td class="text-center align-middle"><input type="text" name="hpp-jual" data-id="<?= $product['id'] ?>" data-model="<?= $product['model_id'] ?>" data-size="<?= $product['size'] ?>" class="form-control hpp-jual" value="<?= $product['hpp_jual'] ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
                                 <td class="text-center align-middle">Rp <?= number_format(($product['hpp'] * $product['sisa_gudang']), 0) ?></td>                            
                                 <td class="text-center align-middle">Rp <?= number_format(($product['hpp_jual'] * $product['sisa_gudang']), 0) ?></td>
-                                <td class="text-center align-middle"><mark>Rp <?= number_format(($product['hpp_jual'] * $product['sisa_gudang']) - ($product['hpp'] * $product['sisa_gudang']), 0) ?></mark></td>
+                                <td class="text-center align-middle"><mark>Rp <?= number_format((($product['hpp_jual'] - $product['hpp']) * $product['sisa']) , 0) ?></mark></td>
                             </tr>
                         <?php endforeach ?>
                     <?php endif ?>
@@ -158,7 +158,7 @@
                     });
                     $.post('/stok-masuk-to-awal', {product_id: id})
                         .done(function(data) {
-                            // setTimeout(location.reload.bind(location), 1000);
+                            setTimeout(location.reload.bind(location), 1000);
                         });
                 } else {
                     swal("Data tidak jadi dihapus!");

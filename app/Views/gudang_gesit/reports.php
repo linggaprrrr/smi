@@ -415,7 +415,7 @@
                                                 <td class="text-center"><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td class="text-center"><?= $product->color ?></td>
-                                                <td class="text-center"><?= $product->size ?></td>
+                                                <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
                                                 <td class="text-center"><?= $product->qty ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
@@ -462,7 +462,7 @@
                                                 <td><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
-                                                <td><?= $product->size ?></td>
+                                                <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
                                                 <td>Rp <?= number_format($product->price, 0) ?></td>
                                                 <td class="text-center"><?= $product->created_at ?></td>
                                                 
@@ -509,7 +509,7 @@
                                                 <td><?= $product->product_name ?></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>
                                                 <td><?= $product->color ?></td>
-                                                <td><?= $product->size ?></td>
+                                                <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
                                                 <td><?= strtoupper($product->category)?></td>
                                                 <td class="text-center"><?= $product->date ?></td>
                                                 
@@ -562,7 +562,7 @@
                                                 <td><div><?= $product->product_name ?></div></td>
                                                 <td class="text-center"><?= $product->model_name ?></td>                                
                                                 <td class="text-center"><?= $product->color ?></td>   
-                                                <td class="text-center"><?= $product->size ?></td>                         
+                                                <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>                     
                                                 <td class="text-center"><?= strtoupper($product->category) ?></td>                                                                                       
                                                 <td>Rp <?= number_format($product->hpp, 0) ?></td>
                                             </tr>

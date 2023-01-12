@@ -447,8 +447,7 @@
                                             <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <div class="modal-body">
-                                            
+                                        <div class="modal-body">                                            
                                                 <div class="form-group row">
                                                     <label class="col-sm-2 col-form-label">S</label>
                                                     <div class="col-sm-10">
@@ -479,8 +478,13 @@
                                                         <input type="text" class="form-control size-xxl" name="xxl" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                     </div>
                                                 </div>
-                                            
-                                            
+                                                <hr>
+                                                <div class="form-check">
+                                                    <input class="form-check-input no-size" name="nosize" type="checkbox" value="1" id="flexCheckDefault">
+                                                    <label class="form-check-label" for="flexCheckDefault" style="margin-top: 3px;">
+                                                        Tidak ada size
+                                                    </label>
+                                                </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" class="btn btn-primary submit-size">Simpan</button>
@@ -497,7 +501,7 @@
                                         <input type="hidden" name="cutting_id" class="cutting_id">
                                         <input type="hidden" class="total-qty-produk">
                                         <div class="modal-header">                                    
-                                            <h6><mark>Jumlah Setor : <span id="total-qty"></span></mark></h6>
+                                            <h6><mark>Jumlah Setor : <span id="total-qty-produk"></span></mark></h6>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                             </button>
@@ -533,7 +537,13 @@
                                                         <input type="text" class="form-control size-xxl-produk" name="xxl" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                     </div>
                                                 </div>
-                                            
+                                                <hr>
+                                                <div class="form-check">
+                                                    <input class="form-check-input no-size-produk" name="nosize" onclick="return false;" type="checkbox" value="1" id="flexCheckDefault">
+                                                    <label class="form-check-label" for="flexCheckDefault" style="margin-top: 3px;">
+                                                        Tidak ada size
+                                                    </label>
+                                                </div>
                                             
                                         </div>
                                         <div class="modal-footer">
@@ -621,6 +631,7 @@
                             <?php $no = 1; ?>
                             <?php if ($polaOut->getNumRows() > 0) : ?>
                                 <?php $temp = "" ?>
+                                
                                 <?php foreach ($polaOut->getResultObject() as $pola) : ?>
                                     <?php if ($temp == $pola->cutting_id) : ?>                                
                                         <?php continue ?>
@@ -924,7 +935,7 @@
 
     $(document).on('click', '.create-produk', function() {
         const id = $(this).data('id');
-        $('#total-qty').html("");
+        $('#total-qty-produk').html("");
         $('.total-qty-produk').html("");
         $('.size-s-produk').val("");
         $('.size-m-produk').val("");
@@ -933,14 +944,32 @@
         $('.size-xxl-produk').val("");
         $.get('/get-size-pola', {id: id} ,function(data) {
             const res = JSON.parse(data);
-            $('#total-qty').html(res['qty']);
+            $('#total-qty-produk').html(res['qty']);
             $('.total-qty-produk').val(res['qty']);
-            $('.cutting_id').val(id);
-            $('.size-s-produk').val(res['s']);
-            $('.size-m-produk').val(res['m']);
-            $('.size-l-produk').val(res['l']);
-            $('.size-xl-produk').val(res['xl']);
-            $('.size-xxl-produk').val(res['xxl']);
+            $('.cutting_id').val(id);        
+            
+            if (res['nosize'] != null) {
+                $('.no-size-produk').val(res['qty']);
+                $('.no-size-produk').prop('checked', true);
+                $('.size-s-produk').prop('disabled', true);
+                $('.size-m-produk').prop('disabled', true);
+                $('.size-l-produk').prop('disabled', true);
+                $('.size-xl-produk').prop('disabled', true);
+                $('.size-xxl-produk').prop('disabled', true);
+            } else {
+                $('.size-s-produk').val(res['s']);
+                $('.size-m-produk').val(res['m']);
+                $('.size-l-produk').val(res['l']);
+                $('.size-xl-produk').val(res['xl']);
+                $('.size-xxl-produk').val(res['xxl']);
+                $('.no-size-produk').prop('checked', false);
+                $('.no-size-produk').prop('disabled', true);
+                $('.size-s-produk').prop('disabled', false);
+                $('.size-m-produk').prop('disabled', false);
+                $('.size-l-produk').prop('disabled', false);
+                $('.size-xl-produk').prop('disabled', false);
+                $('.size-xxl-produk').prop('disabled', false);
+            }
             $('#modalSizeProduk').modal('show');
         });        
     });
@@ -956,12 +985,20 @@
 
         var total = (parseInt(s) + parseInt(m) + parseInt(l) + parseInt(xl) + parseInt(xxl));
         console.log(qty);
-        if (qty != total) {
-            $.notify('Total size berbeda dengan jumlah setor', "error"); 
+        if (qty != total )  {
+            if ($('input.no-size-produk').prop('checked')) {
+                $.post('/create-produk', $('form#form-size-produk').serialize(), function(data) {            
+                $.notify('Produk Berhasi dimuat', "success"); 
+                $('#modalSizeProduk').modal('hide');
+            });
+            } else {
+                $.notify('Total size berbeda dengan jumlah setor', "error"); 
+            }
+            
         } else {
             $.post('/create-produk', $('form#form-size-produk').serialize(), function(data) {            
                 $.notify('Size berhasil disimpan', "success"); 
-                $('#modalSize').modal('hide');
+                $('#modalSizeProduk').modal('hide');
             });
         }
         
@@ -977,13 +1014,19 @@
             $('#cutting').val(id);
             $('#berat-pola-out').val(cutting['berat']);
             $('#material-pola-out').val(cutting['material_id']);
-            $('#polaOutModal').modal('show');
+            if (cutting['s'] == null && cutting['nosize'] == null) {
+                swal("Size belum di-set");
+            } else {
+                $('#polaOutModal').modal('show');
+            }
+            
         });
     });
 
     $('.pola-in').on('click', function() {
         const id = $(this).data('id');
         const jumlah = $(this).data('jumlah');
+        var total = 0;
         $('#jumlah-ambil').html("");
         $('#pid').val(id);
         $('#jumlah-ambil').html(jumlah);
@@ -998,7 +1041,7 @@
             $('#modelid').val(pola['model_id']);
             $('#modelharga').val(pola['harga_jahit']);
             $('#polaInModal').modal('show');
-
+            
         });
         
     });
@@ -1299,11 +1342,27 @@
             $('#total-qty').html(res['qty']);
             $('.total-qty').val(res['qty']);
             $('.cutting_id').val(id);
-            $('.size-s').val(res['s']);
-            $('.size-m').val(res['m']);
-            $('.size-l').val(res['l']);
-            $('.size-xl').val(res['xl']);
-            $('.size-xxl').val(res['xxl']);
+            if (res['nosize'] != "1") {
+                $('.size-s').prop('disabled', false);
+                $('.size-m').prop('disabled', false);
+                $('.size-l').prop('disabled', false);
+                $('.size-xl').prop('disabled', false);
+                $('.size-xxl').prop('disabled', false);
+                $('input.no-size').prop('checked', false);
+                $('.size-s').val(res['s']);
+                $('.size-m').val(res['m']);
+                $('.size-l').val(res['l']);
+                $('.size-xl').val(res['xl']);
+                $('.size-xxl').val(res['xxl']);
+            } else {
+                $('.size-s').prop('disabled', true);
+                $('.size-m').prop('disabled', true);
+                $('.size-l').prop('disabled', true);
+                $('.size-xl').prop('disabled', true);
+                $('.size-xxl').prop('disabled', true);   
+                $('input.no-size').prop('checked', true);
+            }
+            
             $('#modalSize').modal('show');
         });
     });
@@ -1320,7 +1379,15 @@
         var total = (parseInt(s) + parseInt(m) + parseInt(l) + parseInt(xl) + parseInt(xxl));
         
         if (qty != total) {
-            $.notify('Total size berbeda dengan total Qty', "error"); 
+            if ($('input.no-size').prop('checked')) {
+                $.post('/simpan-size', $('form#form-size').serialize(), function(data) {            
+                    $.notify('Size berhasil disimpan', "success"); 
+                    $('#modalSize').modal('hide');
+                });
+            } else {
+                $.notify('Total size berbeda dengan total Qty', "error"); 
+            }
+            
         } else {
             $.post('/simpan-size', $('form#form-size').serialize(), function(data) {            
                 $.notify('Size berhasil disimpan', "success"); 
@@ -1328,6 +1395,22 @@
             });
         }
         
+    });
+
+    $('.no-size').click(function() {        
+        if ($('input.no-size').prop('checked')) {
+            $('.size-s').prop('disabled', true);
+            $('.size-m').prop('disabled', true);
+            $('.size-l').prop('disabled', true);
+            $('.size-xl').prop('disabled', true);
+            $('.size-xxl').prop('disabled', true);            
+        } else {
+            $('.size-s').prop('disabled', false);
+            $('.size-m').prop('disabled', false);
+            $('.size-l').prop('disabled', false);
+            $('.size-xl').prop('disabled', false);
+            $('.size-xxl').prop('disabled', false);
+        }
     });
 
 </script>

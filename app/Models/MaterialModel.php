@@ -619,7 +619,7 @@ class MaterialModel extends Model
     }
 
     public function getCutting($id) {
-        $query = $this->db->query("SELECT * FROM cutting WHERE id='$id' ");
+        $query = $this->db->query("SELECT * FROM cutting JOIN size ON cutting.id = size.cutting_id  WHERE cutting.id='$id' ");
         return $query->getResultObject();
     }
     
@@ -649,8 +649,8 @@ class MaterialModel extends Model
             ->join('models as md', 'md.id = ct.model_id', 'left')
             ->join('pola as p', 'p.cutting_id = ct.id')
             ->join('vendor_pola as vend', 'vend.id = p.vendor_id')
-            ->groupBy('m.id')
-            ->orderBy('m.id DESC')
+            ->groupBy('ct.id')
+            ->orderBy('ct.id DESC')
             ->get();
         } else {
             $query = $this->db->table('materials as m')
@@ -752,14 +752,27 @@ class MaterialModel extends Model
     }
 
     public function simpanSize($data) {
-        $this->db->table('size')
+        if (!isset($data['nosize'])) {
+            $this->db->table('size')
             ->set('s', $data['s'])
             ->set('m', $data['m'])
             ->set('l', $data['l'])
             ->set('xl', $data['xl'])
             ->set('xxl', $data['xxl'])
+            ->set('nosize', NULL)
             ->where('cutting_id', $data['cutting_id'])
             ->update($data);
+        } else {
+            $this->db->table('size')
+            ->set('nosize', $data['nosize'])
+            ->set('s', NULL)
+            ->set('m', NULL)
+            ->set('l', NULL)
+            ->set('xl', NULL)
+            ->set('xxl', NULL)
+            ->where('cutting_id', $data['cutting_id'])
+            ->update($data);
+        }
     }
 
     public function insertSize($id) {

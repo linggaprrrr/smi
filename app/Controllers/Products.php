@@ -109,126 +109,150 @@ class Products extends BaseController
     
     public function createProduct() {
         $post = $this->request->getVar();
-        
         $data = $this->productModel->findPola($post['cutting_id']);
-        if (!is_null($post['s']) || $post['s'] > 0) {
-            $product = [
-                'model_id'  => $data->id,            
-                'color_id' => $data->color,
-                'size' => 'S',
-                'user_id' => session()->get('user_id'),
-                'hpp_jual' => $data->hpp,
-                'qty' => $post['s'],                
-            ];
-            $this->productModel->save($product);
-            $productId = $this->productModel->insertID();        
-            for ($i=0; $i < $post['s']; $i++) {
-                $temp = $this->productModel->createBarcode($productId);
-                $this->productModel->createLog($temp, '0', '2');
-            }
-            $this->logModel->saveHistoryStok([
-                'model_id' => $data->id,
-                'color_id' => $data->color,
-                'qty' => $post['s'],   
-                'size' => 'S',
-                'jenis' => 'create',                         
-            ]);
-        }
 
-        if (!is_null($post['m']) || $post['m'] > 0) {
+        if (!is_null($post['nosize'])) {
             $product = [
                 'model_id'  => $data->id,            
                 'color_id' => $data->color,
-                'size' => 'M',
+                'size' => NULL,
                 'user_id' => session()->get('user_id'),
                 'hpp_jual' => $data->hpp,
-                'qty' => $post['m'],                
+                'qty' => $post['nosize'],                
             ];
             $this->productModel->save($product);
             $productId = $this->productModel->insertID();        
-            for ($i=0; $i < $post['m']; $i++) {
+            for ($i=0; $i < $post['nosize']; $i++) {
                 $temp = $this->productModel->createBarcode($productId);
                 $this->productModel->createLog($temp, '0', '2');
             }
             $this->logModel->saveHistoryStok([
                 'model_id' => $data->id,
                 'color_id' => $data->color,
-                'qty' => $post['m'],   
-                'size' => 'M',
+                'qty' => $post['nosize'],   
+                'size' => NULL,
                 'jenis' => 'create',                         
-            ]);
-        }
-
-        if (!is_null($post['l']) || $post['l'] > 0) {
-            $product = [
-                'model_id'  => $data->id,            
-                'color_id' => $data->color,
-                'size' => 'L',
-                'user_id' => session()->get('user_id'),
-                'hpp_jual' => $data->hpp,
-                'qty' => $post['l'],                
-            ];
-            $this->productModel->save($product);
-            $productId = $this->productModel->insertID();        
-            for ($i=0; $i < $post['l']; $i++) {
-                $temp = $this->productModel->createBarcode($productId);
-                $this->productModel->createLog($temp, '0', '2');
+            ]);  
+        } else {
+            if (!is_null($post['s']) || $post['s'] > 0) {
+                $product = [
+                    'model_id'  => $data->id,            
+                    'color_id' => $data->color,
+                    'size' => 'S',
+                    'user_id' => session()->get('user_id'),
+                    'hpp_jual' => $data->hpp,
+                    'qty' => $post['s'],                
+                ];
+                $this->productModel->save($product);
+                $productId = $this->productModel->insertID();        
+                for ($i=0; $i < $post['s']; $i++) {
+                    $temp = $this->productModel->createBarcode($productId);
+                    $this->productModel->createLog($temp, '0', '2');
+                }
+                $this->logModel->saveHistoryStok([
+                    'model_id' => $data->id,
+                    'color_id' => $data->color,
+                    'qty' => $post['s'],   
+                    'size' => 'S',
+                    'jenis' => 'create',                         
+                ]);
             }
-            $this->logModel->saveHistoryStok([
-                'model_id' => $data->id,
-                'color_id' => $data->color,
-                'qty' => $post['l'],   
-                'size' => 'L',
-                'jenis' => 'create',                         
-            ]);
-        }
-
-        if (!is_null($post['xl']) || $post['xl'] > 0) {
-            $product = [
-                'model_id'  => $data->id,            
-                'color_id' => $data->color,
-                'size' => 'XL',
-                'user_id' => session()->get('user_id'),
-                'hpp_jual' => $data->hpp,
-                'qty' => $post['xl'],                
-            ];
-            $this->productModel->save($product);
-            $productId = $this->productModel->insertID();        
-            for ($i=0; $i < $post['xl']; $i++) {
-                $temp = $this->productModel->createBarcode($productId);
-                $this->productModel->createLog($temp, '0', '2');
+    
+            if (!is_null($post['m']) || $post['m'] > 0) {
+                $product = [
+                    'model_id'  => $data->id,            
+                    'color_id' => $data->color,
+                    'size' => 'M',
+                    'user_id' => session()->get('user_id'),
+                    'hpp_jual' => $data->hpp,
+                    'qty' => $post['m'],                
+                ];
+                $this->productModel->save($product);
+                $productId = $this->productModel->insertID();        
+                for ($i=0; $i < $post['m']; $i++) {
+                    $temp = $this->productModel->createBarcode($productId);
+                    $this->productModel->createLog($temp, '0', '2');
+                }
+                $this->logModel->saveHistoryStok([
+                    'model_id' => $data->id,
+                    'color_id' => $data->color,
+                    'qty' => $post['m'],   
+                    'size' => 'M',
+                    'jenis' => 'create',                         
+                ]);
             }
-            $this->logModel->saveHistoryStok([
-                'model_id' => $data->id,
-                'color_id' => $data->color,
-                'qty' => $post['xl'],   
-                'size' => 'XL',
-                'jenis' => 'create',                         
-            ]);
-        }
-
-        if (!is_null($post['xxl']) || $post['xxl'] > 0) {
-            $product = [
-                'model_id'  => $data->id,            
-                'color_id' => $data->color,
-                'size' => 'XXL',
-                'user_id' => session()->get('user_id'),
-                'hpp_jual' => $data->hpp,
-                'qty' => $post['xxl'],                
-            ];
-            $this->productModel->save($product);
-            $productId = $this->productModel->insertID();        
-            for ($i=0; $i < $post['xxl']; $i++) {
-                $temp = $this->productModel->createBarcode($productId);
-                $this->productModel->createLog($temp, '0', '2');
+    
+            if (!is_null($post['l']) || $post['l'] > 0) {
+                $product = [
+                    'model_id'  => $data->id,            
+                    'color_id' => $data->color,
+                    'size' => 'L',
+                    'user_id' => session()->get('user_id'),
+                    'hpp_jual' => $data->hpp,
+                    'qty' => $post['l'],                
+                ];
+                $this->productModel->save($product);
+                $productId = $this->productModel->insertID();        
+                for ($i=0; $i < $post['l']; $i++) {
+                    $temp = $this->productModel->createBarcode($productId);
+                    $this->productModel->createLog($temp, '0', '2');
+                }
+                $this->logModel->saveHistoryStok([
+                    'model_id' => $data->id,
+                    'color_id' => $data->color,
+                    'qty' => $post['l'],   
+                    'size' => 'L',
+                    'jenis' => 'create',                         
+                ]);
             }
-            $this->logModel->saveHistoryStok([
-                'model_id' => $data->id,
-                'color_id' => $data->color,
-                'qty' => $post['xxl'],   
-                'size' => 'XXL',
-                'jenis' => 'create',                         
-            ]);
+    
+            if (!is_null($post['xl']) || $post['xl'] > 0) {
+                $product = [
+                    'model_id'  => $data->id,            
+                    'color_id' => $data->color,
+                    'size' => 'XL',
+                    'user_id' => session()->get('user_id'),
+                    'hpp_jual' => $data->hpp,
+                    'qty' => $post['xl'],                
+                ];
+                $this->productModel->save($product);
+                $productId = $this->productModel->insertID();        
+                for ($i=0; $i < $post['xl']; $i++) {
+                    $temp = $this->productModel->createBarcode($productId);
+                    $this->productModel->createLog($temp, '0', '2');
+                }
+                $this->logModel->saveHistoryStok([
+                    'model_id' => $data->id,
+                    'color_id' => $data->color,
+                    'qty' => $post['xl'],   
+                    'size' => 'XL',
+                    'jenis' => 'create',                         
+                ]);
+            }
+    
+            if (!is_null($post['xxl']) || $post['xxl'] > 0) {
+                $product = [
+                    'model_id'  => $data->id,            
+                    'color_id' => $data->color,
+                    'size' => 'XXL',
+                    'user_id' => session()->get('user_id'),
+                    'hpp_jual' => $data->hpp,
+                    'qty' => $post['xxl'],                
+                ];
+                $this->productModel->save($product);
+                $productId = $this->productModel->insertID();        
+                for ($i=0; $i < $post['xxl']; $i++) {
+                    $temp = $this->productModel->createBarcode($productId);
+                    $this->productModel->createLog($temp, '0', '2');
+                }
+                $this->logModel->saveHistoryStok([
+                    'model_id' => $data->id,
+                    'color_id' => $data->color,
+                    'qty' => $post['xxl'],   
+                    'size' => 'XXL',
+                    'jenis' => 'create',                         
+                ]);            
+            }
         }
 
         $getProduct = $this->productModel
@@ -1004,106 +1028,56 @@ class Products extends BaseController
         $data = $spreadsheet->getActiveSheet()->toArray();   
         foreach ($data as $idx => $row) {
             if ($idx > 0 && !is_null($row[0])) {
-                $temp = explode(' ', $row[1]);  
+                
                 $modelID = "";
                 $productTypeID = "";
                 $colorID = "";
                 $size = NULL;
                 $hpp = 0;
 
-                $getProductType = $this->productModel->getProductType($temp[0]);
+                $getProductType = $this->productModel->getProductType($row[1]);
                 if (is_null($getProductType)) {
                     $productTypeID = NULL;                    
                 }  else {
                     $productTypeID = $getProductType->id;
                 }                       
 
-
-
-                if (count($temp) == 2) { 
-                    $getModel = $this->designModel->where(['model_name' => $temp[0]])->first();                                
-                    if (is_null($getModel)) {
-                        $model = [
-                            'model_name' => $temp[0],                        
-                        ];
-                        $this->designModel->save($model); 
-                        $modelID = $this->designModel->getInsertID();
-                    } else {
-                        $modelID = $getModel['id'];
-                        $hpp = $getModel['hpp'];
-                    }
+                $getModel = $this->designModel->where(['model_name' => $row[2]])->first();                                
+                if (is_null($getModel)) {
+                    $model = [
+                        'model_name' => $$row[2],                        
+                    ];
+                    $this->designModel->save($model); 
+                    $modelID = $this->designModel->getInsertID();
                 } else {
-                    $getModel = $this->designModel->where(['model_name' => $temp[1]])->first();                                
-                    if (is_null($getModel)) {
-                        $model = [
-                            'model_name' => $temp[1],                        
-                        ];
-                        $this->designModel->save($model); 
-                        $modelID = $this->designModel->getInsertID();
-                    } else {
-                        $modelID = $getModel['id'];
-                        $hpp = $getModel['hpp'];
-                    }
-                }
-                
-                
-                if (count($temp) == 3) {
-                    if (strpos($row[1], 'REG') !== false) {
-                        $size = "REG";
-                        $color = trim($temp[2], $size);
-                    } else if (strpos($row[1], 'JUMBO') !== false || strpos($row[1], 'JUM') !== false) {
-                        $size = "JUMBO";
-                        $color = trim($temp[2], $size);
-                    } else {
-                        $color = trim($temp[2]);
-                    }
-                    
-                } else if (count($temp) > 3) {
-                    if (strpos($row[1], 'REG') !== false) {
-                        $size = "REG";
-                        $color = trim($temp[2]. ' '. $temp[3], $size);
-                    } else if (strpos($row[1], 'JUMBO') !== false || strpos($row[1], 'JUM') !== false) {
-                        $size = "JUMBO";
-                        $color = trim($temp[2]. ' '. $temp[3], $size);
-                    } else {
-                        $color = trim($temp[2]. ' '. $temp[3]);
-                    }                        
-                } else {
-                    if (strpos($row[0], 'REG') !== false) {
-                        $size = "REG";
-                        $color = trim($temp[1], $size);
-                    } else if (strpos($row[0], 'JUMBO') !== false || strpos($row[0], 'JUM') !== false) {
-                        $size = "JUMBO";
-                        $color = trim($temp[1], $size);
-                    } else {
-                        $color = trim($temp[1]);
-                    }
+                    $modelID = $getModel['id'];
+                    $hpp = $getModel['hpp'];
                 }
 
-                $getColor = $this->materialModel->getColorByName($color);
+                $getColor = $this->materialModel->getColorByName($row[3]);
                 if (is_null($getColor)) {
-                    $colorID = $this->materialModel->saveWarna($color);
+                    $colorID = $this->materialModel->saveWarna($row[3]);
                 } else {
                     $colorID = $getColor->id;
                 }
 
+                if (!is_null($row[4])) {
+                    $size = strtoupper($row[4]);
+                } else {
+                    $size = NULL;
+                }
 
-                
-
-
-              
-                
                 $this->productModel->save([
                     'model_id' => $modelID,
                     'color_id' => $colorID,
                     'user_id' => session()->get('user_id'),
-                    'qty' => $row[2],
+                    'qty' => $row[5],
                     'size' => $size,
                     'price' => $hpp,
                     'status' => 2
                 ]);         
                 $productId = $this->productModel->insertID();        
-                for ($i=0; $i < $row[2]; $i++) {
+                for ($i=0; $i < $row[5]; $i++) {
                     $temp = $this->productModel->createBarcode($productId);
                     $this->productModel->createLog($temp, '0', '2');
                 }        

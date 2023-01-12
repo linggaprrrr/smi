@@ -180,7 +180,7 @@
                                                     <td><?= $product->product_name ?></td>
                                                     <td><?= $product->model_name ?></td>
                                                     <td><?= $product->color ?></td>
-                                                    <td><?= $product->size ?></td>
+                                                    <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
                                                     <?php if ($product->stok <= 5) :?>
                                                         <td class="text-center font-weight-bold table-danger"><?= $product->stok  ?></td>
                                                     <?php elseif($product->stok >= 5 || $product->stok <= 10) : ?>
@@ -278,7 +278,7 @@
                                                     <td><?= $product->product_name ?></td>
                                                     <td><?= $product->model_name ?></td>
                                                     <td><?= $product->color ?></td>
-                                                    <td><?= $product->size ?></td>
+                                                    <td class="text-center"><?= is_null($product->size) ? '-' : $product->size ?></td>
                                                     <td class="text-center"><?= $product->stok ?></td>
                                                 </tr>
                                             <?php endforeach ?>
