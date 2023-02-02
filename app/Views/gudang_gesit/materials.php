@@ -10,8 +10,40 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css" integrity="sha512-Fppbdpv9QhevzDE+UHmdxL4HoW8HantO+rC8oQB2hCofV+dWV2hePnP5SgiWR1Y1vbJeYONZfzQc5iII6sID2Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Kain Masuk</h6>
-        <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-kain"><i class="fa fa-plus mr-2"></i>Tambah Kain</button>
+        <h6 class="m-0 font-weight-bold text-primary float-left">Daftar Kain Masuk</h6>        
+        <button class="btn btn-primary float-right" data-toggle="modal" data-target=".bd-example-modal-lg-import-kain"><i class="fas fa-file-import mr-2"></i>Import Kain</button>
+        <button class="btn btn-primary float-right mr-2" data-toggle="modal" data-target=".bd-example-modal-lg-kain"><i class="fa fa-plus mr-2"></i>Tambah Kain</button>
+        <div class="modal fade bd-example-modal-lg-import-kain" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">                    
+                    <form id="form-kain" action="<?= base_url('/import-kain-masuk') ?>" method="post">
+                        <?php csrf_field() ?>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Import Kain</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="">File</label>
+                                        <input type="file" class="form-control" name="file" required>
+                                    </div>            
+                                    <small><a href="/download/template import kain masuk.xlsx" download>Download Template</a></small>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="modal fade bd-example-modal-lg-kain" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">                    
@@ -68,11 +100,8 @@
                                     <div class="form-group">
                                         <label for="">Berat (Kg)/Yard</label>
                                         <input type="text" class="form-control" name="berat" id="tambah-berat" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="...">                                        
-                                    </div>  
-                                    <div class="form-group">
-                                        <label for="">Roll</label>
-                                        <input type="text" class="form-control" name="roll" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah roll">                                
-                                    </div>                                                                
+                                        <input type="hidden" class="form-control" name="roll" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1" placeholder="Masukkan jumlah roll">                                
+                                    </div> 
                                 </div>
                                 <!-- <div class="col">
                                     <div class="form-group">

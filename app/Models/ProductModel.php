@@ -932,4 +932,13 @@ class ProductModel extends Model
         return $totalStokMasuk;
     }
 
+    public function produkInGesitDatatable($start = null, $length = null) {
+        if ($start == null) {
+            $query = $this->db->query("SELECT products.*, model_name, jenis as product_name, color, name, price, (products.qty - IFNULL(stok_keluar, 0)) as stok FROM products JOIN models ON models.id = products.model_id JOIN colors ON colors.id = products.color_id JOIN users ON users.id = products.user_id LEFT JOIN (SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b WHERE b.status <> '1' GROUP BY b.product_id) as k ON k.product_id = products.id WHERE products.status = '1' GROUP BY products.id ORDER BY products.created_at DESC ")->getResult();
+        } else {
+            $query = $this->db->query("SELECT products.*, model_name, jenis as product_name, color, name, price, (products.qty - IFNULL(stok_keluar, 0)) as stok FROM products JOIN models ON models.id = products.model_id JOIN colors ON colors.id = products.color_id JOIN users ON users.id = products.user_id LEFT JOIN (SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b WHERE b.status <> '1' GROUP BY b.product_id) as k ON k.product_id = products.id WHERE products.status = '1' GROUP BY products.id ORDER BY products.created_at DESC limit $start, $length ")->getResult();
+        }
+        return $query;
+    }
+
 }   

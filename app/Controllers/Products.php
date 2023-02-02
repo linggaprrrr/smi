@@ -2039,4 +2039,51 @@ class Products extends BaseController
 		exit;
     }
 
+    public function loadProductGesit() {
+        $params['draw'] = $_REQUEST['draw'];
+        $start = $_REQUEST['start'];
+        $length = $_REQUEST['length'];
+        $search_value = $_REQUEST['search']['value'];
+        ini_set('memory_limit', '-1');
+        if(!empty($search_value)){
+            $total_count = $this->db->query("SELECT products.*, model_name, jenis as product_name, color, name, price, (products.qty - IFNULL(stok_keluar, 0)) as stok FROM products JOIN models ON models.id = products.model_id JOIN colors ON colors.id = products.color_id JOIN users ON users.id = products.user_id LEFT JOIN (SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b WHERE b.status <> '1' GROUP BY b.product_id) as k ON k.product_id = products.id WHERE products.status = '1' AND (model_name LIKE '%".$search_value."%' OR product_name LIKE '%".$search_value."%') GROUP BY products.id ORDER BY products.created_at DESC ")->getResult();
+            $data = $this->db->query("SELECT products.*, model_name, jenis as product_name, color, name, price, (products.qty - IFNULL(stok_keluar, 0)) as stok FROM products JOIN models ON models.id = products.model_id JOIN colors ON colors.id = products.color_id JOIN users ON users.id = products.user_id LEFT JOIN (SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b WHERE b.status <> '1' GROUP BY b.product_id) as k ON k.product_id = products.id WHERE products.status = '1' AND (model_name LIKE '%".$search_value."%' OR product_name LIKE '%".$search_value."%') GROUP BY products.id limit $start, $length")->getResult();
+        }else{
+            $total_count = $this->productModel->produkInGesitDatatable();
+            $data = $this->productModel->produkInGesitDatatable($start, $length);
+        }
+        $json_data = array(
+            "draw" => intval($params['draw']),
+            "recordsTotal" => count($total_count),
+            "recordsFiltered" => count($total_count),
+            "data" => $data   // total data array
+        );
+
+        echo json_encode($json_data);
+    }
+
+    public function loadProductMasukGudang() {
+        $params['draw'] = $_REQUEST['draw'];
+        $start = $_REQUEST['start'];
+        $length = $_REQUEST['length'];
+        $search_value = $_REQUEST['search']['value'];
+        ini_set('memory_limit', '-1');
+        if(!empty($search_value)){
+            $total_count = $this->db->query("SELECT products.*, model_name, jenis as product_name, color, name, price, (products.qty - IFNULL(stok_keluar, 0)) as stok FROM products JOIN models ON models.id = products.model_id JOIN colors ON colors.id = products.color_id JOIN users ON users.id = products.user_id LEFT JOIN (SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b WHERE b.status <> '1' GROUP BY b.product_id) as k ON k.product_id = products.id WHERE products.status = '1' AND (model_name LIKE '%".$search_value."%' OR product_name LIKE '%".$search_value."%') GROUP BY products.id ORDER BY products.created_at DESC ")->getResult();
+            $data = $this->db->query("SELECT products.*, model_name, jenis as product_name, color, name, price, (products.qty - IFNULL(stok_keluar, 0)) as stok FROM products JOIN models ON models.id = products.model_id JOIN colors ON colors.id = products.color_id JOIN users ON users.id = products.user_id LEFT JOIN (SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b WHERE b.status <> '1' GROUP BY b.product_id) as k ON k.product_id = products.id WHERE products.status = '1' AND (model_name LIKE '%".$search_value."%' OR product_name LIKE '%".$search_value."%') GROUP BY products.id limit $start, $length")->getResult();
+        }else{
+            $total_count = $this->productModel->produkInGesitDatatable();
+            $data = $this->productModel->produkInGesitDatatable($start, $length);
+        }
+        $json_data = array(
+            "draw" => intval($params['draw']),
+            "recordsTotal" => count($total_count),
+            "recordsFiltered" => count($total_count),
+            "data" => $data   // total data array
+        );
+
+        echo json_encode($json_data);
+    }
+
+
 }

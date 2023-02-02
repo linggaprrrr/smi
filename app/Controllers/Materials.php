@@ -301,8 +301,7 @@ class Materials extends BaseController
         $materials = $this->materialModel->getAllMaterialType();
         $colors = $this->materialModel->getAllColors();
         $materialVendors = $this->materialModel->getMaterialVendors();
-        $materialsIn = $this->materialModel->getAllMaterial(); 
-        
+        $materialsIn = $this->materialModel->getAllMaterial();         
         
         $materialsOut = $this->materialModel->getAllMaterialOut();        
         $gudangs = $this->materialModel->getAllGudang();
@@ -1016,6 +1015,50 @@ class Materials extends BaseController
         $id = $this->request->getVar('id');
         $data = $this->materialModel->getSizePola($id);
         echo json_encode($data);
+    }
+
+    public function loadMaterial() {
+        $params['draw'] = $_REQUEST['draw'];
+        $start = $_REQUEST['start'];
+        $length = $_REQUEST['length'];
+        $search_value = $_REQUEST['search']['value'];
+        ini_set('memory_limit', '-1');
+        if(!empty($search_value)){
+            $total_count = $this->materialModel->getAllMaterialDatatables($search_value);
+            // $total_count = $this->db->query("SELECT upc, asin, item_description, CONCAT('$',retail_value) as retail_value, vendor_name from upc WHERE upc like '%".$search_value."%' OR item_description like '%".$search_value."%' OR vendor_name like '%".$search_value."%' ")->getResult(); 
+            $data = $this->db->query("SELECT upc, asin, item_description, CONCAT('$',retail_value) as retail_value, vendor_name from upc WHERE upc like '%".$search_value."%' OR item_description like '%".$search_value."%' OR vendor_name like '%".$search_value."%'  limit $start, $length")->getResult();
+        }else{
+            $total_count = $this->db->query("SELECT upc, asin, item_description, CONCAT('$',retail_value) as retail_value, vendor_name from upc")->getResult();
+            $data = $this->db->query("SELECT upc, asin, item_description, CONCAT('$',retail_value) as retail_value, vendor_name from upc limit $start, $length")->getResult();
+        }
+        $json_data = array(
+            "draw" => intval($params['draw']),
+            "recordsTotal" => count($total_count),
+            "recordsFiltered" => count($total_count),
+            "data" => $data   // total data array
+        );
+
+        echo json_encode($json_data);
+    }
+
+    public function importKainMasuk() {
+        $file = $this->request->getFile('file');  
+        if (!is_null($file)) {
+            $ext = $file->getClientExtension();
+            if ($ext == 'xls') {
+                $render = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+            } else {
+                $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            }
+            $spreadsheet = $render->load($file);
+            $data = $spreadsheet->getActiveSheet()->toArray();   
+            foreach ($data as $idx => $row) {
+                if ($idx > 0) {
+                    
+                }
+            }
+        }
+        
     }
 
 }

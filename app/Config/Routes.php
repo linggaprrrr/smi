@@ -182,6 +182,7 @@ $routes->get('export-data-cutting', 'Materials::exportDataCutting');
 $routes->get('export-data-cutting/(:any)/(:any)', 'Materials::exportDataCutting/$1/$2');
 $routes->get('export-data-stok-produk', 'Products::exportDataStokProduct');
 $routes->get('export-data-stok-produk/(:any)/(:any)', 'Products::exportDataStokProduct/$1/$2');
+$routes->post('/import-kain-masuk', 'Materials::importKainMasuk');
 
 // produk gesit
 $routes->post('on-change-product-type', 'Products::onChangeProductType');
@@ -303,6 +304,8 @@ $routes->get('/test', 'QRCodeGenerator::test');
 
 // API 
 $routes->post('/kirim-qr', 'Api::kirimQR');
+$routes->post('load-product-gesit', 'Products::loadProductGesit');
+$routes->post('load-product-masuk-gudang', 'Products::loadProductMasukGudang');
 
 /*
  * --------------------------------------------------------------------

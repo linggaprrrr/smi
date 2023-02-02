@@ -779,4 +779,19 @@ class MaterialModel extends Model
         $this->db->query("INSERT INTO size(cutting_id) VALUES('$id') ");
     }
 
+    public function getAllMaterialDatatables($search, $start = null, $length = null) {
+        $query =  $this->db->table('materials')
+            ->select('materials.*, (materials.weight - IFNULL(berat_cutting, 0)) as total_berat, material_vendors.vendor, material_types.type, colors.color')
+            ->join('material_types', 'material_types.id = materials.material_type')
+            ->join('colors', 'colors.id = materials.color_id')
+            ->join('gudang', 'gudang.id = materials.gudang_id')
+            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
+            ->join('(SELECT m.id, SUM(c.berat) as berat_cutting FROM cutting c JOIN materials as m ON m.id = c.material_id GROUP BY c.material_id) as m','materials.id = m.id', 'left')
+            ->where('status', '1')
+            ->like('material_types.type', $search)
+            ->orLike('colors.color', $search)
+            ->orderBy('created_at', 'desc')->get();
+        return $query;
+    }
+
 }

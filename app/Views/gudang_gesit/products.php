@@ -90,7 +90,7 @@
     </div>
         <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+            <table class="table table-bordered data-product" id="" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">No</th>
@@ -106,8 +106,8 @@
                     </tr>
                 </thead>
                 
-                <tbody>
-                    <?php $no = 1; ?>
+                <!-- <tbody>
+                <?php $no = 1; ?>
                     <?php if ($productsIn->getNumRows() > 0) : ?>
                         <?php foreach ($productsIn->getResultObject() as $product) : ?>
                             <tr>
@@ -130,7 +130,7 @@
                             </tr>
                         <?php endforeach ?>
                     <?php endif ?>
-                </tbody>
+                </tbody> -->
             </table>
         </div>
         
@@ -144,7 +144,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+            <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">No</th>
@@ -232,8 +232,45 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    $(document).ready(function() {
-
+    $(document).ready(function() {        
+       
+        $('.data-product').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                    "url": "<?= base_url('load-product-gesit') ?>",
+                    "dataType": "json",
+                    "type": "POST"
+                },
+            "columns": [
+                { "data": null,"sortable": false, 
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }  
+                },
+                { "data": "product_name" },
+                { "data": "model_name" },
+                { "data": "color" },
+                { "data": "size" },
+                { "data": "stok" },
+                { 
+                    "data": null, render: function(data, type, row, meta) {                        
+                        return '<input type="text" class="form-control hpp" name="price" data-id='+data.id+' value='+data.hpp_jual+'>';                            
+                    },
+                    "className": "text-center"
+                    
+                },
+                { "data": "created_at" },
+                { "data": "name" },
+                {
+                    "data" : "id", render: function(data, type, row, meta) {
+                        return '<a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus-produk" data-id='+ data +'> <span class="icon text-white-25"><i class="fas fas fa-trash"></i></span></a>';                            
+                    },
+                    "className": "text-center"
+                }
+            ],
+            
+        });
         $(document).on('click', '.btn-hapus-produk', function() {
             const id = $(this).data('id');
             swal({
@@ -282,6 +319,22 @@
             });
         })
 
+        $(document).on('change', '.hpp', function() {
+            const id = $(this).data('id');
+            const hpp = $(this).val();
+            var regExp = /[a-zA-Z]/g;
+
+            if(regExp.test(hpp)){
+                $.notify('HPP gagal diubah', "warning");
+            } else {
+                $.post('/on-change-product-hpp', {product: id, hpp: hpp})
+                    .done(function(data) {
+                        $.notify('HPP produk berhasil diubah', "success");
+                    });   
+            }
+            
+        })
+
         $('.jenis-produk').on('change', function() {
             const id = $(this).data('id');
             const jenis = $(this).val();
@@ -320,14 +373,14 @@
 
 
 
-        $('.hpp').on('change', function() {
-            const id = $(this).data('id');
-            const hpp = $(this).val();
-            $.post('/on-change-product-hpp', {product: id, hpp: hpp})
-                .done(function(data) {
-                    $.notify('HPP produk berhasil diubah', "success");
-                });   
-        });
+        // $('.hpp').on('change', function() {
+        //     const id = $(this).data('id');
+        //     const hpp = $(this).val();
+        //     $.post('/on-change-product-hpp', {product: id, hpp: hpp})
+        //         .done(function(data) {
+        //             $.notify('HPP produk berhasil diubah', "success");
+        //         });   
+        // });
 
         $('.model-hpp').on('change', function() {
             const id = $(this).val();
@@ -344,6 +397,6 @@
             });
         })
     });
-    
+   
 </script>
 <?= $this->endSection() ?>

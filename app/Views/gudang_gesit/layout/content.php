@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
 
-    <title><?= $title ?> - Digipreneur Labs</title>
+    <title>-</title>
 
     <!-- Custom fonts for this template-->
     <link href="/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
