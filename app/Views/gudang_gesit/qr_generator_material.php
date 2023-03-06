@@ -27,7 +27,7 @@
         </div>
         <div class="card-body">        
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTableKainPrint" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">No</th>
@@ -81,8 +81,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">            
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">QR Code</h5>                        
-                        
+                        <h5 class="modal-title" id="exampleModalLabel">QR Code</h5>                                                
                     </div>
                     <div class="modal-body" id="print-area" style="align-self: center;">
                         <div style="align-self: center; margin-top: -5px">

@@ -115,8 +115,14 @@ class QRCodeGenerator extends BaseController
             );
             for ($i=0; $i < count($materials); $i++) {
                 $getMaterial = $this->materialModel->getMaterialDetail($materials[$i]);
-                          
-                $data = $getMaterial[0]->id.'-'.$getMaterial[0]->type.'-'.$getMaterial[0]->color.'-'.$getMaterial[0]->weight;                
+                $getColor = explode(" ", $getMaterial[0]->color);
+                $color = "";
+                if (count($getColor) > 1) {
+                    $color =  $getColor[0]." ".substr($getColor[1], 0, 1);
+                } else {
+                    $color = $getMaterial[0]->color;
+                }
+                $data = $getMaterial[0]->id.'-'.$getMaterial[0]->type.'-'.$color.'-'.$getMaterial[0]->weight;                
                 $qr = QrCode::create($data);
                 $writer = new PngWriter();
                 $result = $writer->write($qr);    
@@ -147,7 +153,25 @@ class QRCodeGenerator extends BaseController
                     ->get();
                 
                 foreach ($getProducts->getResultArray() as $row) {
-                    $data = $row['id'].'-'.$row['model_name'].'-'.$row['color'].'-'.$row['size'];                
+                    $getColor = explode(" ", $row['color']);
+                    $color = "";
+                    if (count($getColor) == 2) {
+                        if (strlen($getColor[0]) > 3) {
+                            $color =  substr($getColor[0], 0, 1).". ".$getColor[1];
+                        } else {
+                            $color =  $getColor[0]." ".$getColor[1];                            
+                        }
+                        
+                    } else if (count($getColor) > 2) {
+                        if (strlen($getColor[0]) > 3) {
+                            $color =  substr($getColor[0], 0, 1)." ".substr($getColor[1], 0, 1).". ".$getColor[1];
+                        } else {
+                            $color =  $getColor[0]." ".substr($getColor[0], 0, 1);                            
+                        }
+                    } else {
+                        $color = $row['color'];
+                    }
+                    $data = $row['id'].'-'.$row['model_name'].'-'.$color.'-'.$row['size'];                
                     $qr = QrCode::create($data);
                     $writer = new PngWriter();
                     $result = $writer->write($qr);    

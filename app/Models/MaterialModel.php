@@ -36,6 +36,31 @@ class MaterialModel extends Model
         }
         return $query;
     }
+    public function getAllMaterialServerSide($start = null, $length = null) {
+        if (!is_null($start)) {
+            $query =  $this->db->table('materials')
+            ->select('materials.*, materials.weight - IFNULL(berat_cutting, 0) as total_berat, material_vendors.vendor, material_types.id as type_id, material_types.type, colors.color, gudang.gudang')
+            ->join('material_types', 'material_types.id = materials.material_type')
+            ->join('colors', 'colors.id = materials.color_id')
+            ->join('gudang', 'gudang.id = materials.gudang_id')
+            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')            
+            ->join('(SELECT m.id, SUM(c.berat) as berat_cutting FROM cutting c JOIN materials as m ON m.id = c.material_id GROUP BY c.material_id) as m','materials.id = m.id', 'left')
+            ->where('status', '1')            
+            ->orderBy('created_at', 'desc')->get(); 
+        } else {
+            $query =  $this->db->table('materials')
+            ->select('materials.*, (materials.weight - IFNULL(berat_cutting, 0)) as total_berat, material_vendors.vendor, material_types.id as type_id, material_types.type, colors.color, gudang.gudang')
+            ->join('material_types', 'material_types.id = materials.material_type')
+            ->join('colors', 'colors.id = materials.color_id')
+            ->join('gudang', 'gudang.id = materials.gudang_id')
+            ->join('material_vendors', 'material_vendors.id = materials.vendor_id')        
+            ->join('(SELECT m.id, SUM(c.berat) as berat_cutting FROM cutting c JOIN materials as m ON m.id = c.material_id GROUP BY c.material_id) as m','materials.id = m.id', 'left')
+            ->where('status', '1')
+            ->limit($start, $length)
+            ->orderBy('created_at', 'desc')->get();
+        }
+        return $query->getResult();
+    }
     
     public function getAllMaterialRetur($date1 = null, $date2 = null) {
         if (!is_null($date1)) {
@@ -115,12 +140,12 @@ class MaterialModel extends Model
 
     public function getAllMaterialQR() {
         $query =  $this->db->table('materials')
-        ->select('materials.*, material_types.type, colors.color, users.name, gudang, roll, vendor')
+        ->select('materials.*, material_types.type, colors.color,gudang, roll, vendor')
         ->join('material_types', 'material_types.id = materials.material_type')
         ->join('colors', 'colors.id = materials.color_id')
         ->join('gudang', 'gudang.id = materials.gudang_id')
         ->join('material_vendors', 'material_vendors.id = materials.vendor_id')
-        ->join('users', 'users.id = materials.user_id')
+     
         ->where('status', '1')
         ->orderBy('qrcode', 'asc')
         ->orderBy('created_at', 'desc')
@@ -241,6 +266,14 @@ class MaterialModel extends Model
         return $query->getResult();
     }
 
+    public function getMaterialTypeByName($keyword) {
+        $query = $this->db->table('material_types')
+            ->where('type', $keyword)
+            ->get();
+
+        return $query->getFirstRow();
+    }
+
     public function getAllColors() {
         $query =  $this->db->table('colors')
         ->orderBy('id', 'desc')->get();
@@ -253,6 +286,21 @@ class MaterialModel extends Model
         $query = $this->db->table('material_vendors')
         ->orderBy('id', 'desc')->get();
         return $query;
+    }
+
+    public function getVendorKainByName($keyword) {
+        $query = $this->db->table('material_vendors')
+            ->where('vendor', $keyword)
+            ->get();
+        return $query->getFirstRow();
+
+    }
+
+    public function saveImportKain($kainId, $colorId, $vendorId, $harga, $berat, $user) {
+        $str = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        $numbers = rand(1000, 9999);
+        $id = 'M-'.substr($str, 0, 3).''.$numbers;      
+        $this->db->query("INSERT INTO materials(material_id, material_type, color_id, vendor_id, price, weight, user_id) VALUES('$id', '$kainId', '$colorId', '$vendorId', '$harga', '$berat', '$user') ");
     }
 
     public function saveMaterialType($type, $harga) {
@@ -289,6 +337,8 @@ class MaterialModel extends Model
             ->where('id', $id)->get();
         return $query->getResult();
     }
+
+    
 
     public function getColorByName($color) {
         $query = $this->db->table('colors')

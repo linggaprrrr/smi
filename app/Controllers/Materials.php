@@ -1043,6 +1043,7 @@ class Materials extends BaseController
 
     public function importKainMasuk() {
         $file = $this->request->getFile('file');  
+
         if (!is_null($file)) {
             $ext = $file->getClientExtension();
             if ($ext == 'xls') {
@@ -1051,14 +1052,92 @@ class Materials extends BaseController
                 $render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
             }
             $spreadsheet = $render->load($file);
-            $data = $spreadsheet->getActiveSheet()->toArray();   
+            $data = $spreadsheet->getActiveSheet()->toArray();    
+            $kainId = "";
+            $colorId = "";
+            $vendorId = "";
+            $harga = "";        
+            $berat = "";
             foreach ($data as $idx => $row) {
                 if ($idx > 0) {
+                    // cari kain id
+                    $getKainId = $this->materialModel->getMaterialTypeByName($row[1]);
+                    if (!is_null($getKainId)) {
+                        $kainId = $getKainId->id;
+                        if (is_null($row[5])) {
+                            $harga = $getKainId->harga; 
+                        } else {
+                            $harga = $row[5];
+                        }
+                    }      
+                    // cari warna
+                    $getColorId = $this->materialModel->getColorByName($row[2]);
+                    if (!is_null($getColorId)) {
+                        $colorId = $getColorId->id;
+                    }
                     
+                    // cari vendor kain
+                    $getVendorId = $this->materialModel->getVendorKainByName($row[3]);
+                    
+                    if (!is_null($getVendorId)) {
+                        $vendorId = $getVendorId->id;
+                    }
+                    $berat = $row[4];
+
+                    $this->materialModel->saveImportKain($kainId, $colorId, $vendorId, $harga, $berat, session()->get('user_id'));
                 }
             }
         }
+
+        return redirect()->back()->with('create', 'Kain berhasil diimport');
         
+    }
+
+    public function loadKainGesit() {
+        $params['draw'] = $_REQUEST['draw'];
+        $start = $_REQUEST['start'];
+        $length = $_REQUEST['length'];
+        $search_value = $_REQUEST['search']['value'];
+        ini_set('memory_limit', '-1');
+        if(!empty($search_value)){
+            $total_count = $this->db->query("SELECT products.*, model_name, jenis as product_name, color, name, price, (products.qty - IFNULL(stok_keluar, 0)) as stok FROM products JOIN models ON models.id = products.model_id JOIN colors ON colors.id = products.color_id JOIN users ON users.id = products.user_id LEFT JOIN (SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b WHERE b.status <> '1' GROUP BY b.product_id) as k ON k.product_id = products.id WHERE products.status = '1' AND (model_name LIKE '%".$search_value."%' OR product_name LIKE '%".$search_value."%') GROUP BY products.id ORDER BY products.created_at DESC ")->getResult();
+            $data = $this->db->query("SELECT products.*, model_name, jenis as product_name, color, name, price, (products.qty - IFNULL(stok_keluar, 0)) as stok FROM products JOIN models ON models.id = products.model_id JOIN colors ON colors.id = products.color_id JOIN users ON users.id = products.user_id LEFT JOIN (SELECT b.product_id, COUNT(b.id) as stok_keluar FROM product_barcodes b WHERE b.status <> '1' GROUP BY b.product_id) as k ON k.product_id = products.id WHERE products.status = '1' AND (model_name LIKE '%".$search_value."%' OR product_name LIKE '%".$search_value."%') GROUP BY products.id limit $start, $length")->getResult();
+        }else{
+            $total_count = $this->materialModel->getAllMaterialServerSide();
+            $data = $this->materialModel->getAllMaterialServerSide($start, $length);
+        }
+        $json_data = array(
+            "draw" => intval($params['draw']),
+            "recordsTotal" => count($total_count),
+            "recordsFiltered" => count($total_count),
+            "data" => $data   // total data array
+        );
+
+        echo json_encode($json_data);
+    }
+
+    public function getMaterialList() {
+        $materials = $this->materialModel->getAllMaterialType();
+        $result = array();
+        foreach ($materials->getResultArray() as $row) {
+            $result[] = array(
+                'id' => $row['id'],
+                'type' => $row['type'],
+              );
+        }
+        echo json_encode($result);
+    }
+
+    public function getColorList() {
+        $colors = $this->materialModel->getAllColors();
+        $result = array();
+        foreach ($colors->getResultArray() as $row) {
+            $result[] = array(
+                'id' => $row['id'],
+                'color' => $row['color'],
+              );
+        }
+        echo json_encode($result);
     }
 
 }

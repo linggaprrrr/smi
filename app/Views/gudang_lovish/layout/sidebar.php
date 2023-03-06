@@ -41,25 +41,21 @@
                         <?php
                     break;
                 case "2": 
-                       
+                       ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('/operasional/stock-opname') ?>">
+                                <i class="fas fa-fw fa-list"></i>
+                                <span>Stock Opname</span></a>
+                        </li>
+                       <?php 
                     break;
                 case "3": 
                         ?>
-                         <!-- <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-so') ?>">
-                                <i class="fas fa-fw fa-qrcode"></i>
-                                <span>QR Scanner Produk (IN)</span></a>
-                        </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-out') ?>">
-                                <i class="fas fa-fw fa-qrcode"></i>
-                                <span>QR Scanner Produk (OUT)</span></a>
-                        </li> 
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/operasional/qr-scanner-product-so-bulanan') ?>">
-                                <i class="fas fa-fw fa-qrcode"></i>
-                                <span>QR Scanner Produk (SO)</span></a>
-                        </li>                      -->
+                            <a class="nav-link" href="<?= base_url('/operasional/penjualan') ?>">
+                                <i class="fas fa-fw fa-cart-arrow-down"></i>
+                                <span>Penjualan</span></a>
+                        </li>                  -->
                         <?php
                     break;
                 case "4": 
@@ -80,18 +76,8 @@
                         </li> -->
                         <?php
                     break;
-                case "6": 
-                        ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/operasional/penjualan') ?>">
-                                <i class="fas fa-fw fa-cart-arrow-down"></i>
-                                <span>Penjualan</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/operasional/stock-opname') ?>">
-                                <i class="fas fa-fw fa-list"></i>
-                                <span>Stock Opname</span></a>
-                        </li>
+                case "7": 
+                        ?>                       
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/operasional/laporan') ?>">
                                 <i class="fas fa-fw fa-chart-area"></i>

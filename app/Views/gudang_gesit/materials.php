@@ -16,7 +16,7 @@
         <div class="modal fade bd-example-modal-lg-import-kain" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">                    
-                    <form id="form-kain" action="<?= base_url('/import-kain-masuk') ?>" method="post">
+                    <form id="form-kain" action="<?= base_url('/import-kain-masuk') ?>" method="post" enctype="multipart/form-data">
                         <?php csrf_field() ?>
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Import Kain</h5>
@@ -170,7 +170,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive" id="tabel-kain">
-            <table class="table table-bordered display nowrap" id="dataTable2" width="100%" cellspacing="0">
+            <table class="table table-bordered display nowrap data-kain" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">No</th>
@@ -186,7 +186,7 @@
                     </tr>
                 </thead>
                 
-                <tbody>
+                <!-- <tbody>
                     <?php $no = 1; ?>
                     <?php if ($materialsIn->getNumRows() > 0) : ?>
                         <?php $id = ""; $timGelar = array('', ''); $len = count($materialsIn->getResultObject()); $i = 0;?>
@@ -244,7 +244,7 @@
                             <?php $id = $kain->id; $i++?>
                         <?php endforeach ?>
                     <?php endif ?>
-                </tbody>
+                </tbody> -->
             </table>
         </div>
         
@@ -881,10 +881,91 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function() {    
-    
+        $('.data-kain').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                    "url": "<?= base_url('load-kain-gesit') ?>",
+                    "dataType": "json",
+                    "type": "POST"
+                },
+            "columns": [
+                { "data": null,"sortable": false, 
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }  
+                },
+                { "data": "material_id" },
+                { 
+                    "data": null, render: function(data, type, row, meta) {                        
+                        return ' <select class="form-control jenis" data-id='+data.id+' name="jenis"> <option value="'+data.type_id+'" selected="selected"> '+data.type+'</option> </select> ';                            
+                    },
+                    "className": "text-center"
+                },
+                {
+                    "data": null, render: function(data, type, row, meta) {                        
+                        return ' <select class="form-control warna" data-id='+data.id+' name="warna"> <option value="'+data.color_id+'" selected="selected"> '+data.color+'</option> </select> ';                            
+                    },
+                    "className": "text-center"
+                },
+                { 
+                    "data": null, render: function(data, type, row, meta) {                        
+                        return '<input type="text" class="form-control berat" name="weight" data-id='+data.id+' value='+parseFloat(data.total_berat).toFixed(1)+'>';                            
+                    },
+                    "className": "text-center"
+                 },
+                { "data": "created_at", "className": "text-center"},
+                { "data": "vendor", "className": "text-center"},
+                { 
+                    "data": null, render: function(data, type, row, meta) {                        
+                        return '<input type="text" class="form-control harga" name="price" data-id='+data.id+' value='+data.price+'>';                            
+                    },
+                    "className": "text-center"
+                    
+                },
+                { 
+                    "data" : "gudang",
+                    "className": "text-center" },                
+                {
+                    "data" : "id", render: function(data, type, row, meta) {
+                        return '<a href="#" class="btn btn-danger btn-icon-split btn-sm btn-hapus" data-id='+ data +'> <span class="icon text-white-25"><i class="fas fas fa-trash"></i></span></a>';                            
+                    },
+                    "className": "text-center"
+                }
+            ],
+            
+        });
+
         $('.tgl-pola').datepicker();
         $('.tgl-cutting-edit').datepicker();
                 
+    });
+
+    $(document).one('click', '.jenis', function() {        
+        var value = $(this).val();
+        console.log(value);
+        $.get('/get-material-type-list')
+            .done(function(data) {
+                const res = JSON.parse(data)
+                var sel = $(".jenis");                
+                for (var i=0; i < res.length; i++) {
+                    sel.append('<option value="' + res[i].id + '">' + res[i].type + '</option>');
+                }                
+            });
+    });
+
+
+    $(document).one('click', '.warna', function() {        
+        var value = $(this).val();
+        console.log(value);
+        $.get('/get-color-list')
+            .done(function(data) {
+                const res = JSON.parse(data)
+                var sel = $(".warna");                
+                for (var i=0; i < res.length; i++) {
+                    sel.append('<option value="' + res[i].id + '">' + res[i].color + '</option>');
+                }                
+            });
     });
 
     $(document).on('click', '.btn-edit', function() {
@@ -1076,33 +1157,26 @@
     });
 
     // kain    
-    $('.jenis-kain').change(function() {
-        const id = $(this).val();
-        $.get('/get-jenis-kain', {id: id}, function(data) {
-            const price = JSON.parse(data);            
-            $('.harga-kain').val(price[0]['harga']);
-        })
-    });
 
-    $('.jenis').on('change', function() {
+    $(document).on('change', '.jenis', function() {
         const id = $(this).data('id');
         const type = $(this).val();
         $.post('/on-change-material-type', {id: id, type: type})
             .done(function(data) {
                 $.notify('Jenis kain berhasil diubah', "success");
             });
-    });   
-    
-    $('.warna').on('change', function() {
+    });
+
+    $(document).on('change', '.warna', function() {
         const id = $(this).data('id');
         const warna = $(this).val();
         $.post('/on-change-material-color', {id: id, color: warna})
             .done(function(data) {
                 $.notify('Warna kain berhasil diubah', "success");
             });   
-    }); 
-    
-    $('.berat').on('change', function() {
+    });
+
+    $(document).on('change', '.berat', function() {
         const id = $(this).data('id');
         const berat = $(this).val();
         $.post('/on-change-material-weight', {id: id, weight: berat})
@@ -1111,14 +1185,19 @@
             });   
     });
 
-    $('.harga').on('change', function() {
-        const id = $(this).data('id');
-        const harga = $(this).val();
-        $.post('/on-change-material-price', {id: id, harga: harga})
-            .done(function(data) {
-                $.notify('Harga kain berhasil diubah', "success");
-            });   
+
+    $('.jenis-kain').change(function() {
+        const id = $(this).val();
+        $.get('/get-jenis-kain', {id: id}, function(data) {
+            const price = JSON.parse(data);            
+            $('.harga-kain').val(price[0]['harga']);
+        })
     });
+
+    
+    
+    
+    
 
     $('.vendor-kain-edit').on('change', function() {
         const id = $(this).data('id');

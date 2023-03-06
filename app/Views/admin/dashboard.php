@@ -369,7 +369,7 @@
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                         Total Keluar </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokKeluar['stok']) ? "0" : ($stokKeluar['stok'])) ?></div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokKeluar) ? "0" : ($stokKeluar['stok'])) ?></div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -387,7 +387,7 @@
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                         Produk Retur </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokRetur['stok']) ? "0" : $stokRetur['stok']) ?></div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (is_null($stokRetur) ? "0" : $stokRetur['stok']) ?></div>
                                 </div>
                                 <div class="col-auto"> 
                                     <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>

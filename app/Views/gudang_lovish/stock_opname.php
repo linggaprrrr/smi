@@ -10,8 +10,8 @@
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary float-left">Stok Produk</h6>
         <a class="btn btn-success float-right ml-2" href="<?= base_url('/export-so') ?>"  target="_blank"><i class="fa fa-file-excel mr-2"></i>Export</a>        
-        <button class="btn btn-primary float-right reset" data-toggle="modal">Reset SO</button>  
-         
+        <button class="btn btn-primary float-right ml-2 reset" data-toggle="modal">Reset SO</button>  
+        <button class="btn btn-danger float-right update" data-toggle="modal">Update Stock</button>   
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -97,7 +97,7 @@
                 })
             .then((willDelete) => {
                 if (willDelete) {
-                    swal("Poof! Data berhasil dihapus!", {
+                    swal("Poof! Data berhasil direset!", {
                     icon: "success",
                     });
                     $.post('/reset-so', {product_id: id})
@@ -105,11 +105,35 @@
                             setTimeout(location.reload.bind(location), 1000);
                         });
                 } else {
-                    swal("Data tidak jadi dihapus!");
+                    swal("Data tidak jadi direset!");
                 }
             });
         })
         
+        $(document).on('click', '.update', function() {
+            const id = '1';
+            swal({
+                    title: "Apakah anda yakin?",
+                    text: "Data hasil scan so akan masuk ke stok real",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Data berhasil diupdate!", {
+                    icon: "success",
+                    });
+                    $.post('/update-so', {product_id: id})
+                        .done(function(data) {
+                            setTimeout(location.reload.bind(location), 1000);
+                        });
+                } else {
+                    swal("Data tidak jadi diupdate!");
+                }
+            });
+        })
+
         $('.hpp-jual').change(function() {
             const id = $(this).data('id');
             const model = $(this).data('model');

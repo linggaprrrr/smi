@@ -7,6 +7,8 @@ use App\Models\DesignModel;
 use App\Models\MaterialModel;
 use App\Models\ShippingModel;
 use App\Models\SellingModel;
+use Ifsnop\Mysqldump\Mysqldump;
+
 
 class Home extends BaseController
 {
@@ -757,6 +759,20 @@ class Home extends BaseController
         
         
         return view('gudang_gesit/dashboard', $data);
+    }
+
+    public function downloadDB() {
+        try {
+            $dump = new Mysqldump('mysql:host=127.0.0.1;dbname=u1738102_smi;port=3306', 'u1738102_smi', 'smi123!@#');
+            $dump->start('download/backupdb-'.date('dmy').'.sql');
+            $file = 'download/backup-'.date('dmy').'.sql';
+            header('Content-Type: application/octet-stream');
+            header("Content-Transfer-Encoding: Binary"); 
+            header("Content-disposition: attachment; filename=\"" . basename($file) . "\""); 
+            readfile($file); 
+        } catch (\Exception $e) {
+            echo 'mysqldump-php error: ' . $e->getMessage();
+        }    
     }
 
 }

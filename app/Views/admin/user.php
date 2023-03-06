@@ -366,25 +366,28 @@
                             for (var i=0; i < access.length; i++) {
                                 switch(access[i]) {
                                     case "1": 
-                                            $('#customSwitch13').prop('checked', true);
+                                            $('#customSwitch21').prop('checked', true);
                                         break;
                                     case "2": 
-                                            $('#customSwitch14').prop('checked', true);
+                                            $('#customSwitch22').prop('checked', true);
                                         break;
                                     case "3": 
-                                            $('#customSwitch15').prop('checked', true);
+                                            $('#customSwitch23').prop('checked', true);
                                         break;
                                     case "4": 
-                                            $('#customSwitch16').prop('checked', true);
+                                            $('#customSwitch24').prop('checked', true);
                                         break;
                                     case "5": 
-                                            $('#customSwitch17').prop('checked', true);
+                                            $('#customSwitch25').prop('checked', true);
                                         break;
                                     case "6": 
-                                            $('#customSwitch18').prop('checked', true);
+                                            $('#customSwitch26').prop('checked', true);
                                         break;
                                     case "7": 
-                                            $('#customSwitch31').prop('checked', true);
+                                            $('#customSwitch27').prop('checked', true);
+                                        break;
+                                    case "8": 
+                                            $('#customSwitch28').prop('checked', true);
                                         break;
                                 }
                             }
@@ -394,22 +397,25 @@
                             for (var i=0; i < access.length; i++) {
                                 switch(access[i]) {
                                     case "1": 
-                                            $('#customSwitch20').prop('checked', true);
+                                            $('#customSwitch31').prop('checked', true);
                                         break;
                                     case "2": 
-                                            $('#customSwitch21').prop('checked', true);
+                                            $('#customSwitch32').prop('checked', true);
                                         break;
                                     case "3": 
-                                            $('#customSwitch22').prop('checked', true);
+                                            $('#customSwitch33').prop('checked', true);
                                         break;
                                     case "4": 
-                                            $('#customSwitch23').prop('checked', true);
+                                            $('#customSwitch34').prop('checked', true);
                                         break;
                                     case "5": 
-                                            $('#customSwitch24').prop('checked', true);
+                                            $('#customSwitch35').prop('checked', true);
                                         break;
                                     case "6": 
-                                            $('#customSwitch25').prop('checked', true);
+                                            $('#customSwitch36').prop('checked', true);
+                                        break;
+                                    case "7": 
+                                            $('#customSwitch37').prop('checked', true);
                                         break;
                                 }
                             }

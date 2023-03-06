@@ -111,6 +111,7 @@ $routes->post('/upload-gelar', 'Reports::uploadTimGelar');
 $routes->post('/upload-cutting', 'Reports::uploadTimCutting');
 $routes->post('/stok-masuk-to-awal', 'Products::stokMasukToIn');
 $routes->post('/reset-so', 'Products::resetSO');
+$routes->post('/update-so', 'Products::updateSO');
 $routes->get('/export-so', 'Products::exportSO');
 
 // ADMIN API
@@ -297,15 +298,18 @@ $routes->get('/export-dash-stok-gudang/(:any)/(:any)', 'Products::exportStokGuda
 $routes->get('/export-produk-masuk-gudang', 'Products::exportProdukMasukGesit');
 $routes->get('/export-produk-masuk-gudang/(:any)/(:any)', 'Products::exportProdukMasukGesit/$1/$2');
 
-
-
 // test
 $routes->get('/test', 'QRCodeGenerator::test');
 
 // API 
 $routes->post('/kirim-qr', 'Api::kirimQR');
 $routes->post('load-product-gesit', 'Products::loadProductGesit');
+$routes->post('load-kain-gesit', 'Materials::loadKainGesit');
 $routes->post('load-product-masuk-gudang', 'Products::loadProductMasukGudang');
+$routes->get('/get-material-type-list', 'Materials::getMaterialList');
+$routes->get('/get-color-list', 'Materials::getColorList');
+$routes->get('/download-db', 'Home::downloadDB');
+
 
 /*
  * --------------------------------------------------------------------

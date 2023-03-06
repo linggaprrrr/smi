@@ -914,6 +914,19 @@ class ProductModel extends Model
     public function resetSO() {
         $this->db->query("DELETE FROM scan_so");
     }
+    
+    public function getDataSO() {
+        $query = $this->db->query("SELECT * FROM scan_so");
+
+        return $query;
+        
+    }
+
+    public function updateSO() {
+        $this->db->query("DELETE product_logs FROM product_logs JOIN product_barcodes ON product_barcodes.id = product_logs.product_id JOIN products ON products.id = product_barcodes.product_id WHERE products.status = 2 AND product_logs.product_id NOT IN (SELECT scan_so.product_id FROM scan_so)");
+        $this->db->query("DELETE product_barcodes FROM product_barcodes JOIN products ON products.id = product_barcodes.product_id WHERE products.status = 2 AND product_barcodes.id NOT IN (SELECT scan_so.product_id FROM scan_so)");
+        
+    }
 
     public function getTotalProdukMasuk($date1 = null, $date2 = null) {
         if (is_null($date1)) {

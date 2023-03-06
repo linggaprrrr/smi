@@ -753,8 +753,8 @@
                                     <label>File:</label>
                                     <label class="custom-file">
 
-                                        <input type="file" name="file" class="custom-file-input" id="file-upload6" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-                                        <span class="custom-file-label" id="file-upload-filename6">Choose file</span>
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload7" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename7">Choose file</span>
                                     </label>
                                     <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
                                 </div>
@@ -885,8 +885,8 @@
                                     <label>File:</label>
                                     <label class="custom-file">
 
-                                        <input type="file" name="file" class="custom-file-input" id="file-upload7" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-                                        <span class="custom-file-label" id="file-upload-filename7">Choose file</span>
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload8" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename8">Choose file</span>
                                     </label>
                                     <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
                                 </div>
@@ -1017,8 +1017,8 @@
                                     <label>File:</label>
                                     <label class="custom-file">
 
-                                        <input type="file" name="file" class="custom-file-input" id="file-upload8" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-                                        <span class="custom-file-label" id="file-upload-filename8">Choose file</span>
+                                        <input type="file" name="file" class="custom-file-input" id="file-upload9" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                        <span class="custom-file-label" id="file-upload-filename9">Choose file</span>
                                     </label>
                                     <span class="form-text text-muted">Accepted formats: xls/xlsx. Max file size 10Mb</span>
                                 </div>
@@ -1587,15 +1587,18 @@
     var infoArea7 = document.getElementById('file-upload-filename7');
     var input8 = document.getElementById('file-upload8');
     var infoArea8 = document.getElementById('file-upload-filename8');
+    var input8 = document.getElementById('file-upload9');
+    var infoArea8 = document.getElementById('file-upload-filename9');
 
     input.addEventListener('change', showFileName);
     input2.addEventListener('change', showFileName2);
-    input3.addEventListener('change', showFileName3);
+    // input3.addEventListener('change', showFileName3);
     input4.addEventListener('change', showFileName4);
     input5.addEventListener('change', showFileName5);
     input6.addEventListener('change', showFileName6);
     input7.addEventListener('change', showFileName7);
     input8.addEventListener('change', showFileName8);
+    input9.addEventListener('change', showFileName9);
 
     function showFileName(event) {
         // the change event gives us the input it occurred in 
@@ -1662,6 +1665,14 @@
         var fileName = input8.files[0].name;
         // use fileName however fits your app best, i.e. add it into a div
         infoArea8.textContent = '' + fileName;
+    }
+    function showFileName9(event) {
+        // the change event gives us the input it occurred in 
+        var input = event.srcElement;
+        // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+        var fileName = input8.files[0].name;
+        // use fileName however fits your app best, i.e. add it into a div
+        infoArea9.textContent = '' + fileName;
     }
 
 </script>

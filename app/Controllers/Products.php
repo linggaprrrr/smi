@@ -111,7 +111,7 @@ class Products extends BaseController
         $post = $this->request->getVar();
         $data = $this->productModel->findPola($post['cutting_id']);
 
-        if (!is_null($post['nosize'])) {
+        if ((isset($post['nosize']))) {
             $product = [
                 'model_id'  => $data->id,            
                 'color_id' => $data->color,
@@ -134,7 +134,7 @@ class Products extends BaseController
                 'jenis' => 'create',                         
             ]);  
         } else {
-            if (!is_null($post['s']) || $post['s'] > 0) {
+            if ($post['s'] > 0) {
                 $product = [
                     'model_id'  => $data->id,            
                     'color_id' => $data->color,
@@ -158,7 +158,7 @@ class Products extends BaseController
                 ]);
             }
     
-            if (!is_null($post['m']) || $post['m'] > 0) {
+            if ($post['m'] > 0) {
                 $product = [
                     'model_id'  => $data->id,            
                     'color_id' => $data->color,
@@ -182,7 +182,7 @@ class Products extends BaseController
                 ]);
             }
     
-            if (!is_null($post['l']) || $post['l'] > 0) {
+            if ($post['l'] > 0) {
                 $product = [
                     'model_id'  => $data->id,            
                     'color_id' => $data->color,
@@ -206,7 +206,7 @@ class Products extends BaseController
                 ]);
             }
     
-            if (!is_null($post['xl']) || $post['xl'] > 0) {
+            if ($post['xl'] > 0) {
                 $product = [
                     'model_id'  => $data->id,            
                     'color_id' => $data->color,
@@ -230,7 +230,7 @@ class Products extends BaseController
                 ]);
             }
     
-            if (!is_null($post['xxl']) || $post['xxl'] > 0) {
+            if ($post['xxl'] > 0) {
                 $product = [
                     'model_id'  => $data->id,            
                     'color_id' => $data->color,
@@ -1497,6 +1497,10 @@ class Products extends BaseController
     
     public function resetSO() {
         $this->productModel->resetSO();
+    }
+
+    public function updateSO() {
+       $this->productModel->updateSO();
     }
 
     public function exportSO() {

@@ -96,6 +96,11 @@
         <i class="fas fa-fw fa-history"></i>
         <span>Log</span></a>
 </li>
+<li class="nav-item">
+    <a class="nav-link" href="<?= base_url('/download-db') ?>">
+        <i class="fas fa-fw fa-database"></i>
+        <span>Download Database</span></a>
+</li>
 
 <!-- Sidebar Toggler (Sidebar) -->
 <div class="text-center d-none d-md-inline">

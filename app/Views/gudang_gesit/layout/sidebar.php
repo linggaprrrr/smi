@@ -35,15 +35,16 @@
                                 <i class="fas fa-fw fa-boxes"></i>
                                 <span>Kain</span></a>
                         </li>
+                        
+                        <?php
+                    break;
+                case "2": 
+                        ?>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('gudang-gesit/produk') ?>">
                                 <i class="fas fa-fw fa-tshirt"></i>
                                 <span>Produk</span></a>
                         </li>
-                        <?php
-                    break;
-                case "2": 
-                        ?>
                         <li class="nav-item">
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                                 aria-expanded="true" aria-controls="collapseUtilities">
@@ -83,15 +84,6 @@
                                 <span>Gudang Reject</span></a>
                         </li>
                          <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/gudang-gesit/laporan') ?>">
-                                <i class="fas fa-fw fa-chart-area"></i>
-                                <span>Laporan</span></a>
-                        </li>
-                        <?php
-                    break;
-                case "9": 
-                        ?>
-                        <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('/gudang-gesit/laporan') ?>">
                                 <i class="fas fa-fw fa-chart-area"></i>
                                 <span>Laporan</span></a>
